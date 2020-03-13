@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}Index{% endblock %}
+{% block head %}
+  {{ super() }}
+  <style type="text/css">
+    .important { color: #336699; }
+  </style>
+{% endblock %}
+{% block content %}
+  <div class="jumbotron">
+    <div class="container">
+      <h1 class="display-4">Signatures</h1>
+      <p>Validates signatures</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card-deck">
+     
+    {% macro frontcard(title, description, target, beta=False) -%}
+      <div class="card mb-4" style="min-width: 300px">
+        <div class="card-body">
+            <h2 class="card-title">{{ title }}{% if beta %} <span class="badge badge-info">Beta</span>{% endif %}</h2>
+          <p class="card-text">{{ description }}</p>
+          <p><a class="card-link stretched-link" href="{{ target }}" role="button">Run</a></p>
+        </div>
+      </div>
+    {% endmacro %}
+    </div>
+
+  </div>
+{% endblock %}

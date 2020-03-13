@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css"  crossorigin="anonymous">
+    <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/font-awesome/5.11.2/css/fontawesome.css">
+    <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/font-awesome/5.11.2/css/brands.css">
+    {% block head %}
+    <title>{% block title %}{% endblock %} - Signatures</title>
+    {% endblock %}
+  </head>
+  <body class="bg-light">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="{{url_for('index')}}">~</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbar">
+        <ul class="navbar-nav mr-auto">
+          {% macro nav_row(name, label) -%}
+            <li class="nav-item{% if url_for(name) == request.script_root + request.path %} active{% endif %}">
+              <a class="nav-link" href="{{ url_for(name) }}">{{ label }}</a>
+            </li>
+          {%- endmacro %}
+          {{ nav_row('index', 'Home') }} 
+        </ul>
+      </div>
+    </nav>
+    <br>
+    <main role="main" class="container p-3 mt-5 mx-auto bg-white" style="height:100%">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flashes">
+        {% for category, message in messages %}
+          <div class="alert alert-{% if category=="message" %}primary{% else %}{{category}}{% endif %}" role="alert">{{message}}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}
+    {% endblock %}
+    </main>
+    <footer >
+    {% block footer %}
+      <div class="mh-auto p-3 mt-5 text-md-right text-center">
+        <hr>
+        <div class="row justify-content-center justify-content-md-end align-items-center">
+          <div class="col-sm mb-3 mb-md-0">
+            <div class="text-muted">This project is licensed under the <a class="text-reset" href="https://www.apache.org/licenses/LICENSE-2.0">Apache&nbspLicense,&nbspversion&nbsp2.0</a>.
+            </div>
+            <div class="text-muted">Repository version <code class="text-reset">{{ config['version'] }}</code></div>
+          </div>
+          <div class="col- mr-md-4">
+            <a class="btn btn-dark btn-sm" href="https://en.wikipedia.org/wiki/User_talk:AntiCompositeNumber"><i class="fab fa-wikipedia-w"></i> Talk page</a>
+            <a class="btn btn-dark btn-sm" href="https://github.com/AntiCompositeNumber/signatures"><i class="fab fa-github"></i> GitHub</a>
+          </div>
+        </div>
+      </div>
+    {% endblock %}
+    </footer>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/jquery/3.3.1/jquery.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/popper.js/1.14.7/esm/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+  </body>
+</html>

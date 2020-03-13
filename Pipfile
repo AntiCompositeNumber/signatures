@@ -16,6 +16,8 @@ mwparserfromhell = "*"
 requests = "*"
 requests-oauthlib = "*"
 toolforge = "*"
+flask = "*"
+flask-babel = "*"
 
 [requires]
 python_version = "3.7"

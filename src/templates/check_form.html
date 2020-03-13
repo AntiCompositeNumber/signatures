@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}Index{% endblock %}
+{% block head %}
+  {{ super() }}
+  <style type="text/css">
+    .important { color: #336699; }
+  </style>
+{% endblock %}
+{% block content %}
+  <h1>Check a signature</h1>
+  <form action="{{url_for('check')}}" method="get">
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label for="site">Wiki</label>
+        <select class="form-control" id="site" name="site">
+        {% for option in sitematrix|sort() %}
+            <option{% if option == "commonswiki"%} selected{%endif%}>{{option}}</option>
+        {% endfor %}
+        </select>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="username">Username</label>
+        <input class="form-control" id="username" placeholder="Example" name="username">
+      </div>
+    </div>
+    <div class="form-row">
+      <button type="submit" class="btn btn-primary">Check</button>
+    </div>
+ </form>
+{% endblock %}
