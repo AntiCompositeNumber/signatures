@@ -24,9 +24,11 @@ import os
 import subprocess
 import toolforge
 import requests
-from . import sigprobs
+import logging
+import sigprobs
 from typing import Iterator, Any, Tuple
 
+logging.basicConfig(filename="log.log")
 app = flask.Flask(__name__)
 session = requests.Session()
 session.headers.update({"User-Agent": toolforge.set_user_agent("signatures")})
