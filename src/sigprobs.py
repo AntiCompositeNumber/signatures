@@ -76,7 +76,7 @@ def get_user_properties(user, dbname):
             WHERE
                 up_user = (SELECT user_id
                            FROM `user`
-                           WHERE user_name = %(user)s)
+                           WHERE user_name = "%(user)s")
             """,
             args={"user": user},
         )
