@@ -114,7 +114,7 @@ def get_default_sig(site, user="$1", nickname="$2"):
 
 
 def check_user_exists(dbname, user):
-    query = f"SELECT user_id FROM `user` WHERE user_name = {user}"
+    query = f"SELECT user_id FROM `user` WHERE user_name = \"{user}\""
     return bool(do_db_query(dbname, query))
 
 
@@ -131,7 +131,7 @@ def check_user(site, user, sig=""):
 
     if not user_props.get("nickname"):
         # user does not exist or uses default sig
-        if check_user_exists(dbname, user):
+        if not check_user_exists(dbname, user):
             # user does not exist
             data["errors"].append("user-does-not-exist")
             data["failure"] = True
