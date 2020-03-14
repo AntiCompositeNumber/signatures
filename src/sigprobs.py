@@ -69,7 +69,7 @@ def iter_active_user_sigs(dbname, startblock=0):
 def get_user_properties(user, dbname):
     logging.info("Getting user properties")
     conn = toolforge.connect(f"{dbname}_p")
-    with conn.cursor(cursor=pymysql.cursors.DictCursor) as cur:
+    with conn.cursor() as cur:
         cur.execute(
             f"""
             SELECT up_property, up_value
@@ -86,10 +86,9 @@ def get_user_properties(user, dbname):
     if not resultset:
         return {}
     data = {
-        key: value.decode("utf-8") for key, value in resultset.items()
+        key.decode("utf-8"): value.decode("utf-8") for key, value in resultset
     }
-    data["fancysig"] = bool(int(data.setdefault("fancysig", "0")))
-    data.setdefault("nickname", "")
+    data["fancysig"] = bool(int(data.get("fancysig", "0")))
     return data
 
 
