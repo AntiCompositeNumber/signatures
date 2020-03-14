@@ -13,7 +13,7 @@
     <title>{% block title %}{% endblock %} - Signatures</title>
     {% endblock %}
   </head>
-  <body class="bg-light">
+  <body class="">
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
       <a class="navbar-brand" href="{{url_for('index')}}">~</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,7 +31,7 @@
       </div>
     </nav>
     <br>
-    <main role="main" class="container p-3 mt-5 mx-auto bg-white" style="height:100%">
+    <main role="main" class="container mt-5 mx-auto bg-white" style="height:100%">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div class="flashes">

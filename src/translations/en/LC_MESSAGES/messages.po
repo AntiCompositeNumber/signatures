@@ -1,0 +1,159 @@
+# English translations for signatures.
+# Copyright (C) 2020 AntiCompositeNumber
+# This file is distributed under Apache 2.0 license
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-03-13 21:53-0400\n"
+"PO-Revision-Date: 2020-03-13 21:53-0400\n"
+"Last-Translator: AntiCompositeNumber\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: i18n.py:8
+msgid "html5-misnesting"
+msgstr "Misnested tag with different rendering in HTML5 and HTML4"
+
+#: i18n.py:9
+msgid "html5-misnesting-help"
+msgstr "Tags should be closed in the reverse order they were opened (&ltb&gt&lti&gtFoo&lt/i&gt&lt/b&gt not &ltb&gt&lti&gtFoo&lt/b&gt&lt/i&gt)."
+
+#: i18n.py:10
+msgid "misc-tidy-replacement-issues"
+msgstr "Miscellaneous issues"
+
+#: i18n.py:11
+msgid "misc-tidy-replacement-issues-help"
+msgstr "Check the Linter documentation for advice"
+
+#: i18n.py:12
+msgid "misnested-tag"
+msgstr "Misnested tag"
+
+#: i18n.py:13
+msgid "misnested-tag-help"
+msgstr "Tags should be closed in the reverse order they were opened (&ltb&gt&lti&gtFoo&lt/i&gt&lt/b&gt not &ltb&gt&lti&gtFoo&lt/b&gt&lt/i&gt)."
+
+#: i18n.py:14
+msgid "missing-end-tag"
+msgstr "Missing end tag"
+
+#: i18n.py:15
+msgid "missing-end-tag-help"
+msgstr "Make sure that all tags that are opened are closed in the same way ('''Foo''' not &lti&gtFoo''' or &lti&gtFoo)"
+
+#: i18n.py:16
+msgid "multiple-unclosed-formatting-tags"
+msgstr "Multiple unclosed formatting tags"
+
+#: i18n.py:17
+msgid "multiple-unclosed-formatting-tags-help"
+msgstr "Make sure that all tags that are opened are closed in the same way ('''Foo''' not &lti&gtFoo''' or &lti&gtFoo)"
+
+#: i18n.py:18
+msgid "nested-subst"
+msgstr "Nested substitution"
+
+#: i18n.py:19
+msgid "nested-subst-help"
+msgstr "Signatures should not contain markup that could transform into someone else's signature."
+
+#: i18n.py:20
+msgid "no-user-links"
+msgstr "No user links"
+
+#: i18n.py:21
+msgid "no-user-links-help"
+msgstr "Signatures should contain a wikilink to the user's local user page, user talk page, or contributions."
+
+#: i18n.py:22
+msgid "obsolete-tag"
+msgstr "Obsolete HTML tags"
+
+#: i18n.py:23
+msgid "obsolete-tag-help"
+msgstr "See the Linter documentation for more information."
+
+#: i18n.py:24
+msgid "obsolete-font-tag"
+msgstr "Obsolete font tag"
+
+#: i18n.py:25
+msgid "obsolete-font-tag-help"
+msgstr "The &ltfont&gt tag has been deprecated in HTML5 and should be replaced"
+
+#: i18n.py:26
+msgid "plain-fancy-sig"
+msgstr "Plain fancy signature"
+
+#: i18n.py:27
+msgid "plain-fancy-sig-help"
+msgstr "The \"Treat the above as wiki markup\" box was ticked, but this signature doesn't contain any markup."
+
+#: i18n.py:28
+msgid "self-closed-tag"
+msgstr "Self-closed tag"
+
+#: i18n.py:29
+msgid "self-closed-tag-help"
+msgstr "See the Linter documentation for more information"
+
+#: i18n.py:30
+msgid "sig-too-long"
+msgstr "Signature too long"
+
+#: i18n.py:31
+msgid "sig-too-long-help"
+msgstr "Signatures must contain less than 255 bytes of wikitext."
+
+#: i18n.py:32
+msgid "stripped-tag"
+msgstr "Stripped tag"
+
+#: i18n.py:33
+msgid "stripped-tag-help"
+msgstr "See the Linter documentation for more information"
+
+#: i18n.py:34
+msgid "tidy-font-bug"
+msgstr "Tidy font bug"
+
+#: i18n.py:35
+msgid "tidy-font-bug-help"
+msgstr "See the Linter documentation for more information"
+
+#: i18n.py:36
+msgid "tidy-whitespace-bug"
+msgstr "Whitespace parsing bug"
+
+#: i18n.py:37
+msgid "tidy-whitespace-bug-help"
+msgstr "See the Linter documentation for more information"
+
+#: i18n.py:38
+msgid "wikilink-in-extlink"
+msgstr "Wikilink in external link"
+
+#: i18n.py:39
+msgid "wikilink-in-extlink-help"
+msgstr "External link labels can not contain wikilinks"
+
+#: templates/check_result.html:10
+#, python-format
+msgid "Results: %(username)s at %(site)s"
+msgstr "Results: %(username)s at %(site)s"
+
+#: templates/check_result.html:21
+#, python-format
+msgid "%(count)s error found"
+msgid_plural "%(count)s errors found"
+msgstr[0] "%(count)s error found"
+msgstr[1] "%(count)s errors found"
+

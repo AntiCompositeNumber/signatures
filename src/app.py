@@ -19,7 +19,8 @@
 
 
 import flask
-from flask_babel import Babel
+from flask_babel import Babel, gettext, ngettext  # noqa: F401
+import os
 import subprocess
 import toolforge
 import requests
@@ -27,11 +28,8 @@ from . import sigprobs
 from typing import Iterator, Any, Tuple
 
 app = flask.Flask(__name__)
-babel = Babel(app)
 session = requests.Session()
-session.headers.update(
-    {"User-Agent": "sigprobs " + toolforge.set_user_agent("anticompositebot")}
-)
+session.headers.update({"User-Agent": toolforge.set_user_agent("signatures")})
 
 rev = subprocess.run(
     ["git", "rev-parse", "--short", "HEAD"],
@@ -40,6 +38,11 @@ rev = subprocess.run(
     stderr=subprocess.PIPE,
 )
 app.config["version"] = rev.stdout
+app.config.setdefault(
+    "translation_dir", os.path.join(os.path.dirname(__file__), "/i18n")
+)
+babel = Babel(app)
+app.jinja_env.add_extension("jinja2.ext.i18n")
 
 
 def wmcs():
@@ -54,9 +57,8 @@ def wmcs():
 
 @babel.localeselector
 def get_locale():
-    return flask.request.accept_languages.best_match(
-        [loc.language for loc in babel.list_translations()]
-    )
+    translations = [locale.language for locale in babel.list_translations()]
+    return flask.request.accept_languages.best_match(translations)
 
 
 def do_db_query(db_name: str, query: str) -> Any:
@@ -101,10 +103,69 @@ def check():
     )
 
 
+def check_user(site, user, sig=""):
+    sitedata = sigprobs.get_site_data(site)
+    dbname = sitedata["dbname"]
+    if not sig:
+        user_props = sigprobs.get_user_properties(user, dbname)
+    if not user_props:
+        return {"error": "no-user-or-sig"}
+    elif not user_props.get("fancysig"):
+        return {"error": "sig-not-fancy"}
+    sig = user_props["nickname"]
+    errors = sigprobs.check_sig(user, sig, sitedata, site)
+    if not errors:
+        return {"error": "no-errors"}
+    else:
+        return {
+            "site": site,
+            "username": user,
+            "signature": sig,
+            "errors": list(errors),
+        }
+
+
+def get_rendered_sig(site, wikitext):
+    url = f"https://{site}/api/rest_v1/transform/wikitext/to/html"
+    payload = {"wikitext": wikitext, "body_only": True}
+    res = session.post(url, json=payload)
+    res.raise_for_status()
+    return res.text.replace("./", f"https://{site}/wiki/")
+
+
 @app.route("/check/<site>/<username>")
 def check_result(site, username):
-    sigprobs
-    return flask.render_template("check_result.html")
+    data = check_user(site, username)
+    # data = {
+    #     "site": site,
+    #     "username": username,
+    #     "signature": "[[User:AntiCompositeNumber|AntiCompositeNumber]] "
+    #     "([[User talk:AntiCompositeNumber|talk]])",
+    #     "errors": [
+    #         "html5-misnesting",
+    #         "misc-tidy-replacement-issues",
+    #         "misnested-tag",
+    #         "missing-end-tag",
+    #         "multiple-unclosed-formatting-tags",
+    #         "nested-subst",
+    #         "no-user-links",
+    #         "obsolete-tag",
+    #         "obsolete-font-tag",
+    #         "plain-fancy-sig",
+    #         "self-closed-tag",
+    #         "sig-too-long",
+    #         "stripped-tag",
+    #         "tidy-font-bug",
+    #         "tidy-whitespace-bug",
+    #         "wikilink-in-extlink",
+    #     ],
+    # }
+
+    if "error" in data:
+        return flask.render_template("check_result_err.html", error=data["error"],)
+
+    html_sig = get_rendered_sig(site, data["signature"])
+    return flask.render_template("check_result.html", html_sig=html_sig, **data)
 
 
 @app.route("/report")

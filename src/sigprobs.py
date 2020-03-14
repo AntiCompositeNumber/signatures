@@ -80,11 +80,13 @@ def get_user_properties(user, dbname):
             """,
             args={"user": user},
         )
-        raw_data = cur.fetchall()
-        data = {}
-        for row in raw_data:
-            data.update(row)
-        return data
+        resultset = cur.fetchall()
+    if not resultset:
+        return {}
+    data = dict(resultset)
+    data["fancysig"] = bool(data.get("fancysig", 0))
+    data.setdefault("nickname", "")
+    return data
 
 
 def get_site_data(hostname):
@@ -136,8 +138,6 @@ def get_site_data(hostname):
 
 def check_sig(user, sig, sitedata, hostname):
     errors = set()
-    if not sig:
-        return {"blank-sig"}
     try:
         errors.update(get_lint_errors(sig, hostname))
     except Exception:
@@ -260,6 +260,8 @@ def main(hostname, startblock=0):
     # Data is written directly as json lines to prevent data loss on database error
     for user, sig in iter_active_user_sigs(dbname, startblock):
         total += 1
+        if not sig:
+            continue
         try:
             errors = check_sig(user, sig, sitedata, hostname)
         except Exception:
