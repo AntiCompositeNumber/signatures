@@ -162,7 +162,7 @@ def check_user(site, user, sig=""):
             data["failure"] = False
         else:
             # check returned some errors
-            data["errors"]: list(errors)
+            data["errors"] = list(errors)
 
     return data
 
