@@ -81,7 +81,7 @@ def get_user_properties(user, dbname):
                            WHERE user_name = "{user}")
             """,
         )
-        resultset = cur.fetchall()[0]
+        resultset = cur.fetchall()
     logging.debug(resultset)
     if not resultset:
         return {}
