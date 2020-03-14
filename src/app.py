@@ -28,7 +28,7 @@ import logging
 import sigprobs
 from typing import Iterator, Any, Tuple
 
-logging.basicConfig(filename="log.log")
+logging.basicConfig(filename="log.log", level=logging.DEBUG)
 app = flask.Flask(__name__)
 session = requests.Session()
 session.headers.update({"User-Agent": toolforge.set_user_agent("signatures")})
