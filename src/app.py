@@ -208,6 +208,8 @@ def check_result(site, username):
     else:
         data["html_sig"] = ""
 
+    logging.debug(data)
+
     if data.get("failure") is not None :
         return flask.render_template("check_result_err.html", **data)
 
