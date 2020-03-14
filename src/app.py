@@ -120,15 +120,17 @@ def check_user_exists(dbname, user):
 
 def check_user(site, user, sig=""):
     data = {"site": site, "username": user, "errors": [], "signature": ""}
+    logging.debug(data)
     sitedata = sigprobs.get_site_data(site)
     dbname = sitedata["dbname"]
 
     if not sig:
         # signature not supplied, get data from database
         user_props = sigprobs.get_user_properties(user, dbname)
+        logging.debug(user_props)
 
-    if not user_props:
-        # no user properties, user does not exist or uses default sig
+    if not user_props.get("nickname"):
+        # user does not exist or uses default sig
         if check_user_exists(dbname, user):
             # user does not exist
             data["errors"].append("user-does-not-exist")
@@ -152,6 +154,7 @@ def check_user(site, user, sig=""):
         sig = user_props["nickname"]
         errors = sigprobs.check_sig(user, sig, sitedata, site)
         data["signature"] = sig
+        logging.debug(errors)
 
         if not errors:
             # check returned no errors
