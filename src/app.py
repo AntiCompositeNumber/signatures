@@ -105,26 +105,63 @@ def check():
     )
 
 
+def get_default_sig(site, user="$1", nickname="$2"):
+    url = f"https://{site}/w/index.php"
+    params = {"title": "MediaWiki:Signature", "action": "raw"}
+    res = session.get(url, params=params)
+    res.raise_for_status()
+    return res.text.replace("$1", user).replace("$2", nickname)
+
+
+def check_user_exists(dbname, user):
+    query = f"SELECT user_id FROM `user` WHERE user_name = {user}"
+    return bool(do_db_query(dbname, query))
+
+
 def check_user(site, user, sig=""):
+    data = {"site": site, "username": user, "errors": [], "signature": ""}
     sitedata = sigprobs.get_site_data(site)
     dbname = sitedata["dbname"]
+
     if not sig:
+        # signature not supplied, get data from database
         user_props = sigprobs.get_user_properties(user, dbname)
+
     if not user_props:
-        return {"failure": True, "error": "no-user-or-sig"}
+        # no user properties, user does not exist or uses default sig
+        if check_user_exists(dbname, user):
+            # user does not exist
+            data["errors"].append("user-does-not-exist")
+            data["failure"] = True
+        else:
+            # user exists but uses default signature
+            data["errors"].append("default-sig")
+            data["signature"] = get_default_sig(
+                site, user, user_props.get("nickname", user)
+            )
+            data["failure"] = False
     elif not user_props.get("fancysig"):
-        return {"failure": True, "error": "sig-not-fancy"}
-    sig = user_props["nickname"]
-    errors = sigprobs.check_sig(user, sig, sitedata, site)
-    if not errors:
-        return {"failure": True, "error": "no-errors"}
+        # user exists but uses non-fancy sig with nickname
+        data["errors"].append("sig-not-fancy")
+        data["signature"] = get_default_sig(
+            site, user, user_props.get("nickname", user)
+        )
+        data["failure"] = False
     else:
-        return {
-            "site": site,
-            "username": user,
-            "signature": sig,
-            "errors": list(errors),
-        }
+        # user exists and has custom fancy sig, check it
+        sig = user_props["nickname"]
+        errors = sigprobs.check_sig(user, sig, sitedata, site)
+        data["signature"] = sig
+
+        if not errors:
+            # check returned no errors
+            data["errors"].append("no-errors")
+            data["failure"] = False
+        else:
+            # check returned some errors
+            data["errors"]: list(errors)
+
+    return data
 
 
 def get_rendered_sig(site, wikitext):
@@ -163,11 +200,15 @@ def check_result(site, username):
     #     ],
     # }
 
-    if data.get("failure", False):
-        return flask.render_template("check_result_err.html", error=data["error"],)
+    if data.get("signature"):
+        data["html_sig"] = get_rendered_sig(site, data["signature"])
+    else:
+        data["html_sig"] = ""
 
-    html_sig = get_rendered_sig(site, data["signature"])
-    return flask.render_template("check_result.html", html_sig=html_sig, **data)
+    if data.get("failure") is not None :
+        return flask.render_template("check_result_err.html", **data)
+
+    return flask.render_template("check_result.html", **data)
 
 
 @app.route("/report")
