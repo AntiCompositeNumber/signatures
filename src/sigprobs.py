@@ -27,6 +27,7 @@ import time
 import datetime
 import itertools
 import sys
+import logging
 
 session = requests.Session()
 session.headers.update(
@@ -66,6 +67,7 @@ def iter_active_user_sigs(dbname, startblock=0):
 
 
 def get_user_properties(user, dbname):
+    logging.info("Getting user properties")
     conn = toolforge.connect(f"{dbname}_p")
     with conn.cursor(cursor=pymysql.cursors.DictCursor) as cur:
         cur.execute(
@@ -81,11 +83,13 @@ def get_user_properties(user, dbname):
             args={"user": user},
         )
         resultset = cur.fetchall()
+    logging.debug(resultset)
     if not resultset:
         return {}
     data = dict(resultset)
     data["fancysig"] = bool(data.get("fancysig", 0))
     data.setdefault("nickname", "")
+    logging.debug(data)
     return data
 
 
