@@ -71,16 +71,15 @@ def get_user_properties(user, dbname):
     conn = toolforge.connect(f"{dbname}_p")
     with conn.cursor(cursor=pymysql.cursors.DictCursor) as cur:
         cur.execute(
-            """
+            f"""
             SELECT up_property, up_value
             FROM
                 user_properties
             WHERE
                 up_user = (SELECT user_id
                            FROM `user`
-                           WHERE user_name = "%(user)s")
+                           WHERE user_name = "{user}")
             """,
-            args={"user": user},
         )
         resultset = cur.fetchall()
     logging.debug(resultset)
