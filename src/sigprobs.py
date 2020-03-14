@@ -81,14 +81,15 @@ def get_user_properties(user, dbname):
                            WHERE user_name = "{user}")
             """,
         )
-        resultset = cur.fetchall()
+        resultset = cur.fetchall()[0]
     logging.debug(resultset)
     if not resultset:
         return {}
-    data = dict(resultset)
-    data["fancysig"] = bool(data.get("fancysig", 0))
+    data = {
+        key.decode("utf-8"): value.decode("utf-8") for key, value in resultset.items()
+    }
+    data["fancysig"] = bool(int(data.setdefault("fancysig", "0")))
     data.setdefault("nickname", "")
-    logging.debug(data)
     return data
 
 
