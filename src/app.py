@@ -109,13 +109,13 @@ def check_user(site, user, sig=""):
     if not sig:
         user_props = sigprobs.get_user_properties(user, dbname)
     if not user_props:
-        return {"error": "no-user-or-sig"}
+        return {"failure": True, "error": "no-user-or-sig"}
     elif not user_props.get("fancysig"):
-        return {"error": "sig-not-fancy"}
+        return {"failure": True, "error": "sig-not-fancy"}
     sig = user_props["nickname"]
     errors = sigprobs.check_sig(user, sig, sitedata, site)
     if not errors:
-        return {"error": "no-errors"}
+        return {"failure": True, "error": "no-errors"}
     else:
         return {
             "site": site,
@@ -161,7 +161,7 @@ def check_result(site, username):
     #     ],
     # }
 
-    if "error" in data:
+    if data.get("failure", False):
         return flask.render_template("check_result_err.html", error=data["error"],)
 
     html_sig = get_rendered_sig(site, data["signature"])
