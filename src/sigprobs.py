@@ -45,15 +45,15 @@ def load_config(site):
     )
     with open(default_file) as f:
         defaults = json.load(f)
+    config = defaults
     try:
         with open(conf_file) as f:
             conf = json.load(f)
     except FileNotFoundError:
         pass
-
-    config = defaults
-    config.update(conf.get("default", {}))
-    config.update(conf.get(site, {}))
+    else:
+        config.update(conf.get("default", {}))
+        config.update(conf.get(site, {}))
     return config
 
 
