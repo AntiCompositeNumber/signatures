@@ -196,7 +196,7 @@ def check_result(site, username):
 @app.route("/reports")
 def report():
     sites = [
-        item.rpartition("_sigprobs.json")[0]
+        item.rpartition(".json")[0]
         for item in os.listdir(app.config["data_dir"])
     ]
     return flask.render_template("report.html", sites=sites)
@@ -205,7 +205,7 @@ def report():
 @app.route("/reports/<site>")
 def report_site(site):
     try:
-        with open(os.path.join(app.config["data_dir"], site + "_sigprobs.json")) as f:
+        with open(os.path.join(app.config["data_dir"], site + ".json")) as f:
             data = json.load(f)
     except FileNotFoundError:
         flask.abort(404)
@@ -227,7 +227,7 @@ def api_check_result(site, username):
 @app.route("/api/v1/reports")
 def api_report():
     sites = [
-        item.rpartition("_sigprobs.json")[0]
+        item.rpartition(".json")[0]
         for item in os.listdir(app.config["data_dir"])
     ]
     return flask.jsonify(sites)
@@ -236,7 +236,7 @@ def api_report():
 @app.route("/api/v1/reports/<site>")
 def api_report_site(site):
     try:
-        with open(os.path.join(app.config["data_dir"], site + "_sigprobs.json")) as f:
+        with open(os.path.join(app.config["data_dir"], site + ".json")) as f:
             data = json.load(f)
     except FileNotFoundError:
         flask.abort(404)

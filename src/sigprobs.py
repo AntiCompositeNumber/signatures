@@ -28,6 +28,7 @@ import datetime
 import itertools
 import sys
 import logging
+import os
 
 session = requests.Session()
 session.headers.update(
@@ -85,9 +86,7 @@ def get_user_properties(user, dbname):
     logging.debug(resultset)
     if not resultset:
         return {}
-    data = {
-        key.decode("utf-8"): value.decode("utf-8") for key, value in resultset
-    }
+    data = {key.decode("utf-8"): value.decode("utf-8") for key, value in resultset}
     data["fancysig"] = bool(int(data.get("fancysig", "0")))
     return data
 
@@ -253,7 +252,9 @@ def main(hostname, startblock=0):
 
     dbname = sitedata["dbname"]
 
-    filename = f"/data/project/anticompositebot/www/static/{dbname}_sigprobs.json"
+    filename = os.path.realpath(
+        os.path.join(os.path.dirname(__file__), f"../data/{hostname}.json")
+    )
     # Clear file to begin
     if not startblock:
         with open(filename + "l", "w") as f:
