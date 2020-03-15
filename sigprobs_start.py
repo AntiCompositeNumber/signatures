@@ -60,7 +60,7 @@ p = subprocess.run(
     input=json.dumps(config),
     stdout=subprocess.PIPE,
     stderr=subprocess.STDOUT,
-    text=True,
+    universal_newlines=True,
 )
 print(p.stdout)
 sys.exit(p.returncode)
