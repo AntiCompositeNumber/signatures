@@ -1,2 +1,2 @@
 #!/bin/bash
-/data/project/anticompositebot/AntiCompositeBot/venv/bin/python3 /data/project/anticompositebot/AntiCompositeBot/src/sigprobs.py "en.wikipedia.org"
+/data/project/signatures/signatures/venv/bin/python3 /data/project/signatures/signatures/src/sigprobs.py "en.wikipedia.org"
