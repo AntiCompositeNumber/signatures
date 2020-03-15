@@ -26,7 +26,7 @@ import toolforge
 import requests
 import logging
 import json
-from . import sigprobs
+import sigprobs
 from typing import Iterator, Any, Tuple
 
 logging.basicConfig(filename="log.log", level=logging.DEBUG)
