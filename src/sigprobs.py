@@ -36,7 +36,7 @@ session.headers.update(
 
 
 def iter_active_user_sigs(dbname, startblock=0):
-    conn = toolforge.connect(f"{dbname}_p")
+    conn = toolforge.connect(f"{dbname}_p", cluster="analytics")
     with conn.cursor(cursor=pymysql.cursors.SSCursor) as cur:
         for i in range(startblock, 100):
             cur.execute(

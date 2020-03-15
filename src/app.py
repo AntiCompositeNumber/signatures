@@ -25,7 +25,8 @@ import subprocess
 import toolforge
 import requests
 import logging
-import sigprobs
+import json
+from . import sigprobs
 from typing import Iterator, Any, Tuple
 
 logging.basicConfig(filename="log.log", level=logging.DEBUG)
@@ -41,7 +42,7 @@ rev = subprocess.run(
 )
 app.config["version"] = rev.stdout
 app.config.setdefault(
-    "translation_dir", os.path.join(os.path.dirname(__file__), "/i18n")
+    "data_dir", os.path.realpath(os.path.join(os.path.dirname(__file__), "../data"))
 )
 babel = Babel(app)
 app.jinja_env.add_extension("jinja2.ext.i18n")
@@ -114,7 +115,7 @@ def get_default_sig(site, user="$1", nickname="$2"):
 
 
 def check_user_exists(dbname, user):
-    query = f"SELECT user_id FROM `user` WHERE user_name = \"{user}\""
+    query = f'SELECT user_id FROM `user` WHERE user_name = "{user}"'
     return bool(do_db_query(dbname, query))
 
 
@@ -178,30 +179,6 @@ def get_rendered_sig(site, wikitext):
 @app.route("/check/<site>/<username>")
 def check_result(site, username):
     data = check_user(site, username)
-    # data = {
-    #     "site": site,
-    #     "username": username,
-    #     "signature": "[[User:AntiCompositeNumber|AntiCompositeNumber]] "
-    #     "([[User talk:AntiCompositeNumber|talk]])",
-    #     "errors": [
-    #         "html5-misnesting",
-    #         "misc-tidy-replacement-issues",
-    #         "misnested-tag",
-    #         "missing-end-tag",
-    #         "multiple-unclosed-formatting-tags",
-    #         "nested-subst",
-    #         "no-user-links",
-    #         "obsolete-tag",
-    #         "obsolete-font-tag",
-    #         "plain-fancy-sig",
-    #         "self-closed-tag",
-    #         "sig-too-long",
-    #         "stripped-tag",
-    #         "tidy-font-bug",
-    #         "tidy-whitespace-bug",
-    #         "wikilink-in-extlink",
-    #     ],
-    # }
 
     if data.get("signature"):
         data["html_sig"] = get_rendered_sig(site, data["signature"])
@@ -210,17 +187,57 @@ def check_result(site, username):
 
     logging.debug(data)
 
-    if data.get("failure") is not None :
+    if data.get("failure") is not None:
         return flask.render_template("check_result_err.html", **data)
 
     return flask.render_template("check_result.html", **data)
 
 
-@app.route("/report")
+@app.route("/reports")
 def report():
-    return flask.render_template("report.html")
+    sites = [
+        item.rpartition("_sigprobs.json")[0]
+        for item in os.listdir(app.config["data_dir"])
+    ]
+    return flask.render_template("report.html", sites=sites)
 
 
-@app.route("/report/<site>")
+@app.route("/reports/<site>")
 def report_site(site):
-    return flask.render_template("report_site.html")
+    try:
+        with open(os.path.join(app.config["data_dir"], site + "_sigprobs.json")) as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        flask.abort(404)
+    return flask.render_template("report_site.html", site=site, d=data)
+
+
+@app.route("/api/v1/check/<site>/<username>")
+def api_check_result(site, username):
+    data = check_user(site, username)
+
+    if data.get("signature"):
+        data["html_sig"] = get_rendered_sig(site, data["signature"])
+    else:
+        data["html_sig"] = ""
+
+    return flask.jsonify(data)
+
+
+@app.route("/api/v1/reports")
+def api_report():
+    sites = [
+        item.rpartition("_sigprobs.json")[0]
+        for item in os.listdir(app.config["data_dir"])
+    ]
+    return flask.jsonify(sites)
+
+
+@app.route("/api/v1/reports/<site>")
+def api_report_site(site):
+    try:
+        with open(os.path.join(app.config["data_dir"], site + "_sigprobs.json")) as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        flask.abort(404)
+    return flask.jsonify(data)

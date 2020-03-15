@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block title %}{% trans %}Site reports{% endtrans %}{% endblock %}
+{% block head %}
+  {{ super() }}
+  <style type="text/css">
+    .important { color: #336699; }
+  </style>
+{% endblock %}
+{% block content %}
+  <h1>{% trans %}Site reports{% endtrans%}</h1>
+  <ul>
+    {% for site in sites|sort %}
+    <li><a href="{{url_for("report_site", site=site)}}">{{site}}</a></li>
+    {% endfor %}
+  </ul>
+
+
+{% endblock %}

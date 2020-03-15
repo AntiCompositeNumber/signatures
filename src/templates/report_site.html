@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block title %}{{site}} - {% trans %}Site report{% endtrans %}{% endblock %}
+{% block head %}
+  {{ super() }}
+  <style type="text/css">
+    .important { color: #336699; }
+  </style>
+{% endblock %}
+{% block content %}
+  <h1>{% trans %}Site report{% endtrans%}: {{site}}</h1>
+  <p class="text-muted">{% trans %}Last updated{% endtrans %}: {{d["meta"]["last_update"]}}</p>
+  <h3>{% trans %}Summary{% endtrans %}</h3>
+  <table class="table table-striped">
+    <thead class="">
+      <tr>
+        <th scope="col">{% trans %}Error{% endtrans %}</th>
+        <th scope="col">{% trans %}Count{% endtrans %}</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for error, count in d["errors"].items() %}
+      <tr>
+        <th scope="row">{{ _(error) }}</th>
+        <td>{{ count }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <h3>{% trans %}Users{% endtrans %}</h3>
+  <table class="table table-striped w-100" style="table-layout:fixed">
+    <thead class="">
+      <tr>
+        <th scope="col" class="w-25">{% trans %}Username{% endtrans %}</th>
+        <th scope="col" class="w-25">{% trans %}Errors{% endtrans %}</th>
+        <th scope="col" class="w-50">{% trans %}Signature{% endtrans %}</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for user, row in d["sigs"].items() %}
+      <tr>
+        <th scope="row">{{ user}}</th>
+        <td>
+          <ul>
+            {% for error in row["errors"] %} 
+            <li>{{ _(error) }}</li>
+            {% endfor %}
+          </ul>
+        </td>
+        <td style="overflow-wrap: break-word"><code>{{ row["signature"] }}</code></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

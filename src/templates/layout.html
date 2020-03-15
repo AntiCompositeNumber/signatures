@@ -15,7 +15,7 @@
   </head>
   <body class="">
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-      <a class="navbar-brand" href="{{url_for('index')}}">~</a>
+      <a class="navbar-brand" href="{{url_for('index')}}"><b>~</b></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -26,7 +26,9 @@
               <a class="nav-link" href="{{ url_for(name) }}">{{ label }}</a>
             </li>
           {%- endmacro %}
-          {{ nav_row('index', 'Home') }} 
+          {{ nav_row('index', _('Home')) }} 
+          {{ nav_row('check', _('Check a signature')) }}
+          {{ nav_row('report', _('Site-level data')) }}
         </ul>
       </div>
     </nav>
@@ -49,12 +51,12 @@
         <hr>
         <div class="row justify-content-center justify-content-md-end align-items-center">
           <div class="col-sm mb-3 mb-md-0">
-            <div class="text-muted">This project is licensed under the <a class="text-reset" href="https://www.apache.org/licenses/LICENSE-2.0">Apache&nbspLicense,&nbspversion&nbsp2.0</a>.
+              <div class="text-muted">{% trans %}This project is licensed under the{% endtrans %} <a class="text-reset" href="https://www.apache.org/licenses/LICENSE-2.0">{% trans %}Apache&nbspLicense,&nbspversion&nbsp2.0{% endtrans %}</a>.
             </div>
-            <div class="text-muted">Repository version <code class="text-reset">{{ config['version'] }}</code></div>
+            <div class="text-muted">{% trans %}Repository version{% endtrans %} <code class="text-reset">{{ config['version'] }}</code></div>
           </div>
           <div class="col- mr-md-4">
-            <a class="btn btn-dark btn-sm" href="https://en.wikipedia.org/wiki/User_talk:AntiCompositeNumber"><i class="fab fa-wikipedia-w"></i> Talk page</a>
+            <a class="btn btn-dark btn-sm" href="https://en.wikipedia.org/wiki/User_talk:AntiCompositeNumber"><i class="fab fa-wikipedia-w"></i> {% trans %}Talk page{% endtrans %}</a>
             <a class="btn btn-dark btn-sm" href="https://github.com/AntiCompositeNumber/signatures"><i class="fab fa-github"></i> GitHub</a>
           </div>
         </div>
