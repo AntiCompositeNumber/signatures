@@ -35,21 +35,23 @@ config = {
                 "labels": {"name": "signatures.sigprobs", "toolforge": "tool"},
             },
             "spec": {
-                "containers": {
-                    "name": "sigprobs",
-                    "image": (
-                        "docker-registry.tools.wmflabs.org/"
-                        "toolforge-python37-sssd-base:latest"
-                    ),
-                    "command": [
-                        "/data/project/signatures/signatures/venv/bin/python3",
-                        "/data/project/signatures/signatures/src/sigprobs.py",
-                    ],
-                    "args": sys.argv[1:],
-                    "workingDir": "/data/project/signatures",
-                    "env": {"name": "HOME", "value": "/data/project/signatures"},
-                    "imagePullPolicy": "Always",
-                },
+                "containers": [
+                    {
+                        "name": "sigprobs",
+                        "image": (
+                            "docker-registry.tools.wmflabs.org/"
+                            "toolforge-python37-sssd-base:latest"
+                        ),
+                        "command": [
+                            "/data/project/signatures/signatures/venv/bin/python3",
+                            "/data/project/signatures/signatures/src/sigprobs.py",
+                        ],
+                        "args": sys.argv[1:],
+                        "workingDir": "/data/project/signatures",
+                        "env": [{"name": "HOME", "value": "/data/project/signatures"}],
+                        "imagePullPolicy": "Always",
+                    }
+                ],
                 "restartPolicy": "Never",
             },
         }
