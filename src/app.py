@@ -29,7 +29,13 @@ import json
 import sigprobs
 from typing import Iterator, Any, Tuple
 
-logging.basicConfig(filename="log.log", level=logging.DEBUG)
+logging.basicConfig(
+        format="%(asctime)s %(levelname)s:%(name)s:%(message)s",
+        level=logging.DEBUG,
+        filename="app.log"
+    )
+logger = logging.getLogger(__name__)
+
 app = flask.Flask(__name__)
 session = requests.Session()
 session.headers.update({"User-Agent": toolforge.set_user_agent("signatures")})
@@ -121,14 +127,14 @@ def check_user_exists(dbname, user):
 
 def check_user(site, user, sig=""):
     data = {"site": site, "username": user, "errors": [], "signature": ""}
-    logging.debug(data)
+    logger.debug(data)
     sitedata = sigprobs.get_site_data(site)
     dbname = sitedata["dbname"]
 
     if not sig:
         # signature not supplied, get data from database
         user_props = sigprobs.get_user_properties(user, dbname)
-        logging.debug(user_props)
+        logger.debug(user_props)
 
     if not user_props.get("nickname"):
         # user does not exist or uses default sig
@@ -155,7 +161,7 @@ def check_user(site, user, sig=""):
         sig = user_props["nickname"]
         errors = sigprobs.check_sig(user, sig, sitedata, site)
         data["signature"] = sig
-        logging.debug(errors)
+        logger.debug(errors)
 
         if not errors:
             # check returned no errors
@@ -185,7 +191,7 @@ def check_result(site, username):
     else:
         data["html_sig"] = ""
 
-    logging.debug(data)
+    logger.debug(data)
 
     if data.get("failure") is not None:
         return flask.render_template("check_result_err.html", **data)

@@ -32,11 +32,36 @@ import os
 
 session = requests.Session()
 session.headers.update(
-    {"User-Agent": "sigprobs " + toolforge.set_user_agent("anticompositebot")}
+    {"User-Agent": "sigprobs " + toolforge.set_user_agent("signatures")}
 )
 
 
-def iter_active_user_sigs(dbname, startblock=0):
+def load_config(site):
+    conf_file = os.path.realpath(
+        os.path.join(os.path.dirname(__file__), "../config.json")
+    )
+    default_file = os.path.realpath(
+        os.path.join(os.path.dirname(__file__), "../default_config.json")
+    )
+    with open(default_file) as f:
+        defaults = json.load(f)
+    try:
+        with open(conf_file) as f:
+            conf = json.load(f)
+    except FileNotFoundError:
+        pass
+
+    config = defaults
+    config.update(conf.get("default", {}))
+    config.update(conf.get(site, {}))
+    return config
+
+
+def iter_active_user_sigs(dbname, startblock=0, lastedit=None, days=365):
+    if lastedit is None:
+        lastedit = (
+            datetime.datetime.utcnow() - datetime.timedelta(days=days)
+        ).strftime("%Y%m%d%H%M%S")
     conn = toolforge.connect(f"{dbname}_p", cluster="analytics")
     with conn.cursor(cursor=pymysql.cursors.SSCursor) as cur:
         for i in range(startblock, 100):
@@ -52,15 +77,15 @@ def iter_active_user_sigs(dbname, startblock=0):
                     user_name IN (SELECT actor_name
                                   FROM revision_userindex
                                   JOIN actor_revision ON rev_actor = actor_id
-                                  WHERE rev_timestamp > 20190304000000) AND
+                                  WHERE rev_timestamp > %s) AND
                     up_user IN (SELECT up_user
                                 FROM user_properties
                                 WHERE up_property = "fancysig" AND up_value = 1) AND
                     up_value != user_name
                 ORDER BY up_user ASC""",
-                args=(str(i)),
+                args=(str(i), lastedit),
             )
-            print(f"Block {i}")
+            logger.info(f"Block {i}")
             for username, signature in cur.fetchall_unbuffered():
                 yield username.decode(encoding="utf-8"), signature.decode(
                     encoding="utf-8"
@@ -68,7 +93,7 @@ def iter_active_user_sigs(dbname, startblock=0):
 
 
 def get_user_properties(user, dbname):
-    logging.info("Getting user properties")
+    logger.info("Getting user properties")
     conn = toolforge.connect(f"{dbname}_p")
     with conn.cursor() as cur:
         cur.execute(
@@ -83,7 +108,7 @@ def get_user_properties(user, dbname):
             """,
         )
         resultset = cur.fetchall()
-    logging.debug(resultset)
+    logger.debug(resultset)
     if not resultset:
         return {}
     data = {key.decode("utf-8"): value.decode("utf-8") for key, value in resultset}
@@ -144,7 +169,7 @@ def check_sig(user, sig, sitedata, hostname):
         errors.update(get_lint_errors(sig, hostname))
     except Exception:
         for i in range(0, 5):
-            print(f"Request failed, sleeping for {3**i}")
+            logger.info(f"Request failed, sleeping for {3**i}")
             time.sleep(3 ** i)
             errors.update(get_lint_errors(sig, hostname))
             break
@@ -244,12 +269,13 @@ def check_length(sig):
         return ""
 
 
-def main(hostname, startblock=0):
+def main(hostname, startblock=0, lastedit=None, days=365):
+    logger.info(f"Processing signatures for {hostname}")
+    config = load_config(hostname)
     bad = 0
     total = 0
 
     sitedata = get_site_data(hostname)
-
     dbname = sitedata["dbname"]
 
     filename = os.path.realpath(
@@ -262,14 +288,14 @@ def main(hostname, startblock=0):
 
     # Collect data into json lines file
     # Data is written directly as json lines to prevent data loss on database error
-    for user, sig in iter_active_user_sigs(dbname, startblock):
+    for user, sig in iter_active_user_sigs(dbname, startblock, lastedit, days):
         total += 1
         if not sig:
             continue
         try:
             errors = check_sig(user, sig, sitedata, hostname)
         except Exception:
-            print(user, sig)
+            logger.error(f"Processing User:{user}: {sig}")
             raise
         if not errors:
             continue
@@ -278,7 +304,7 @@ def main(hostname, startblock=0):
             f.write(json.dumps(sigerror) + "\n")
         bad += 1
         if bad % 10 == 0:
-            print(f"{bad} bad sigs found in {total} so far")
+            logger.info(f"{bad} bad sigs found in {total} so far")
 
     # Read back data, collect stats, and generate json file
     fulldata = {}
@@ -302,4 +328,10 @@ def main(hostname, startblock=0):
 
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        format="%(asctime)s %(levelname)s:%(name)s:%(message)s", level=logging.DEBUG,
+    )
+    logger = logging.getLogger("sigprobs")
     error_sigs = main(sys.argv[1])
+else:
+    logger = logging.getLogger(__name__)
