@@ -8,7 +8,8 @@
 {% endblock %}
 {% block content %}
   <h1>{% trans %}Site report{% endtrans%}: {{site}}</h1>
-  <p class="text-muted">{% trans %}Last updated{% endtrans %}: {{d["meta"]["last_update"]}}</p>
+  <p class="text-muted mb-0">{% trans %}Last updated{% endtrans %} {{d["meta"]["last_update"]}}</p>
+  <p class="text-muted">{% trans %}Users with edits since{% endtrans %} {{d["meta"]["active_since"]}}</p>
   <h3>{% trans %}Summary{% endtrans %}</h3>
   <table class="table table-striped">
     <thead class="">

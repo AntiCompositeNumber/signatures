@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css"  crossorigin="anonymous">
+    <!--<link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css"  crossorigin="anonymous">-->
+    <link rel="stylesheet" href="https://tools-static.wmflabs.org/signatures/bootstrap.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/font-awesome/5.11.2/css/fontawesome.css">
     <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/font-awesome/5.11.2/css/brands.css">
     {% block head %}
@@ -14,8 +15,8 @@
     {% endblock %}
   </head>
   <body class="">
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-      <a class="navbar-brand" href="{{url_for('index')}}"><b>~</b></a>
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
+      <a class="navbar-brand" href="{{url_for('index')}}"><b>~~~~</b></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -33,7 +34,7 @@
       </div>
     </nav>
     <br>
-    <main role="main" class="container mt-5 mx-auto bg-white" style="height:100%">
+    <main role="main" class="container pt-5 mt-5 mx-auto bg-white" style="height:100%">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div class="flashes">

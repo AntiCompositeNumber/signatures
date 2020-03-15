@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-14 14:56-0400\n"
+"POT-Creation-Date: 2020-03-15 15:40-0400\n"
 "PO-Revision-Date: 2020-03-13 21:53-0400\n"
 "Last-Translator: AntiCompositeNumber\n"
 "Language: en\n"
@@ -212,6 +212,100 @@ msgstr[1] "%(count)s errors found"
 #: templates/check_result_err.html:31
 msgid "All clear!"
 msgstr "All clear!"
+
+#: templates/index.html:13
+msgid "Validates signatures against the proposed new requirements"
+msgstr "Validates signatures against the proposed new requirements"
+
+#: templates/index.html:25
+msgid "Go"
+msgstr "Go"
+
+#: templates/index.html:29 templates/layout.html:30
+msgid "Check a signature"
+msgstr "Check a signature"
+
+#: templates/index.html:29
+msgid "Would your signature meet the new requirements?"
+msgstr "Would your signature meet the new requirements?"
+
+#: templates/index.html:30 templates/layout.html:31
+msgid "Site-level data"
+msgstr "Site-level data"
+
+#: templates/index.html:30
+msgid "How many users on your wiki would be impacted?"
+msgstr "How many users on your wiki would be impacted?"
+
+#: templates/layout.html:29
+msgid "Home"
+msgstr "Home"
+
+#: templates/layout.html:54
+msgid "This project is licensed under the"
+msgstr "This project is licensed under the"
+
+#: templates/layout.html:54
+msgid "Apache&nbspLicense,&nbspversion&nbsp2.0"
+msgstr "Apache&nbspLicense,&nbspversion&nbsp2.0"
+
+#: templates/layout.html:56
+msgid "Repository version"
+msgstr "Repository version"
+
+#: templates/layout.html:59
+msgid "Talk page"
+msgstr "Talk page"
+
+#: templates/report.html:2 templates/report.html:10
+msgid "Site reports"
+msgstr "Site reports"
+
+#: templates/report.html:16
+msgid ""
+"Report missing or out of date? Contact AntiCompositeNumber to run a new "
+"report."
+msgstr ""
+
+#: templates/report_site.html:2 templates/report_site.html:10
+msgid "Site report"
+msgstr "Site report"
+
+#: templates/report_site.html:11
+msgid "Last updated"
+msgstr "Last updated"
+
+#: templates/report_site.html:12
+msgid "Users with edits since"
+msgstr "Users with edits since"
+
+#: templates/report_site.html:13
+msgid "Summary"
+msgstr "Summary"
+
+#: templates/report_site.html:17
+msgid "Error"
+msgstr "Error"
+
+#: templates/report_site.html:18
+msgid "Count"
+msgstr "Count"
+
+#: templates/report_site.html:31
+msgid "Users"
+msgstr "Users"
+
+#: templates/report_site.html:35
+msgid "Username"
+msgstr "Username"
+
+#: templates/report_site.html:36
+msgid "Errors"
+msgstr "Errors"
+
+#: templates/report_site.html:37
+msgid "Signature"
+msgstr "Signature"
 
 #~ msgid "Results: %(username)s at %(site)s"
 #~ msgstr "Results: %(username)s at %(site)s"

@@ -2,15 +2,15 @@
 {% block title %}Index{% endblock %}
 {% block head %}
   {{ super() }}
-  <style type="text/css">
-    .important { color: #336699; }
-  </style>
+  <!--<style type="text/css">-->
+  <!--  .important { color: #336699; }-->
+  <!--</style>-->
 {% endblock %}
 {% block content %}
   <div class="jumbotron">
     <div class="container">
       <h1 class="display-4">Signatures</h1>
-      <p>Validates signatures</p>
+      <p>{% trans %}Validates signatures against the proposed new requirements{% endtrans %}</p>
     </div>
   </div>
 
@@ -22,10 +22,12 @@
         <div class="card-body">
             <h2 class="card-title">{{ title }}{% if beta %} <span class="badge badge-info">Beta</span>{% endif %}</h2>
           <p class="card-text">{{ description }}</p>
-          <p><a class="card-link stretched-link" href="{{ target }}" role="button">Run</a></p>
+          <p><a class="card-link stretched-link" href="{{ target }}" role="button">{% trans %}Go{% endtrans %}</a></p>
         </div>
       </div>
     {% endmacro %}
+    {{ frontcard(_("Check a signature"), _("Would your signature meet the new requirements?"), url_for("check"))}}
+    {{ frontcard(_("Site-level data"), _("How many users on your wiki would be impacted?"), url_for("report"))}}
     </div>
 
   </div>

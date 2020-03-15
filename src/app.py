@@ -19,9 +19,10 @@
 
 
 import flask
-from flask_babel import Babel, gettext, ngettext  # noqa: F401
+from flask_babel import Babel, gettext, ngettext, format_datetime  # noqa: F401
 import os
 import subprocess
+import datetime
 import toolforge
 import requests
 import logging
@@ -30,10 +31,10 @@ import sigprobs
 from typing import Iterator, Any, Tuple
 
 logging.basicConfig(
-        format="%(asctime)s %(levelname)s:%(name)s:%(message)s",
-        level=logging.DEBUG,
-        filename="app.log"
-    )
+    format="%(asctime)s %(levelname)s:%(name)s:%(message)s",
+    level=logging.DEBUG,
+    filename="app.log",
+)
 logger = logging.getLogger(__name__)
 
 app = flask.Flask(__name__)
@@ -216,6 +217,12 @@ def report_site(site):
             data = json.load(f)
     except FileNotFoundError:
         flask.abort(404)
+    data["meta"]["last_update"] = format_datetime(
+        datetime.datetime.fromisoformat(data["meta"]["last_update"])
+    )
+    data["meta"]["active_since"] = format_datetime(
+        datetime.datetime.fromisoformat(data["meta"]["active_since"])
+    )
     return flask.render_template("report_site.html", site=site, d=data)
 
 
