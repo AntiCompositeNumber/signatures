@@ -198,6 +198,7 @@ def report():
     sites = [
         item.rpartition(".json")[0]
         for item in os.listdir(app.config["data_dir"])
+        if item.endswith(".json")
     ]
     return flask.render_template("report.html", sites=sites)
 
@@ -229,6 +230,7 @@ def api_report():
     sites = [
         item.rpartition(".json")[0]
         for item in os.listdir(app.config["data_dir"])
+        if item.endswith(".json")
     ]
     return flask.jsonify(sites)
 
