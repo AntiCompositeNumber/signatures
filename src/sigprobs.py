@@ -269,9 +269,9 @@ def check_length(sig):
         return ""
 
 
-def main(hostname, startblock=0, lastedit=None, days=365):
+def main(hostname, startblock=0, lastedit=None, days=30):
     logger.info(f"Processing signatures for {hostname}")
-    config = load_config(hostname)
+    config = load_config(hostname)  # noqa
     bad = 0
     total = 0
 
@@ -318,6 +318,14 @@ def main(hostname, startblock=0, lastedit=None, days=365):
             fulldata[line.pop("username")] = line
 
     meta = {"last_update": datetime.datetime.utcnow().isoformat(), "site": hostname}
+    if lastedit:
+        meta["active_since"] = datetime.datetime.strparse(
+            lastedit, "%Y%m%d%H%M%S"
+        ).isoformat()
+    else:
+        meta["active_since"] = (
+            datetime.datetime.utcnow() - datetime.timedelta(days=days)
+        ).isoformat()
     with open(filename, "w") as f:
         json.dump(
             {"errors": stats, "meta": meta, "sigs": fulldata},
@@ -332,6 +340,6 @@ if __name__ == "__main__":
         format="%(asctime)s %(levelname)s:%(name)s:%(message)s", level=logging.DEBUG,
     )
     logger = logging.getLogger("sigprobs")
-    error_sigs = main(sys.argv[1])
+    main(sys.argv[1])
 else:
     logger = logging.getLogger(__name__)
