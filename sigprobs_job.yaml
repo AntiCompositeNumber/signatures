@@ -18,7 +18,7 @@ spec:
       containers:
         - name: sigprobs
           image: docker-registry.tools.wmflabs.org/toolforge-python37-sssd-base:latest
-          command: [ "/data/project/signatures/signatures/venv/bin/python3, /data/project/signatures/signatures/src/sigprobs.py"]
+          command: [ "/data/project/signatures/signatures/venv/bin/python3", "/data/project/signatures/signatures/src/sigprobs.py"]
           args: ["$(SP_SITE)"]
           workingDir: /data/project/signatures
           env:
