@@ -176,7 +176,7 @@ def check_sig(user, sig, sitedata, hostname):
         else:
             raise
 
-    errors.add(check_tildes(sig))
+    errors.add(check_tildes(sig, sitedata, hostname))
     errors.add(check_links(user, sig, sitedata, hostname))
     errors.add(check_fanciness(sig))
     errors.add(check_length(sig))
@@ -255,11 +255,15 @@ def compare_links(goodlinks, sig):
         return False
 
 
-def check_tildes(sig):
-    if sig.count("~") >= 3:
-        return "nested-subst"
-    else:
+def check_tildes(sig, sitedata, hostname):
+    if "{" not in sig:
         return ""
+    old_wikitext = sig
+    for i in range(0, 5):
+        new_wikitext = evaluate_subst(old_wikitext, sitedata, hostname)
+        if new_wikitext == old_wikitext or "~~~" in new_wikitext:
+            return ""
+    return "nested-subst"
 
 
 def check_length(sig):
