@@ -256,12 +256,14 @@ def compare_links(goodlinks, sig):
 
 
 def check_tildes(sig, sitedata, hostname):
-    if "{" not in sig:
+    if "{" not in sig and "~" not in sig:
         return ""
     old_wikitext = sig
     for i in range(0, 5):
         new_wikitext = evaluate_subst(old_wikitext, sitedata, hostname)
-        if new_wikitext == old_wikitext or "~~~" in new_wikitext:
+        if "~~~" in sig:
+            break
+        elif new_wikitext == old_wikitext:
             return ""
     return "nested-subst"
 
