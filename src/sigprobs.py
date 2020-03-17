@@ -58,12 +58,14 @@ def load_config(site):
 
 
 def iter_active_user_sigs(dbname, startblock=0, lastedit=None, days=365):
+    """Get usernames and signatures from the replica database"""
     if lastedit is None:
         lastedit = (
             datetime.datetime.utcnow() - datetime.timedelta(days=days)
         ).strftime("%Y%m%d%H%M%S")
     conn = toolforge.connect(f"{dbname}_p", cluster="analytics")
     with conn.cursor(cursor=pymysql.cursors.SSCursor) as cur:
+        # Break query into 100 queries paginated by last digits of user id
         for i in range(startblock, 100):
             cur.execute(
                 """
@@ -93,6 +95,7 @@ def iter_active_user_sigs(dbname, startblock=0, lastedit=None, days=365):
 
 
 def get_user_properties(user, dbname):
+    """Get signature and fancysig values for a user from the replica db"""
     logger.info("Getting user properties")
     conn = toolforge.connect(f"{dbname}_p")
     with conn.cursor() as cur:
@@ -117,6 +120,7 @@ def get_user_properties(user, dbname):
 
 
 def get_site_data(hostname):
+    """Get metadata about a site from the API"""
     url = f"https://{hostname}/w/api.php"
     data = dict(
         action="query",
@@ -191,6 +195,7 @@ def normal_name(name):
 
 
 def check_sig(user, sig, sitedata, hostname):
+    """Run a signature through the test suite and return any errors"""
     errors = set()
     try:
         errors.update(get_lint_errors(sig, hostname))
@@ -211,6 +216,7 @@ def check_sig(user, sig, sitedata, hostname):
 
 
 def get_lint_errors(sig, hostname):
+    """Use the REST API to get lint errors from the signature"""
     url = f"https://{hostname}/api/rest_v1/transform/wikitext/to/lint"
     data = {"wikitext": sig}
     res = session.post(url, json=data)
@@ -228,6 +234,7 @@ def get_lint_errors(sig, hostname):
 
 
 def check_links(user, sig, sitedata, hostname):
+    """Check for a link to a user, user talk, or contribs page"""
     if compare_links(user, sitedata, sig) is True:
         return ""
     else:
@@ -246,6 +253,7 @@ def check_links(user, sig, sitedata, hostname):
 
 
 def compare_links(user, sitedata, sig):
+    """Compare links in a sig to data in sitedata"""
     wikitext = mwph.parse(sig)
     user = normal_name(user)
     errors = set()
@@ -292,6 +300,7 @@ def compare_links(user, sitedata, sig):
 
 
 def evaluate_subst(text, sitedata, hostname):
+    """Perform substitution by removing "subst:" and expanding the wikitext"""
     for subst in sitedata["subst"]:
         text = text.replace(subst, "")
     data = {
@@ -307,6 +316,9 @@ def evaluate_subst(text, sitedata, hostname):
 
 
 def check_fanciness(sig):
+    """Check if a signature contains any wikitext formatting
+
+    A lack of formatting indicates that fancysig may be incorrectly set"""
     fancychars = {"'", "<", "[", "{"}
     for letter in sig:
         if letter in fancychars:
@@ -316,6 +328,7 @@ def check_fanciness(sig):
 
 
 def check_tildes(sig, sitedata, hostname):
+    """Check a signature for nested substitution using repeated expansion"""
     if "{" not in sig and "~" not in sig:
         return ""
     old_wikitext = sig
@@ -329,6 +342,7 @@ def check_tildes(sig, sitedata, hostname):
 
 
 def check_length(sig):
+    """Check if a signature is more than 255 characters long"""
     if len(sig) > 255:
         return "sig-too-long"
     else:
@@ -336,6 +350,7 @@ def check_length(sig):
 
 
 def main(hostname, startblock=0, lastedit=None, days=30):
+    """Site-level report mode: Iterate over signatures and check for errors"""
     logger.info(f"Processing signatures for {hostname}")
     config = load_config(hostname)  # noqa
     bad = 0
