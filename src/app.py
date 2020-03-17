@@ -109,7 +109,7 @@ def check():
         )
 
     return flask.render_template(
-        "check_form.html", sitematrix=["en.wikipedia.org", "meta.wikimedia.org"]
+        "check_form.html", sitematrix=get_sitematrix()
     )
 
 
