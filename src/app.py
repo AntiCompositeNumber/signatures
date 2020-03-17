@@ -90,7 +90,7 @@ def get_sitematrix() -> Iterator[Tuple[str, str]]:
     sitematrix = do_db_query("meta_p", query)
 
     for site in sitematrix:
-        yield site.rpartition("//")[2]
+        yield site[0].rpartition("//")[2]
 
 
 @app.route("/")
