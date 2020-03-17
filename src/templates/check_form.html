@@ -14,7 +14,7 @@
         <label for="site">Wiki</label>
         <select class="form-control" id="site" name="site">
         {% for option in sitematrix|sort() %}
-            <option{% if option == "commonswiki"%} selected{%endif%}>{{option}}</option>
+            <option{% if option == "en.wikipedia.org"%} selected{%endif%}>{{option}}</option>
         {% endfor %}
         </select>
       </div>
