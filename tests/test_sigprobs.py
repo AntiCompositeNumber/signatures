@@ -35,6 +35,14 @@ import src.sigprobs as sigprobs  # noqa :E402
             contributions="Special:Contributions",
             subst="subst",
         ),
+        dict(
+            domain="de.wikipedia.org",
+            user="Benutzerin",
+            talk="Benutzerin Diskussion",
+            contribs="Spezial:Beiträge",
+            contributions="Special:Contributions",
+            subst="ers",
+        ),
     ],
 )
 def site(request):

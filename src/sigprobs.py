@@ -121,14 +121,37 @@ def get_site_data(hostname):
     data = dict(
         action="query",
         meta="siteinfo",
-        siprop="namespaces|specialpagealiases|magicwords|general",
+        siprop="|".join(
+            [
+                "namespaces",
+                "namespacealiases",
+                "specialpagealiases",
+                "magicwords",
+                "general",
+            ]
+        ),
         formatversion="2",
         format="json",
     )
     res = session.get(url, params=data)
     res.raise_for_status()
 
-    namespaces = res.json()["query"]["namespaces"]
+    namespaces = {}
+    all_namespaces = res.json()["query"]["namespaces"]
+    namespace_aliases = res.json()["query"]["namespacealiases"]
+    for namespace, nsdata in all_namespaces.items():
+        namespaces.setdefault(namespace, set()).update(
+            [
+                normal_name(nsdata.get("canonical", "")),
+                normal_name(nsdata.get("name", "")),
+            ]
+        )
+
+    for nsdata in namespace_aliases:
+        namespaces.setdefault(str(nsdata["id"]), set()).add(
+            normal_name(nsdata.get("alias", ""))
+        )
+
     specialpages = {
         item["realname"]: item["aliases"]
         for item in res.json()["query"]["specialpagealiases"]
@@ -138,12 +161,7 @@ def get_site_data(hostname):
     }
     general = res.json()["query"]["general"]
 
-    contribs = set()
-    for name in specialpages["Contributions"]:
-        contribs.update(
-            (special + ":" + name)
-            for special in [namespaces["-1"]["name"], namespaces["-1"]["canonical"]]
-        )
+    contribs = {normal_name(name) for name in specialpages["Contributions"]}
 
     subst = list(
         itertools.chain(
@@ -154,13 +172,22 @@ def get_site_data(hostname):
     )
 
     sitedata = {
-        "user": {namespaces["2"]["name"], namespaces["2"]["canonical"]},
-        "user talk": {namespaces["3"]["name"], namespaces["3"]["canonical"]},
+        "user": namespaces["2"] - {""},
+        "user talk": namespaces["3"] - {""},
+        "special": namespaces["-1"] - {""},
         "contribs": contribs,
         "subst": subst,
         "dbname": general["wikiid"],
     }
     return sitedata
+
+
+def normal_name(name):
+    """Make first letter uppercase and replace spaces with underscores"""
+    if name == "":
+        return ""
+    name = str(name)
+    return (name[0].upper() + name[1:]).replace(" ", "_")
 
 
 def check_sig(user, sig, sitedata, hostname):
@@ -201,25 +228,67 @@ def get_lint_errors(sig, hostname):
 
 
 def check_links(user, sig, sitedata, hostname):
-    goodlinks = set(
-        itertools.chain(
-            *(
-                [f"{ns}:{user}".lower().replace(" ", "_") for ns in sitedata[key]]
-                for key in ["user", "user talk"]
-            ),
-            (
-                f"{cont}/{user}".lower().replace(" ", "_")
-                for cont in sitedata["contribs"]
-            ),
-        )
-    )
-
-    if compare_links(goodlinks, sig) or compare_links(
-        goodlinks, evaluate_subst(sig, sitedata, hostname)
-    ):
+    if compare_links(user, sitedata, sig) is True:
         return ""
     else:
-        return "no-user-links"
+        expanded_errors = compare_links(
+            user, sitedata, evaluate_subst(sig, sitedata, hostname)
+        )
+        if expanded_errors is True:
+            return ""
+        else:
+            if "link-username-mismatch" in expanded_errors:
+                return "link-username-mismatch"
+            elif "interwiki-user-link" in expanded_errors:
+                return "interwiki-user-link"
+            else:
+                return "no-user-links"
+
+
+def compare_links(user, sitedata, sig):
+    wikitext = mwph.parse(sig)
+    user = normal_name(user)
+    errors = set()
+    for link in wikitext.ifilter_wikilinks():
+        # Extract normalized namespace and page.
+        # Interwiki prefixes are left in the namespace
+        ns, sep, page = str(link.title).rpartition(":")
+        ns, page = normal_name(ns.strip()), page.strip()
+
+        # remove leading colon from namespace
+        if ns.startswith(":"):
+            ns = ns[1:]
+
+        # Check if linking to user or user talk
+        if not sep:
+            continue
+        elif ":" in ns:
+            errors.add("interwiki-user-link")
+        elif ns in sitedata["user"] or ns in sitedata["user talk"]:
+            # Check that it's the right user or user_talk
+            if normal_name(page) == user:
+                return True
+            else:
+                errors.add("link-username-mismatch")
+                continue
+        elif ns in sitedata["special"]:
+            # Could be a contribs page, check
+            # split page and normalize names
+            specialpage, slash, target = page.partition("/")
+            specialpage = normal_name(specialpage.strip())
+            target = normal_name(target.strip())
+            if specialpage in sitedata["contribs"]:
+                # It's contribs
+                if target == user:
+                    # The right one
+                    return True
+                else:
+                    errors.add("link-username-mismatch")
+                    continue
+            else:
+                continue
+    else:
+        return errors
 
 
 def evaluate_subst(text, sitedata, hostname):
@@ -244,15 +313,6 @@ def check_fanciness(sig):
             return ""
     else:
         return "plain-fancy-sig"
-
-
-def compare_links(goodlinks, sig):
-    wikitext = mwph.parse(sig)
-    for link in wikitext.ifilter_wikilinks():
-        if str(link.title).lower().replace(" ", "_") in goodlinks:
-            return True
-    else:
-        return False
 
 
 def check_tildes(sig, sitedata, hostname):

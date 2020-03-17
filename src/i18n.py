@@ -5,6 +5,10 @@ def N_(message):
 
 N_("html5-misnesting")
 N_("html5-misnesting-help")
+N_("interwiki-user-link")
+N_("interwiki-user-link-help")
+N_("link-username-mismatch")
+N_("link-username-mismatch-help")
 N_("misc-tidy-replacement-issues")
 N_("misc-tidy-replacement-issues-help")
 N_("misnested-tag")
