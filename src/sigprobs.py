@@ -334,7 +334,7 @@ def check_tildes(sig, sitedata, hostname):
     old_wikitext = sig
     for i in range(0, 5):
         new_wikitext = evaluate_subst(old_wikitext, sitedata, hostname)
-        if "~~~" in sig:
+        if "~~~" in new_wikitext:
             break
         elif new_wikitext == old_wikitext:
             return ""
