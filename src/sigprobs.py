@@ -338,6 +338,8 @@ def check_tildes(sig, sitedata, hostname):
             break
         elif new_wikitext == old_wikitext:
             return ""
+        else:
+            old_wikitext = new_wikitext
     return "nested-subst"
 
 
