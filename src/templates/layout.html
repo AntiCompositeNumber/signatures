@@ -9,6 +9,7 @@
     <!--<link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css"  crossorigin="anonymous">-->
     <link rel="stylesheet" href="https://tools-static.wmflabs.org/signatures/bootstrap.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/font-awesome/5.11.2/css/fontawesome.css">
+    <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/font-awesome/5.11.2/css/solid.css">
     <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/font-awesome/5.11.2/css/brands.css">
     {% block head %}
     <title>{% block title %}{% endblock %} - Signatures</title>
@@ -51,6 +52,14 @@
       <div class="mh-auto p-3 mt-5 text-md-right text-center">
         <hr>
         <div class="row justify-content-center justify-content-md-end align-items-center">
+          <div class="col- ml-md-4 btn-group ">
+            <button type="button btn-sm" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-language"></i> {{current_locale.display_name}}</button>
+            <div class="dropdown-menu">
+              {% for locale in available_locales %}
+              <a class="dropdown-item text-dark{% if locale == current_locale %} active{%endif%}" href={{"?setlang=" + locale.language}}>{{locale.display_name}}</a>
+              {% endfor %}
+            </div>
+        </div>
           <div class="col-sm mb-3 mb-md-0">
               <div class="text-muted">{% trans %}This project is licensed under the{% endtrans %} <a class="text-reset" href="https://www.apache.org/licenses/LICENSE-2.0">{% trans %}Apache&nbspLicense,&nbspversion&nbsp2.0{% endtrans %}</a>.
             </div>

@@ -19,7 +19,9 @@
 
 
 import flask
-from flask_babel import Babel, gettext, ngettext, format_datetime  # noqa: F401
+from werkzeug.datastructures import MultiDict
+from flask_babel import gettext, ngettext, format_datetime  # noqa: F401
+import flask_babel
 import os
 import subprocess
 import datetime
@@ -27,6 +29,7 @@ import toolforge
 import requests
 import logging
 import json
+import functools
 import sigprobs
 from typing import Iterator, Any, Tuple
 
@@ -51,7 +54,7 @@ app.config["version"] = rev.stdout
 app.config.setdefault(
     "data_dir", os.path.realpath(os.path.join(os.path.dirname(__file__), "../data"))
 )
-babel = Babel(app)
+babel = flask_babel.Babel(app)
 app.jinja_env.add_extension("jinja2.ext.i18n")
 
 
@@ -68,7 +71,48 @@ def wmcs():
 @babel.localeselector
 def get_locale():
     translations = [locale.language for locale in babel.list_translations()]
-    return flask.request.accept_languages.best_match(translations)
+    use_lang = flask.request.args.get("uselang")
+    if use_lang in translations:
+        return use_lang
+    elif flask.request.cookies.get("lang") in translations:
+        return flask.request.cookies["lang"]
+    else:
+        return flask.request.accept_languages.best_match(translations)
+
+
+def setlang(f):
+    @functools.wraps(f)
+    def decorated_function(*args, **kwargs):
+        set_lang = flask.request.args.get("setlang")
+        if set_lang:
+            r_args = MultiDict(flask.request.args)
+            r_args.pop("setlang")
+            response = flask.make_response(
+                flask.redirect(
+                    flask.url_for(
+                        flask.request.endpoint, **flask.request.view_args, **r_args
+                    )
+                )
+            )
+            response.set_cookie(
+                "lang", set_lang, path=flask.request.script_root, samesite="Lax"
+            )
+            return response
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def render_template(*args, **kwargs):
+    """Used to always pass l10n data to template"""
+    current_locale = flask_babel.get_locale()
+    available_locales = babel.list_translations()
+    return flask.render_template(
+        *args,
+        current_locale=current_locale,
+        available_locales=available_locales,
+        **kwargs,
+    )
 
 
 def do_db_query(db_name: str, query: str) -> Any:
@@ -94,11 +138,13 @@ def get_sitematrix() -> Iterator[Tuple[str, str]]:
 
 
 @app.route("/")
+@setlang
 def index():
-    return flask.render_template("index.html")
+    return render_template("index.html")
 
 
 @app.route("/check")
+@setlang
 def check():
     # Convert query string parameters to url params
     site = flask.request.args.get("site")
@@ -108,9 +154,7 @@ def check():
             flask.url_for("check_result", site=site, username=username)
         )
 
-    return flask.render_template(
-        "check_form.html", sitematrix=get_sitematrix()
-    )
+    return render_template("check_form.html", sitematrix=get_sitematrix())
 
 
 def get_default_sig(site, user="$1", nickname="$2"):
@@ -184,6 +228,7 @@ def get_rendered_sig(site, wikitext):
 
 
 @app.route("/check/<site>/<username>")
+@setlang
 def check_result(site, username):
     data = check_user(site, username)
 
@@ -195,22 +240,24 @@ def check_result(site, username):
     logger.debug(data)
 
     if data.get("failure") is not None:
-        return flask.render_template("check_result_err.html", **data)
+        return render_template("check_result_err.html", **data)
 
-    return flask.render_template("check_result.html", **data)
+    return render_template("check_result.html", **data)
 
 
 @app.route("/reports")
+@setlang
 def report():
     sites = [
         item.rpartition(".json")[0]
         for item in os.listdir(app.config["data_dir"])
         if item.endswith(".json")
     ]
-    return flask.render_template("report.html", sites=sites)
+    return render_template("report.html", sites=sites)
 
 
 @app.route("/reports/<site>")
+@setlang
 def report_site(site):
     try:
         with open(os.path.join(app.config["data_dir"], site + ".json")) as f:
@@ -223,7 +270,7 @@ def report_site(site):
     data["meta"]["active_since"] = format_datetime(
         datetime.datetime.fromisoformat(data["meta"]["active_since"])
     )
-    return flask.render_template("report_site.html", site=site, d=data)
+    return render_template("report_site.html", site=site, d=data)
 
 
 @app.route("/api/v1/check/<site>/<username>")
