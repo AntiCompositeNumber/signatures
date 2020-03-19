@@ -258,9 +258,24 @@ def compare_links(user, sitedata, sig):
     user = normal_name(user)
     errors = set()
     for link in wikitext.ifilter_wikilinks():
-        # Extract normalized namespace and page.
+        title = str(link.title)
+        # Extract namespace and page.
         # Interwiki prefixes are left in the namespace
-        ns, sep, page = str(link.title).rpartition(":")
+        if ":" in user:
+            # Colons in usernames break the partitioning
+            if title.endswith(f":{user}"):
+                ns = title.replace(f":{user}", "")
+                sep = ":"
+                page = title.replace(f"{ns}:", "")
+            elif title.endswith(f"/{user}"):
+                raw = title.replace(f"/{user}", "")
+                ns, sep, page = raw.rpartition(":")
+                page += f"/{user}"
+            else:
+                continue
+        else:
+            ns, sep, page = title.rpartition(":")
+        # normalize namespace and strip whitespace from both
         ns, page = normal_name(ns.strip()), page.strip()
 
         # remove leading colon from namespace

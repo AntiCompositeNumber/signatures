@@ -103,11 +103,28 @@ def test_check_tildes(sig, expected, sitedata, site):
         ("{user}:Example", "no-user-links"),
         ("[[{user}:Example2|Example]]", "link-username-mismatch"),
         ("[[meta:{user}:Example|Example]]", "interwiki-user-link"),
+        ("[[meta:{user}:Example|Example]] ([[{talk}:Example|talk]])", ""),
+        ("[[meta:{contribs}/Example]]", "interwiki-user-link"),
     ],
 )
 def test_check_links(sig, expected, sitedata, site):
     error = sigprobs.check_links(
         "Example", sig.format(**site), sitedata, site["domain"]
+    )
+    assert error == expected
+
+
+@pytest.mark.parametrize(
+    "sig,expected",
+    [
+        ("[[{user}:(:Example:)|(:Example:)]]", ""),
+        ("[[{contributions}/(:Example:)]]", ""),
+        ("[[meta:{user}:(:Example:)]]", "interwiki-user-link"),
+    ],
+)
+def test_check_links_colonuser(sig, expected, sitedata, site):
+    error = sigprobs.check_links(
+        "(:Example:)", sig.format(**site), sitedata, site["domain"]
     )
     assert error == expected
 
