@@ -33,6 +33,7 @@ import functools
 import sigprobs
 from typing import Iterator, Any, Tuple
 
+# Set up logging
 logging.basicConfig(
     format="%(asctime)s %(levelname)s:%(name)s:%(message)s",
     level=logging.DEBUG,
@@ -40,10 +41,24 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-app = flask.Flask(__name__)
+# Create requests HTTP session
 session = requests.Session()
 session.headers.update({"User-Agent": toolforge.set_user_agent("signatures")})
 
+# Load Flask config
+app = flask.Flask(__name__)
+try:
+    with open(
+        os.path.realpath(os.path.join(os.path.dirname(__file__), "../config.json"))
+    ) as f:
+        conf = json.load(f)
+        app.config.update(conf.get("flask", ""))
+except FileNotFoundError:
+    pass
+app.config.setdefault(
+    "data_dir", os.path.realpath(os.path.join(os.path.dirname(__file__), "../data"))
+)
+# Put the short hash of the current git commit in the config
 rev = subprocess.run(
     ["git", "rev-parse", "--short", "HEAD"],
     universal_newlines=True,
@@ -51,9 +66,7 @@ rev = subprocess.run(
     stderr=subprocess.PIPE,
 )
 app.config["version"] = rev.stdout
-app.config.setdefault(
-    "data_dir", os.path.realpath(os.path.join(os.path.dirname(__file__), "../data"))
-)
+# Setup i18n extensions
 babel = flask_babel.Babel(app)
 app.jinja_env.add_extension("jinja2.ext.i18n")
 
