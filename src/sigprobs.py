@@ -338,6 +338,15 @@ def check_tildes(sig, sitedata, hostname):
             break
         elif new_wikitext == old_wikitext:
             return ""
+        elif not new_wikitext:
+            # They're using some sort of ParserFunction,
+            # likely evaluating REVISIONUSER, that doesn't have a default
+            # I'm not going to bother to try to fill in that information,
+            # so just fall back to a tilde count.
+            if old_wikitext.count("~") >= 3:
+                break
+            else:
+                return ""
         else:
             old_wikitext = new_wikitext
     return "nested-subst"

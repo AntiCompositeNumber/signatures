@@ -83,7 +83,9 @@ def test_get_lint_errors(sig, expected, site):
         ("~~~~", "nested-subst"),
         ("%(user)s:Example", ""),
         ("~~{{%(subst)s:1x{{%(subst)s:1x|{{%(subst)s:!}}}}}}~~", "nested-subst"),
-        ("&ndash;&nbsp;[[%(user)s:Foo {{%(subst)s:ampersand}} Bar]]", "")
+        ("&ndash;&nbsp;[[%(user)s:Foo {{%(subst)s:ampersand}} Bar]]", ""),
+        ("{{subst:#switch:{{subst:REVISIONUSER}}|foo=Sig}}", ""),
+        ("{{subst:#switch:{{subst:REVISIONUSER}}|foo=~~~~}}", "nested-subst"),
     ],
 )
 def test_check_tildes(sig, expected, sitedata, site):
