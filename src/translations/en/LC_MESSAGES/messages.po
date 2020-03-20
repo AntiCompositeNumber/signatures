@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-19 14:30-0400\n"
+"POT-Creation-Date: 2020-03-19 21:44-0400\n"
 "PO-Revision-Date: 2020-03-13 21:53-0400\n"
 "Last-Translator: AntiCompositeNumber\n"
 "Language: en\n"
@@ -17,200 +17,200 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: i18n.py:6
+#: i18n.py:7
 msgid "html5-misnesting"
 msgstr "Misnested tag with different rendering in HTML5 and HTML4"
 
-#: i18n.py:7
+#: i18n.py:8
 msgid "html5-misnesting-help"
 msgstr ""
 "Tags should be closed in the reverse order they were opened "
 "(&ltb&gt&lti&gtFoo&lt/i&gt&lt/b&gt not "
 "&ltb&gt&lti&gtFoo&lt/b&gt&lt/i&gt)."
 
-#: i18n.py:8
-msgid "interwiki-user-link"
-msgstr "Interwiki user link"
-
 #: i18n.py:9
-msgid "interwiki-user-link-help"
-msgstr ""
-"The only link in this signature appears to be an interwiki link. "
-"Signatures should contain a wikilink to the user's local user page, user "
-"talk page, or contributions. "
-
-#: i18n.py:10
-msgid "link-username-mismatch"
-msgstr "Mismatch between link and username"
-
-#: i18n.py:11
-msgid "link-username-mismatch-help"
-msgstr ""
-"The signature contains at least one link to a user page, talk page, or "
-"contributions, but they don't match the username"
-
-#: i18n.py:12
 msgid "misc-tidy-replacement-issues"
 msgstr "Miscellaneous issues"
 
-#: i18n.py:13
+#: i18n.py:10
 msgid "misc-tidy-replacement-issues-help"
 msgstr "Check the Linter documentation for advice"
 
-#: i18n.py:14
+#: i18n.py:11
 msgid "misnested-tag"
 msgstr "Misnested tag"
 
-#: i18n.py:15
+#: i18n.py:12
 msgid "misnested-tag-help"
 msgstr ""
 "Tags should be closed in the reverse order they were opened "
 "(&ltb&gt&lti&gtFoo&lt/i&gt&lt/b&gt not "
 "&ltb&gt&lti&gtFoo&lt/b&gt&lt/i&gt)."
 
-#: i18n.py:16
+#: i18n.py:13
 msgid "missing-end-tag"
 msgstr "Missing end tag"
 
-#: i18n.py:17
+#: i18n.py:14
 msgid "missing-end-tag-help"
 msgstr ""
 "Make sure that all tags that are opened are closed in the same way "
 "('''Foo''' not &lti&gtFoo''' or &lti&gtFoo)"
 
-#: i18n.py:18
+#: i18n.py:15
 msgid "multiple-unclosed-formatting-tags"
 msgstr "Multiple unclosed formatting tags"
 
-#: i18n.py:19
+#: i18n.py:16
 msgid "multiple-unclosed-formatting-tags-help"
 msgstr ""
 "Make sure that all tags that are opened are closed in the same way "
 "('''Foo''' not &lti&gtFoo''' or &lti&gtFoo)"
 
+#: i18n.py:17
+msgid "obsolete-tag"
+msgstr "Obsolete HTML tags"
+
+#: i18n.py:18
+msgid "obsolete-tag-help"
+msgstr "See the Linter documentation for more information."
+
+#: i18n.py:19
+msgid "obsolete-font-tag"
+msgstr "Obsolete font tag"
+
 #: i18n.py:20
+msgid "obsolete-font-tag-help"
+msgstr "The &ltfont&gt tag has been deprecated in HTML5 and should be replaced"
+
+#: i18n.py:21
+msgid "self-closed-tag"
+msgstr "Self-closed tag"
+
+#: i18n.py:22
+msgid "self-closed-tag-help"
+msgstr "See the Linter documentation for more information"
+
+#: i18n.py:23
+msgid "stripped-tag"
+msgstr "Stripped tag"
+
+#: i18n.py:24
+msgid "stripped-tag-help"
+msgstr "See the Linter documentation for more information"
+
+#: i18n.py:25
+msgid "tidy-font-bug"
+msgstr "Tidy font bug"
+
+#: i18n.py:26
+msgid "tidy-font-bug-help"
+msgstr "See the Linter documentation for more information"
+
+#: i18n.py:27
+msgid "tidy-whitespace-bug"
+msgstr "Whitespace parsing bug"
+
+#: i18n.py:28
+msgid "tidy-whitespace-bug-help"
+msgstr "See the Linter documentation for more information"
+
+#: i18n.py:29
+msgid "wikilink-in-extlink"
+msgstr "Wikilink in external link"
+
+#: i18n.py:30
+msgid "wikilink-in-extlink-help"
+msgstr "External link labels can not contain wikilinks"
+
+#: i18n.py:34
+msgid "interwiki-user-link"
+msgstr "Interwiki user link"
+
+#: i18n.py:35
+msgid "interwiki-user-link-help"
+msgstr ""
+"The only link in this signature appears to be an interwiki link. "
+"Signatures should contain a wikilink to the user's local user page, user "
+"talk page, or contributions. "
+
+#: i18n.py:36
+msgid "link-username-mismatch"
+msgstr "Mismatch between link and username"
+
+#: i18n.py:37
+msgid "link-username-mismatch-help"
+msgstr ""
+"The signature contains at least one link to a user page, talk page, or "
+"contributions, but they don't match the username"
+
+#: i18n.py:38
 msgid "nested-subst"
 msgstr "Nested substitution"
 
-#: i18n.py:21
+#: i18n.py:39
 msgid "nested-subst-help"
 msgstr ""
 "Signatures should not contain markup that could transform into someone "
 "else's signature."
 
-#: i18n.py:22
+#: i18n.py:40
 msgid "no-user-links"
 msgstr "No user links"
 
-#: i18n.py:23
+#: i18n.py:41
 msgid "no-user-links-help"
 msgstr ""
 "Signatures should contain a wikilink to the user's local user page, user "
 "talk page, or contributions."
 
-#: i18n.py:24
-msgid "obsolete-tag"
-msgstr "Obsolete HTML tags"
-
-#: i18n.py:25
-msgid "obsolete-tag-help"
-msgstr "See the Linter documentation for more information."
-
-#: i18n.py:26
-msgid "obsolete-font-tag"
-msgstr "Obsolete font tag"
-
-#: i18n.py:27
-msgid "obsolete-font-tag-help"
-msgstr "The &ltfont&gt tag has been deprecated in HTML5 and should be replaced"
-
-#: i18n.py:28
+#: i18n.py:42
 msgid "plain-fancy-sig"
 msgstr "Plain fancy signature"
 
-#: i18n.py:29
+#: i18n.py:43
 msgid "plain-fancy-sig-help"
 msgstr ""
 "The \"Treat the above as wiki markup\" box was ticked, but this signature"
 " doesn't contain any markup."
 
-#: i18n.py:30
-msgid "self-closed-tag"
-msgstr "Self-closed tag"
-
-#: i18n.py:31
-msgid "self-closed-tag-help"
-msgstr "See the Linter documentation for more information"
-
-#: i18n.py:32
+#: i18n.py:44
 msgid "sig-too-long"
 msgstr "Signature too long"
 
-#: i18n.py:33
+#: i18n.py:45
 msgid "sig-too-long-help"
 msgstr "Signatures must contain less than 255 bytes of wikitext."
 
-#: i18n.py:34
-msgid "stripped-tag"
-msgstr "Stripped tag"
-
-#: i18n.py:35
-msgid "stripped-tag-help"
-msgstr "See the Linter documentation for more information"
-
-#: i18n.py:36
-msgid "tidy-font-bug"
-msgstr "Tidy font bug"
-
-#: i18n.py:37
-msgid "tidy-font-bug-help"
-msgstr "See the Linter documentation for more information"
-
-#: i18n.py:38
-msgid "tidy-whitespace-bug"
-msgstr "Whitespace parsing bug"
-
-#: i18n.py:39
-msgid "tidy-whitespace-bug-help"
-msgstr "See the Linter documentation for more information"
-
-#: i18n.py:40
-msgid "wikilink-in-extlink"
-msgstr "Wikilink in external link"
-
-#: i18n.py:41
-msgid "wikilink-in-extlink-help"
-msgstr "External link labels can not contain wikilinks"
-
-#: i18n.py:43
+#: i18n.py:49
 msgid "default-sig"
 msgstr "Default signature"
 
-#: i18n.py:44
+#: i18n.py:50
 msgid "default-sig-help"
 msgstr "No custom signature has been set for this user."
 
-#: i18n.py:45
+#: i18n.py:51
 msgid "no-errors"
 msgstr "No errors"
 
-#: i18n.py:46
+#: i18n.py:52
 msgid "no-errors-help"
 msgstr "No problems were detected with this signature."
 
-#: i18n.py:47
+#: i18n.py:53
 msgid "sig-not-fancy"
 msgstr "Non-fancy signature"
 
-#: i18n.py:48
+#: i18n.py:54
 msgid "sig-not-fancy-help"
 msgstr "This signature is only a nickname, and is not interpreted as wikitext."
 
-#: i18n.py:49
+#: i18n.py:55
 msgid "user-does-not-exist"
 msgstr "User does not exist"
 
-#: i18n.py:50
+#: i18n.py:56
 msgid "user-does-not-exist-help"
 msgstr "The provided username does not exist on this wiki."
 
@@ -262,21 +262,24 @@ msgstr "How many users on your wiki would be impacted?"
 msgid "Home"
 msgstr "Home"
 
-#: templates/layout.html:64
-msgid "This project is licensed under the"
-msgstr "This project is licensed under the"
+#: templates/layout.html:68
+#, python-format
+msgid ""
+"This project is licensed under the %(open_link)sApache License, version "
+"2.0%(close)s."
+msgstr ""
 
-#: templates/layout.html:64
-msgid "Apache License, version 2.0"
-msgstr "Apache License, version 2.0"
-
-#: templates/layout.html:66
+#: templates/layout.html:76
 msgid "Repository version"
 msgstr "Repository version"
 
-#: templates/layout.html:69
+#: templates/layout.html:81
 msgid "Talk page"
 msgstr "Talk page"
+
+#: templates/layout.html:85
+msgid "GitHub"
+msgstr ""
 
 #: templates/report.html:2 templates/report.html:10
 msgid "Site reports"

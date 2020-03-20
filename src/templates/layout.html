@@ -53,7 +53,10 @@
         <hr>
         <div class="row justify-content-center justify-content-md-end align-items-center">
           <div class="col- ml-md-4 btn-group ">
-            <button type="button btn-sm" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-language"></i> {{current_locale.display_name}}</button>
+            <button type="button btn-sm" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-language h5 mb-0 align-text-bottom"></i>
+              {{current_locale.display_name}}
+            </button>
             <div class="dropdown-menu">
               {% for locale in available_locales %}
               <a class="dropdown-item text-dark{% if locale == current_locale %} active{%endif%}" href={{"?setlang=" + locale.language}}>{{locale.display_name}}</a>
@@ -61,13 +64,26 @@
             </div>
         </div>
           <div class="col-sm mb-3 mb-md-0">
-            <div class="text-muted">{% trans %}This project is licensed under the{% endtrans %} <a class="text-reset" style="white-space: nowrap" href="https://www.apache.org/licenses/LICENSE-2.0">{% trans %}Apache License, version 2.0{% endtrans %}</a>.
+            <div class="text-muted">
+              {% trans trimmed
+                open_link='<a class="text-reset" style="white-space: nowrap" href="https://www.apache.org/licenses/LICENSE-2.0">'|safe,
+                close="</a>"|safe
+              %}
+              This project is licensed under the
+              {{ open_link }}Apache License, version 2.0{{close}}.
+              {% endtrans %}
             </div>
             <div class="text-muted">{% trans %}Repository version{% endtrans %} <code class="text-reset">{{ config['version'] }}</code></div>
           </div>
           <div class="col- mr-md-4">
-            <a class="btn btn-secondary btn-sm" href="https://en.wikipedia.org/wiki/User_talk:AntiCompositeNumber"><i class="fab fa-wikipedia-w"></i> {% trans %}Talk page{% endtrans %}</a>
-            <a class="btn btn-secondary btn-sm" href="https://github.com/AntiCompositeNumber/signatures"><i class="fab fa-github"></i> GitHub</a>
+            <a class="btn btn-secondary btn-sm" href="https://en.wikipedia.org/wiki/User_talk:AntiCompositeNumber">
+              <i class="fab fa-wikipedia-w h6 mb-0 align-text-bottom"></i>
+              {% trans %}Talk page{% endtrans %}
+            </a>
+            <a class="btn btn-secondary btn-sm" href="https://github.com/AntiCompositeNumber/signatures">
+              <i class="fab fa-github h5 mb-0 align-text-bottom"></i>
+              {% trans %}GitHub{% endtrans %}
+            </a>
           </div>
         </div>
       </div>
