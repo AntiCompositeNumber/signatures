@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+{% block title %}Index{% endblock %}
+{% block content %}
+<h1>{%trans%}About{%endtrans%}</h1>
+<h3>{%trans%}What is this?{%endtrans%}</h3>
+<p>
+  {%trans%}
+  This tool, called Signatures, is designed to find technical issues 
+  in custom user signatures. It was written in Python by User:AntiCompositeNumber.
+  {%endtrans%}
+</p>
+<h3>{% trans %}Why does this exist?{% endtrans %}</h3>
+<p>
+  {% trans trimmed 
+    proposal='<a href="https://www.mediawiki.org/wiki/Special:MyLanguage/New_requirements_for_user_signatures">'|safe,
+    close="</a>"|safe
+  %}
+  MediaWiki has never imposed technical restrictions on fancy signatures 
+  other than maximum length. This allowed editors to create complex
+  signatures that are hard for machines to parse. Complex signatures sometimes
+  contained mistakes that would affect other text. 
+  A {{proposal}}proposal{{close}} was created for technical requirements that 
+  would fix these issues.
+  {% endtrans %}
+</p>
+<p>
+  {% trans trimmed %}
+  This tool was created as a result of that proposal so that editors discussing
+  the proposal could make informed comments. It may also be useful in notifying
+  users about their problematic signatures.
+  {% endtrans %}
+</p>
+<h3>{% trans %}What problems are detected?{% endtrans %}</h3>
+<p>
+  {% trans trimmed %}
+  As this tool was built to collect data about the proposed new requirements,
+  it checks for signatures that would violate those requirements.
+  {% endtrans %}
+</p>
+<p>{% trans %}The following problems are detected:{%endtrans%}</p>
+<ul>
+  <li>
+    {% trans trimmed 
+      lintopen='<a href="https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Lint_errors">'|safe, 
+      close="</a>"|safe 
+    %}
+    Any {{lintopen}}Lint errors{{close}}
+    {% endtrans %}
+  </li>
+  <li>
+    {% trans trimmed %}
+    Missing or invalid links to user, user talk, and contributions pages, 
+    including signatures with
+    {% endtrans %}
+    <ul>
+      <li>{% trans %}No user links at all{% endtrans %}</li>
+      <li>
+        {% trans trimmed %}
+        Only links to the user, user talk, or contributions page 
+        of someone else
+        {% endtrans %}
+      </li>
+      <li>{% trans %}Only links to a user page on another wiki{% endtrans %}</li>
+    </ul>
+  </li>
+  <li>{% trans %}Fancy signatures without any formatting{% endtrans %}</li>
+  <li>
+    {% trans trimmed %}
+    Signatures longer than 255 characters (before substitution)
+    {% endtrans %}
+  </li>
+  <li>{% trans %}Signatures that change when the page is saved again{% endtrans %}</li>
+</ul>
+<h3>
+  {% trans %}My signature works fine, why did the tool find problems?{% endtrans %}
+</h3>
+<p>
+  {% trans trimmed %}
+  Some lint errors reported by the tool may not currently affect the 
+  rendered output of the page. Some are deprecated tags that may not be supported
+  by browsers in the future, while others are silently fixed by the wikitext
+  rendering system. There is no way to guarentee that these lint errors will
+  continue to work over time.
+  {% endtrans %}
+</p>
+<p>
+  {% trans trimmed %}
+  Other reported errors are a result of requirements that don't target the rendered
+  version of a page. These requirements are designed to make it easier for machines
+  to find and parse signatures. If these problems are not fixed, tools, scripts, and
+  bots may not work correctly with your signature.
+  {% endtrans %}
+</p>
+<p>
+  {% trans trimmed
+    talkopen='<a href="https://en.wikipedia.org/wiki/User_talk:AntiCompositeNumber">'|safe,
+    ghopen='<a href="https://github.com/AntiCompositeNumber/signatures">'|safe,
+    close="</a>"|safe
+  %}
+    Some reported issues are false positives caused by bugs in the detection code. 
+    You should report these bugs to AntiCompositeNumber on 
+    {{talkopen}}their talk page{{close}} or on {{ghopen}}GitHub{{close}}.
+  {% endtrans %}
+</p>
+{% endblock %}

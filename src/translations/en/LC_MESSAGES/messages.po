@@ -214,6 +214,125 @@ msgstr "User does not exist"
 msgid "user-does-not-exist-help"
 msgstr "The provided username does not exist on this wiki."
 
+#: templates/about.html:4 templates/layout.html:33
+msgid "About"
+msgstr ""
+
+#: templates/about.html:5
+msgid "What is this?"
+msgstr ""
+
+#: templates/about.html:7
+msgid ""
+"\n"
+"  This tool, called Signatures, is designed to find technical issues \n"
+"  in custom user signatures. It was written in Python by "
+"User:AntiCompositeNumber.\n"
+"  "
+msgstr ""
+
+#: templates/about.html:12
+msgid "Why does this exist?"
+msgstr ""
+
+#: templates/about.html:14
+#, python-format
+msgid ""
+"MediaWiki has never imposed technical restrictions on fancy signatures "
+"other than maximum length. This allowed editors to create complex "
+"signatures that are hard for machines to parse. Complex signatures "
+"sometimes contained mistakes that would affect other text. A "
+"%(proposal)sproposal%(close)s was created for technical requirements that"
+" would fix these issues."
+msgstr ""
+
+#: templates/about.html:27
+msgid ""
+"This tool was created as a result of that proposal so that editors "
+"discussing the proposal could make informed comments. It may also be "
+"useful in notifying users about their problematic signatures."
+msgstr ""
+
+#: templates/about.html:33
+msgid "What problems are detected?"
+msgstr ""
+
+#: templates/about.html:35
+msgid ""
+"As this tool was built to collect data about the proposed new "
+"requirements, it checks for signatures that would violate those "
+"requirements."
+msgstr ""
+
+#: templates/about.html:40
+msgid "The following problems are detected:"
+msgstr ""
+
+#: templates/about.html:43
+#, python-format
+msgid "Any %(lintopen)sLint errors%(close)s"
+msgstr ""
+
+#: templates/about.html:51
+msgid ""
+"Missing or invalid links to user, user talk, and contributions pages, "
+"including signatures with"
+msgstr ""
+
+#: templates/about.html:56
+msgid "No user links at all"
+msgstr ""
+
+#: templates/about.html:58
+msgid "Only links to the user, user talk, or contributions page of someone else"
+msgstr ""
+
+#: templates/about.html:63
+msgid "Only links to a user page on another wiki"
+msgstr ""
+
+#: templates/about.html:66
+msgid "Fancy signatures without any formatting"
+msgstr ""
+
+#: templates/about.html:68
+msgid "Signatures longer than 255 characters (before substitution)"
+msgstr ""
+
+#: templates/about.html:72
+msgid "Signatures that change when the page is saved again"
+msgstr ""
+
+#: templates/about.html:75
+msgid "My signature works fine, why did the tool find problems?"
+msgstr ""
+
+#: templates/about.html:78
+msgid ""
+"Some lint errors reported by the tool may not currently affect the "
+"rendered output of the page. Some are deprecated tags that may not be "
+"supported by browsers in the future, while others are silently fixed by "
+"the wikitext rendering system. There is no way to guarentee that these "
+"lint errors will continue to work over time."
+msgstr ""
+
+#: templates/about.html:87
+msgid ""
+"Other reported errors are a result of requirements that don't target the "
+"rendered version of a page. These requirements are designed to make it "
+"easier for machines to find and parse signatures. If these problems are "
+"not fixed, tools, scripts, and bots may not work correctly with your "
+"signature."
+msgstr ""
+
+#: templates/about.html:95
+#, python-format
+msgid ""
+"Some reported issues are false positives caused by bugs in the detection "
+"code. You should report these bugs to AntiCompositeNumber on "
+"%(talkopen)stheir talk page%(close)s or on %(ghopen)sGitHub%(close)s."
+msgstr ""
+
 #: templates/check_result.html:10 templates/check_result_err.html:10
 msgid "Results"
 msgstr "Results"
