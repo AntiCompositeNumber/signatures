@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-19 21:44-0400\n"
+"POT-Creation-Date: 2020-03-19 22:42-0400\n"
 "PO-Revision-Date: 2020-03-13 21:53-0400\n"
 "Last-Translator: AntiCompositeNumber\n"
 "Language: en\n"
@@ -216,24 +216,25 @@ msgstr "The provided username does not exist on this wiki."
 
 #: templates/about.html:4 templates/layout.html:33
 msgid "About"
-msgstr ""
+msgstr "About"
 
 #: templates/about.html:5
 msgid "What is this?"
-msgstr ""
+msgstr "What is this?"
 
 #: templates/about.html:7
 msgid ""
-"\n"
-"  This tool, called Signatures, is designed to find technical issues \n"
-"  in custom user signatures. It was written in Python by "
-"User:AntiCompositeNumber.\n"
-"  "
+"This tool, called Signatures, is designed to find technical issues in "
+"custom user signatures. It was written in Python by "
+"User:AntiCompositeNumber."
 msgstr ""
+"This tool, called Signatures, is designed to find technical issues in "
+"custom user signatures. It was written in Python by "
+"User:AntiCompositeNumber."
 
 #: templates/about.html:12
 msgid "Why does this exist?"
-msgstr ""
+msgstr "Why does this exist?"
 
 #: templates/about.html:14
 #, python-format
@@ -245,6 +246,12 @@ msgid ""
 "%(proposal)sproposal%(close)s was created for technical requirements that"
 " would fix these issues."
 msgstr ""
+"MediaWiki has never imposed technical restrictions on fancy signatures "
+"other than maximum length. This allowed editors to create complex "
+"signatures that are hard for machines to parse. Complex signatures "
+"sometimes contained mistakes that would affect other text. A "
+"%(proposal)sproposal%(close)s was created for technical requirements that"
+" would fix these issues."
 
 #: templates/about.html:27
 msgid ""
@@ -252,10 +259,13 @@ msgid ""
 "discussing the proposal could make informed comments. It may also be "
 "useful in notifying users about their problematic signatures."
 msgstr ""
+"This tool was created as a result of that proposal so that editors "
+"discussing the proposal could make informed comments. It may also be "
+"useful in notifying users about their problematic signatures."
 
 #: templates/about.html:33
 msgid "What problems are detected?"
-msgstr ""
+msgstr "What problems are detected?"
 
 #: templates/about.html:35
 msgid ""
@@ -263,49 +273,54 @@ msgid ""
 "requirements, it checks for signatures that would violate those "
 "requirements."
 msgstr ""
+"As this tool was built to collect data about the proposed new "
+"requirements, it checks for signatures that would violate those "
+"requirements."
 
 #: templates/about.html:40
 msgid "The following problems are detected:"
-msgstr ""
+msgstr "The following problems are detected:"
 
 #: templates/about.html:43
 #, python-format
 msgid "Any %(lintopen)sLint errors%(close)s"
-msgstr ""
+msgstr "Any %(lintopen)sLint errors%(close)s"
 
 #: templates/about.html:51
 msgid ""
 "Missing or invalid links to user, user talk, and contributions pages, "
 "including signatures with"
 msgstr ""
+"Missing or invalid links to user, user talk, and contributions pages, "
+"including signatures with"
 
 #: templates/about.html:56
 msgid "No user links at all"
-msgstr ""
+msgstr "No user links at all"
 
 #: templates/about.html:58
 msgid "Only links to the user, user talk, or contributions page of someone else"
-msgstr ""
+msgstr "Only links to the user, user talk, or contributions page of someone else"
 
 #: templates/about.html:63
 msgid "Only links to a user page on another wiki"
-msgstr ""
+msgstr "Only links to a user page on another wiki"
 
 #: templates/about.html:66
 msgid "Fancy signatures without any formatting"
-msgstr ""
+msgstr "Fancy signatures without any formatting"
 
 #: templates/about.html:68
 msgid "Signatures longer than 255 characters (before substitution)"
-msgstr ""
+msgstr "Signatures longer than 255 characters (before substitution)"
 
 #: templates/about.html:72
 msgid "Signatures that change when the page is saved again"
-msgstr ""
+msgstr "Signatures that change when the page is saved again"
 
 #: templates/about.html:75
 msgid "My signature works fine, why did the tool find problems?"
-msgstr ""
+msgstr "My signature works fine, why did the tool find problems?"
 
 #: templates/about.html:78
 msgid ""
@@ -315,6 +330,11 @@ msgid ""
 "the wikitext rendering system. There is no way to guarentee that these "
 "lint errors will continue to work over time."
 msgstr ""
+"Some lint errors reported by the tool may not currently affect the "
+"rendered output of the page. Some are deprecated tags that may not be "
+"supported by browsers in the future, while others are silently fixed by "
+"the wikitext rendering system. There is no way to guarentee that these "
+"lint errors will continue to work over time."
 
 #: templates/about.html:87
 msgid ""
@@ -324,6 +344,11 @@ msgid ""
 "not fixed, tools, scripts, and bots may not work correctly with your "
 "signature."
 msgstr ""
+"Other reported errors are a result of requirements that don't target the "
+"rendered version of a page. These requirements are designed to make it "
+"easier for machines to find and parse signatures. If these problems are "
+"not fixed, tools, scripts, and bots may not work correctly with your "
+"signature."
 
 #: templates/about.html:95
 #, python-format
@@ -332,6 +357,57 @@ msgid ""
 "code. You should report these bugs to AntiCompositeNumber on "
 "%(talkopen)stheir talk page%(close)s or on %(ghopen)sGitHub%(close)s."
 msgstr ""
+"Some reported issues are false positives caused by bugs in the detection "
+"code. You should report these bugs to AntiCompositeNumber on "
+"%(talkopen)stheir talk page%(close)s or on %(ghopen)sGitHub%(close)s."
+
+#: templates/about.html:105
+msgid "Where's the data for my home wiki?"
+msgstr "Where's the data for my home wiki?"
+
+#: templates/about.html:107
+msgid ""
+"Unfortunately, site-level reports usually take too long to be able to "
+"generate them on the fly. The single user tool works for all Wikimedia "
+"wikis though. If you would like the report for a wiki to be created, "
+"please contact AntiCompositeNumber."
+msgstr ""
+"Unfortunately, site-level reports usually take too long to be able to "
+"generate them on the fly. The single user tool works for all Wikimedia "
+"wikis though. If you would like the report for a wiki to be created, "
+"please contact AntiCompositeNumber."
+
+#: templates/about.html:113
+msgid "I'd like to do something more with the data"
+msgstr "I'd like to do something more with the data"
+
+#: templates/about.html:116
+msgid "The tool has a basic API with three endpoints. All return JSON data."
+msgstr "The tool has a basic API with three endpoints. All return JSON data."
+
+#: templates/about.html:123 templates/about.html:141
+msgid "site"
+msgstr "site"
+
+#: templates/about.html:123
+msgid "username"
+msgstr "username"
+
+#: templates/about.html:127
+msgid ""
+"Returns data about a single user at a single site. Sites are in the form "
+"<code>en.wikipedia.org</code>."
+msgstr ""
+"Returns data about a single user at a single site. Sites are in the form "
+"<code>en.wikipedia.org</code>."
+
+#: templates/about.html:134
+msgid "Returns a list of sites with prepared batch reports."
+msgstr "Returns a list of sites with prepared batch reports."
+
+#: templates/about.html:145
+msgid "Returns the prepared report for a given site."
+msgstr "Returns the prepared report for a given site."
 
 #: templates/check_result.html:10 templates/check_result_err.html:10
 msgid "Results"
@@ -387,6 +463,8 @@ msgid ""
 "This project is licensed under the %(open_link)sApache License, version "
 "2.0%(close)s."
 msgstr ""
+"This project is licensed under the %(open_link)sApache License, version "
+"2.0%(close)s."
 
 #: templates/layout.html:76
 msgid "Repository version"

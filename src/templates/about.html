@@ -4,10 +4,10 @@
 <h1>{%trans%}About{%endtrans%}</h1>
 <h3>{%trans%}What is this?{%endtrans%}</h3>
 <p>
-  {%trans%}
+  {% trans trimmed %}
   This tool, called Signatures, is designed to find technical issues 
   in custom user signatures. It was written in Python by User:AntiCompositeNumber.
-  {%endtrans%}
+  {% endtrans %}
 </p>
 <h3>{% trans %}Why does this exist?{% endtrans %}</h3>
 <p>
@@ -101,5 +101,48 @@
     You should report these bugs to AntiCompositeNumber on 
     {{talkopen}}their talk page{{close}} or on {{ghopen}}GitHub{{close}}.
   {% endtrans %}
+</p>
+<h3>{% trans %}Where's the data for my home wiki?{% endtrans %}</h3>
+<p>
+  {% trans trimmed%}
+  Unfortunately, site-level reports usually take too long to be able to generate them
+  on the fly. The single user tool works for all Wikimedia wikis though. If you would
+  like the report for a wiki to be created, please contact AntiCompositeNumber.
+  {% endtrans %}
+</p>
+<h3>{% trans %}I'd like to do something more with the data{% endtrans %}</h3>
+<p>
+  <p>
+    {% trans trimmed %}
+    The tool has a basic API with three endpoints. All return JSON data.
+    {% endtrans %}
+  </p>
+  <h6>
+    {{ url_for(
+      "api_check_result", site="~", username="~", _external=True
+      ).replace("~", "{}").format("<" + _("site") + ">", "<" + _("username") +">")
+    }}
+  </h6>
+  <p class="ml-4">
+    {% trans trimmed %}
+    Returns data about a single user at a single site.
+    Sites are in the form <code>en.wikipedia.org</code>.
+    {% endtrans %}
+  </p>
+  <h6>{{url_for("api_report", _external=True)}}</h6>
+  <p class="ml-4">
+    {% trans trimmed %}
+    Returns a list of sites with prepared batch reports.
+    {% endtrans %}
+  </p>
+  <h6>
+    {{url_for(
+      "api_report_site", site="~", _external=True
+      ).replace("~", "<" + _("site") +">")
+    }}
+  </h6>
+  <p class="ml-4">
+    {% trans %}Returns the prepared report for a given site.{% endtrans %}
+  </p>
 </p>
 {% endblock %}
