@@ -193,7 +193,7 @@ def get_default_sig(site, user="$1", nickname="$2"):
 
 
 def check_user_exists(dbname, user):
-    query = "SELECT user_id FROM `user` WHERE user_name = %s(user)"
+    query = "SELECT user_id FROM `user` WHERE user_name = %(user)s"
     return bool(do_db_query(dbname, query, user=user))
 
 
