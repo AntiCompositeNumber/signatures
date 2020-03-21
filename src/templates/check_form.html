@@ -23,8 +23,42 @@
         <input class="form-control" id="username" placeholder="{% trans %}Example{% endtrans %}" name="username" required>
       </div>
     </div>
+    <div class="form-row mb-2">
+      <div class="col-md">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="sigSource" id="sigSourceDB" value="" checked form="">
+          <label class="form-check-label" for="sigSourceDB">
+            {% trans %}Get signature from database{% endtrans %}
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="form-row mb-3 mb-md-2" id="sigbox">
+      <div class="form-check form-check-inline col-md-auto mr-0 pr-md-2 mb-md-0 mb-2">
+        <input class="form-check-input" type="radio" name="sigSource" id="sigSourceForm" value="" form="">
+        <label class="form-check-label" for="sigSourceForm">
+          {% trans %}Use this wikitext:{% endtrans %}
+        </label>
+      </div>
+      <div class="col-md">
+        <input class="form-control" id="signature" placeholder="{% trans %}[[User:Example|Example]] ([[User talk:Example|talk]]){% endtrans %}" name="signature" aria-label="{% trans %}Replacement signature{% endtrans %}">
+      </div>
+    </div>
     <div class="form-row">
       <button type="submit" class="btn btn-primary">Check</button>
     </div>
  </form>
+{% endblock %}
+{% block script %}
+  <script>
+    $(document).ready(function() {
+      $('#signature').prop("disabled", true)
+      $('#sigSourceDB').change(function() {
+       $('#signature').prop("disabled", true)
+      });
+      $('#sigSourceForm').change(function() {
+       $('#signature').prop("disabled", false)
+      })
+    })
+  </script>
 {% endblock %}

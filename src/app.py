@@ -170,7 +170,7 @@ def check():
     username = flask.request.args.get("username")
     if site and username:
         return flask.redirect(
-            flask.url_for("check_result", site=site, username=username)
+            flask.url_for("check_result", **flask.request.args)
         )
 
     return render_template("check_form.html", sitematrix=get_sitematrix())
@@ -199,7 +199,7 @@ def check_user_exists(dbname, user):
 
 def check_user(site, user, sig=""):
     validate_username(user)
-    data = {"site": site, "username": user, "errors": [], "signature": ""}
+    data = {"site": site, "username": user, "errors": [], "signature": sig}
     logger.debug(data)
     sitedata = sigprobs.get_site_data(site)
     dbname = sitedata["dbname"]
@@ -209,40 +209,44 @@ def check_user(site, user, sig=""):
         user_props = sigprobs.get_user_properties(user, dbname)
         logger.debug(user_props)
 
-    if not user_props.get("nickname"):
-        # user does not exist or uses default sig
-        if not check_user_exists(dbname, user):
-            # user does not exist
-            data["errors"].append("user-does-not-exist")
-            data["failure"] = True
-        else:
-            # user exists but uses default signature
-            data["errors"].append("default-sig")
+        if not user_props.get("nickname"):
+            # user does not exist or uses default sig
+            if not check_user_exists(dbname, user):
+                # user does not exist
+                data["errors"].append("user-does-not-exist")
+                data["failure"] = True
+                return data
+            else:
+                # user exists but uses default signature
+                data["errors"].append("default-sig")
+                data["signature"] = get_default_sig(
+                    site, user, user_props.get("nickname", user)
+                )
+                data["failure"] = False
+                return data
+        elif not user_props.get("fancysig"):
+            # user exists but uses non-fancy sig with nickname
+            data["errors"].append("sig-not-fancy")
             data["signature"] = get_default_sig(
                 site, user, user_props.get("nickname", user)
             )
             data["failure"] = False
-    elif not user_props.get("fancysig"):
-        # user exists but uses non-fancy sig with nickname
-        data["errors"].append("sig-not-fancy")
-        data["signature"] = get_default_sig(
-            site, user, user_props.get("nickname", user)
-        )
+            return data
+        else:
+            # user exists and has custom fancy sig, check it
+            sig = user_props["nickname"]
+
+    errors = sigprobs.check_sig(user, sig, sitedata, site)
+    data["signature"] = sig
+    logger.debug(errors)
+
+    if not errors:
+        # check returned no errors
+        data["errors"].append("no-errors")
         data["failure"] = False
     else:
-        # user exists and has custom fancy sig, check it
-        sig = user_props["nickname"]
-        errors = sigprobs.check_sig(user, sig, sitedata, site)
-        data["signature"] = sig
-        logger.debug(errors)
-
-        if not errors:
-            # check returned no errors
-            data["errors"].append("no-errors")
-            data["failure"] = False
-        else:
-            # check returned some errors
-            data["errors"] = list(errors)
+        # check returned some errors
+        data["errors"] = list(errors)
 
     return data
 
@@ -258,7 +262,8 @@ def get_rendered_sig(site, wikitext):
 @app.route("/check/<site>/<username>")
 @setlang
 def check_result(site, username):
-    data = check_user(site, username)
+    signature = flask.request.args.get("signature", "")
+    data = check_user(site, username, signature)
 
     if data.get("signature"):
         data["html_sig"] = get_rendered_sig(site, data["signature"])
