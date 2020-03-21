@@ -128,14 +128,14 @@ def render_template(*args, **kwargs):
     )
 
 
-def do_db_query(db_name: str, query: str) -> Any:
+def do_db_query(db_name: str, query: str, **kwargs) -> Any:
     """Uses the toolforge library to query the replica databases"""
     if not wmcs():
         raise ConnectionError("Not running on Toolforge, database unavailable")
 
     conn = toolforge.connect(db_name)
     with conn.cursor() as cur:
-        cur.execute(query)
+        cur.execute(query, kwargs)
         res = cur.fetchall()
     return res
 
@@ -176,6 +176,14 @@ def check():
     return render_template("check_form.html", sitematrix=get_sitematrix())
 
 
+def validate_username(user):
+    invalid_chars = {"#", "<", ">", "[", "]", "|", "{", "}", "/"}
+    if invalid_chars.isdisjoint(set(user)):
+        return
+    else:
+        raise ValueError("Username contains invalid characters")
+
+
 def get_default_sig(site, user="$1", nickname="$2"):
     url = f"https://{site}/w/index.php"
     params = {"title": "MediaWiki:Signature", "action": "raw"}
@@ -185,11 +193,12 @@ def get_default_sig(site, user="$1", nickname="$2"):
 
 
 def check_user_exists(dbname, user):
-    query = f'SELECT user_id FROM `user` WHERE user_name = "{user}"'
-    return bool(do_db_query(dbname, query))
+    query = "SELECT user_id FROM `user` WHERE user_name = %s(user)"
+    return bool(do_db_query(dbname, query, user=user))
 
 
 def check_user(site, user, sig=""):
+    validate_username(user)
     data = {"site": site, "username": user, "errors": [], "signature": ""}
     logger.debug(data)
     sitedata = sigprobs.get_site_data(site)

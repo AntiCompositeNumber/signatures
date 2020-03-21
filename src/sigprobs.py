@@ -100,15 +100,15 @@ def get_user_properties(user, dbname):
     conn = toolforge.connect(f"{dbname}_p")
     with conn.cursor() as cur:
         cur.execute(
-            f"""
+            """
             SELECT up_property, up_value
             FROM
                 user_properties
             WHERE
                 up_user = (SELECT user_id
                            FROM `user`
-                           WHERE user_name = "{user}")
-            """,
+                           WHERE user_name = %s)
+            """, (user)
         )
         resultset = cur.fetchall()
     logger.debug(resultset)
