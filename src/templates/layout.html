@@ -25,7 +25,7 @@
         <ul class="navbar-nav mr-auto">
           {% macro nav_row(name, label) -%}
             <li class="nav-item{% if url_for(name) == request.script_root + request.path %} active{% endif %}">
-              <a class="nav-link" href="{{ url_for(name) }}">{{ label }}</a>
+              <a class="nav-link font-weight-bolder" href="{{ url_for(name) }}">{{ label }}</a>
             </li>
           {%- endmacro %}
           {{ nav_row('index', _('Home')) }} 
@@ -53,12 +53,12 @@
       <div class="mh-auto p-3 mt-5 text-md-right text-center">
         <hr>
         <div class="row justify-content-center justify-content-md-end align-items-center">
-          <div class="col- ml-md-4 btn-group ">
+          <div class="col- ml-md-4 btn-group" role="menu" aria-label="Language switcher">
             <button type="button btn-sm" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i class="fas fa-language h5 mb-0 align-text-bottom"></i>
               {{current_locale.display_name}}
             </button>
-            <div class="dropdown-menu">
+            <div class="dropdown-menu" role="menuitem">
               {% for locale in available_locales %}
               <a class="dropdown-item text-dark{% if locale == current_locale %} active{%endif%}" href={{"?setlang=" + locale.language}}>{{locale.display_name}}</a>
               {% endfor %}
@@ -95,5 +95,7 @@
     <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/jquery/3.3.1/jquery.slim.min.js" crossorigin="anonymous"></script>
     <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/popper.js/1.16.1/umd/popper.js" crossorigin="anonymous"></script>
     <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    {% block script %}
+    {% endblock %}
   </body>
 </html>
