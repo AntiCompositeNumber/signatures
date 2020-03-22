@@ -56,7 +56,7 @@
           <div class="col- ml-md-4 btn-group" role="menu" aria-label="Language switcher">
             <button type="button btn-sm" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i class="fas fa-language h5 mb-0 align-text-bottom"></i>
-              {{current_locale.display_name}}
+              <span id="currentLang">{{current_locale.display_name}}</span>
             </button>
             <div class="dropdown-menu" role="menuitem">
               {% for locale in available_locales %}

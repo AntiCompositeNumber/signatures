@@ -31,7 +31,7 @@ import logging
 import json
 import functools
 import sigprobs
-from typing import Iterator, Any, Tuple
+from typing import Iterator, Any
 
 # Set up logging
 logging.basicConfig(
@@ -140,10 +140,9 @@ def do_db_query(db_name: str, query: str, **kwargs) -> Any:
     return res
 
 
-def get_sitematrix() -> Iterator[Tuple[str, str]]:
+def get_sitematrix() -> Iterator[str]:
     """Try to get the sitematrix from the db, falling back to the API"""
     query = "SELECT url FROM meta_p.wiki WHERE is_closed = 0;"
-
     sitematrix = do_db_query("meta_p", query)
 
     for site in sitematrix:
@@ -169,9 +168,7 @@ def check():
     site = flask.request.args.get("site")
     username = flask.request.args.get("username")
     if site and username:
-        return flask.redirect(
-            flask.url_for("check_result", **flask.request.args)
-        )
+        return flask.redirect(flask.url_for("check_result", **flask.request.args))
 
     return render_template("check_form.html", sitematrix=get_sitematrix())
 
@@ -194,7 +191,8 @@ def get_default_sig(site, user="$1", nickname="$2"):
 
 def check_user_exists(dbname, user):
     query = "SELECT user_id FROM `user` WHERE user_name = %(user)s"
-    return bool(do_db_query(dbname, query, user=user))
+    res = do_db_query(dbname, query, user=user)
+    return bool(res)
 
 
 def check_user(site, user, sig=""):
