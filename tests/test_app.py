@@ -46,6 +46,10 @@ def test_about(client):
     assert res.status_code == 200
 
 
+@pytest.mark.skipif(
+    len(app.babel.list_translations()) < 2,
+    reason="No non-English translations to test with",
+)
 def test_uselang(client):
     en = client.get("/")
     en_soup = BeautifulSoup(en.data, "html.parser")
@@ -63,6 +67,10 @@ def test_uselang(client):
     assert en_lang2 == "English"
 
 
+@pytest.mark.skipif(
+    len(app.babel.list_translations()) < 2,
+    reason="No non-English translations to test with",
+)
 def test_setlang(client):
     en = client.get("/")
     en_soup = BeautifulSoup(en.data, "html.parser")
