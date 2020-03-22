@@ -10,7 +10,7 @@
   <h1>{% trans %}Site reports{% endtrans%}</h1>
   <ul>
     {% for site in sites|sort %}
-    <li><a href="{{url_for("report_site", site=site)}}">{{site}}</a></li>
+    <li><a href="{{url_for("frontend.report_site", site=site)}}">{{site}}</a></li>
     {% endfor %}
   </ul>
   <p class="text-muted pt-5">{% trans %}Report missing or out of date? Contact AntiCompositeNumber to run a new report.{% endtrans %}

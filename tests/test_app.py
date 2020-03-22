@@ -26,13 +26,24 @@ from bs4 import BeautifulSoup
 
 sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/../src"))
 import app  # noqa: E402
+from web import resources  # noqa: E402
+
+translated = pytest.mark.skipif(
+    len(app.babel.list_translations()) < 2,
+    reason="No non-English translations to test with",
+)
+
+
+@pytest.fixture(scope="module")
+def flask_app():
+    flask_app = app.create_app()[0]
+    flask_app.config["TESTING"] = True
+    return flask_app
 
 
 @pytest.fixture
-def client():
-    app.app.config["TESTING"] = True
-
-    with app.app.test_client() as client:
+def client(flask_app):
+    with flask_app.test_client() as client:
         yield client
 
 
@@ -46,11 +57,9 @@ def test_about(client):
     assert res.status_code == 200
 
 
-@pytest.mark.skipif(
-    len(app.babel.list_translations()) < 2,
-    reason="No non-English translations to test with",
-)
+@translated
 def test_uselang(client):
+
     en = client.get("/")
     en_soup = BeautifulSoup(en.data, "html.parser")
     en_lang = en_soup.find(id="currentLang").contents[0]
@@ -67,10 +76,7 @@ def test_uselang(client):
     assert en_lang2 == "English"
 
 
-@pytest.mark.skipif(
-    len(app.babel.list_translations()) < 2,
-    reason="No non-English translations to test with",
-)
+@translated
 def test_setlang(client):
     en = client.get("/")
     en_soup = BeautifulSoup(en.data, "html.parser")
@@ -95,24 +101,24 @@ def test_setlang(client):
 
 def test_wmcs_true():
     m = mock.mock_open(read_data="toolforge")
-    with mock.patch("app.open", m):
-        assert app.wmcs() is True
+    with mock.patch("web.resources.open", m):
+        assert resources.wmcs() is True
     m.assert_called_once_with("/etc/wmcs-project")
     m().close.assert_called_once
 
 
 def test_wmcs_false():
-    assert app.wmcs() is False
+    assert resources.wmcs() is False
 
 
 def test_do_db_query_nodb():
     m = mock.Mock(return_value=False)
-    with mock.patch("app.wmcs", m):
+    with mock.patch("web.resources.wmcs", m):
         with pytest.raises(ConnectionError):
-            app.do_db_query("meta_p", "")
+            resources.do_db_query("meta_p", "")
 
 
-@mock.patch("app.wmcs", return_value=True)
+@mock.patch("web.resources.wmcs", return_value=True)
 def test_do_db_query(wmcs):
     cur = mock.MagicMock()
     cur.fetchall.return_value = mock.sentinel.fetchall
@@ -120,7 +126,9 @@ def test_do_db_query(wmcs):
     conn.cursor.return_value.__enter__.return_value = cur
     connect = mock.MagicMock(return_value=conn)
     with mock.patch("toolforge.connect", connect):
-        res = app.do_db_query(mock.sentinel.db_name, mock.sentinel.query, foo="bar")
+        res = resources.do_db_query(
+            mock.sentinel.db_name, mock.sentinel.query, foo="bar"
+        )
 
     assert res is mock.sentinel.fetchall
     connect.assert_called_once_with(mock.sentinel.db_name)
@@ -137,8 +145,8 @@ def test_get_sitematrix():
     ]
     mock_db_query = mock.Mock()
     mock_db_query.return_value = [("https://" + site,) for site in test_data]
-    with mock.patch("app.do_db_query", mock_db_query):
-        sitematrix = list(app.get_sitematrix())
+    with mock.patch("web.resources.do_db_query", mock_db_query):
+        sitematrix = list(resources.get_sitematrix())
     assert sitematrix == test_data
 
     mock_db_query.assert_called_once_with(
@@ -146,7 +154,7 @@ def test_get_sitematrix():
     )
 
 
-@mock.patch("app.get_sitematrix", return_value=[])
+@mock.patch("web.resources.get_sitematrix", return_value=[])
 def test_check(get_sitematrix, client):
     req = client.get("/check")
     assert req.status_code == 200
@@ -168,20 +176,22 @@ def test_check_redirect(client):
 @pytest.mark.parametrize("badchar", ["#", "<", ">", "[", "]", "|", "{", "}", "/"])
 def test_validate_username(badchar):
     with pytest.raises(ValueError):
-        app.validate_username(f"Example{badchar}User")
+        resources.validate_username(f"Example{badchar}User")
 
 
 def test_validate_username_pass():
-    app.validate_username("Example")
-    app.validate_username("foo@bar.com")  # Grandfathered usernames have @
+    resources.validate_username("Example")
+    resources.validate_username("foo@bar.com")  # Grandfathered usernames have @
 
 
 def test_get_default_sig():
     res = mock.Mock()
     res.text = "[[User:$1|$2]] ([[User talk:$1|talk]])"
     get = mock.Mock(return_value=res)
-    with mock.patch("app.session.get", get):
-        sig = app.get_default_sig("en.wikipedia.org", user="user", nickname="nick")
+    with mock.patch("web.resources.session.get", get):
+        sig = resources.get_default_sig(
+            "en.wikipedia.org", user="user", nickname="nick"
+        )
 
     assert sig == "[[User:user|nick]] ([[User talk:user|talk]])"
     get.assert_called_once_with(
@@ -194,8 +204,8 @@ def test_get_default_sig():
 @pytest.mark.parametrize("userid,expected", [(((12345,),), True), ((), False)])
 def test_check_user_exists(userid, expected):
     db_query = mock.Mock(return_value=userid)
-    with mock.patch("app.do_db_query", db_query):
-        exists = app.check_user_exists("enwiki", "Example")
+    with mock.patch("web.resources.do_db_query", db_query):
+        exists = resources.check_user_exists("enwiki", "Example")
         assert expected == exists
     db_query.assert_called_once_with("enwiki", mock.ANY, user="Example")
 
@@ -204,7 +214,7 @@ def test_check_user_exists(userid, expected):
     "sig,failure", [("[[User:Example]]", False), ("[[User:Example2]]", None)]
 )
 def test_check_user_passed(sig, failure):
-    data = app.check_user("en.wikipedia.org", "Example", sig)
+    data = resources.check_user("en.wikipedia.org", "Example", sig)
     assert data["signature"] == sig
     assert data.get("failure") is failure
     assert data.get("username") == "Example"
@@ -222,7 +232,7 @@ def test_check_user_passed(sig, failure):
 def test_check_user_db(props, failure, errors):
     user_props = mock.Mock(return_value=props)
     with mock.patch("sigprobs.get_user_properties", user_props):
-        data = app.check_user("en.wikipedia.org", "Example")
+        data = resources.check_user("en.wikipedia.org", "Example")
 
     assert data["signature"]
     if errors:
@@ -239,8 +249,8 @@ def test_check_user_db_nosig(exists, failure, errors):
     user_props = mock.Mock(return_value={"nickname": "", "fancysig": False})
     user_exists = mock.Mock(return_value=exists)
     with mock.patch("sigprobs.get_user_properties", user_props):
-        with mock.patch("app.check_user_exists", user_exists):
-            data = app.check_user("en.wikipedia.org", "Example")
+        with mock.patch("web.resources.check_user_exists", user_exists):
+            data = resources.check_user("en.wikipedia.org", "Example")
 
     user_exists.assert_called_once_with("enwiki", "Example")
     user_props.assert_called_once_with("Example", "enwiki")
@@ -260,7 +270,7 @@ def test_check_user_db_nosig(exists, failure, errors):
     ],
 )
 def test_get_rendered_sig(wikitext, html):
-    assert app.get_rendered_sig("en.wikipedia.org", wikitext) == html
+    assert resources.get_rendered_sig("en.wikipedia.org", wikitext) == html
 
 
 @pytest.mark.skip

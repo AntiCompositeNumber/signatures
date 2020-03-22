@@ -17,7 +17,7 @@
   </head>
   <body class="">
     <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
-      <a class="navbar-brand" href="{{url_for('index')}}"><b>~~~~</b></a>
+      <a class="navbar-brand" href="{{url_for('frontend.index')}}"><b>~~~~</b></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -28,10 +28,10 @@
               <a class="nav-link font-weight-bolder" href="{{ url_for(name) }}">{{ label }}</a>
             </li>
           {%- endmacro %}
-          {{ nav_row('index', _('Home')) }} 
-          {{ nav_row('check', _('Check a signature')) }}
-          {{ nav_row('report', _('Site-level data')) }}
-          {{ nav_row('about', _('About')) }}
+          {{ nav_row('frontend.index', _('Home')) }} 
+          {{ nav_row('frontend.check', _('Check a signature')) }}
+          {{ nav_row('frontend.report', _('Site-level data')) }}
+          {{ nav_row('frontend.about', _('About')) }}
         </ul>
       </div>
     </nav>
@@ -60,7 +60,10 @@
             </button>
             <div class="dropdown-menu" role="menuitem">
               {% for locale in available_locales %}
-              <a class="dropdown-item text-dark{% if locale == current_locale %} active{%endif%}" href={{"?setlang=" + locale.language}}>{{locale.display_name}}</a>
+              <a 
+                class="dropdown-item text-dark{% if locale == current_locale %} active{%endif%}" 
+                href={{setlang_url(locale.language)}}
+              >{{locale.display_name}}</a>
               {% endfor %}
             </div>
         </div>
