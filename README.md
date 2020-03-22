@@ -18,7 +18,10 @@ To start the webservice, run `webservice --backend=kubernetes python3.7 start`
 To stop the webservice, run `webservice stop`
 
 ### Batch reports
-On Toolforge, reports are run from a Kubernetes Job. A custom script is used -- any arguments passed to the start script will be passed to the report script. 
+On Toolforge, reports are run from a Kubernetes Job. 
+A custom script is used to start the job. 
+Any arguments passed to the start script will be passed to the report script. 
+Currently, the only accepted parameter is the site that should be scanned.
 
 To create or update a report, run `./sigprobs_start.py <site>`
 
@@ -27,8 +30,9 @@ For example, a report for the English Wikipedia can be run with `./sigprobs_star
 ## Translating
 ```
 $ cd src/
-$ pybabel extract -F babel.cfg -k N_ -o messages.pot .
-$ pybabel update -d translations/ -i messages.pot
+$ pybabel extract -F babel.cfg -k N_ -o messages.pot .  # Extract translatable strings
+$ pybabel update -d translations/ -i messages.pot  # Update existing message catalogs
+$ pybabel init -i messages.pot -d translations/ -l <lang>  # Create new message catalog
 ```
 
 Update the translations in src/translations/\<lang\>/LC\_MESSAGES/messages.po
