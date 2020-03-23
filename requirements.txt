@@ -12,6 +12,7 @@
 
 flask
 flask-babel
+flask-restx
 mwparserfromhell
 requests
 requests-oauthlib
