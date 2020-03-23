@@ -20,7 +20,7 @@
 
 import flask
 from werkzeug.datastructures import MultiDict
-from flask_babel import gettext, ngettext, format_datetime  # noqa: F401
+from flask_babel import gettext, ngettext, format_datetime  # type: ignore  # noqa: F401
 import os
 import datetime
 import json

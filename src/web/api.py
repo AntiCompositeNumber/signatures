@@ -20,7 +20,7 @@
 import flask
 import os
 import json
-from flask_restx import Api, Resource, fields
+from flask_restx import Api, Resource, fields  # type: ignore
 
 from . import resources
 

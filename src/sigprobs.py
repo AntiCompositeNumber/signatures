@@ -19,7 +19,7 @@
 
 
 import requests
-import mwparserfromhell as mwph
+import mwparserfromhell as mwph  # type: ignore
 import toolforge
 import json
 import pymysql
@@ -29,7 +29,7 @@ import itertools
 import sys
 import logging
 import os
-from typing import NamedTuple
+from typing import Iterator, Tuple, Union, Dict, Set, Optional, List, cast, NamedTuple
 
 session = requests.Session()
 session.headers.update(
@@ -58,14 +58,19 @@ def load_config(site):
     return config
 
 
-def iter_active_user_sigs(dbname, startblock=0, lastedit=None, days=365):
+def iter_active_user_sigs(
+    dbname: str, startblock: int = 0, lastedit: str = None, days: int = 365
+) -> Iterator[Tuple[str, str]]:
     """Get usernames and signatures from the replica database"""
     if lastedit is None:
         lastedit = (
             datetime.datetime.utcnow() - datetime.timedelta(days=days)
         ).strftime("%Y%m%d%H%M%S")
     conn = toolforge.connect(f"{dbname}_p", cluster="analytics")
-    with conn.cursor(cursor=pymysql.cursors.SSCursor) as cur:
+    with cast(
+        pymysql.cursors.SSCursor, conn.cursor(cursor=pymysql.cursors.SSCursor),
+    ) as cur:
+
         # Break query into 100 queries paginated by last digits of user id
         for i in range(startblock, 100):
             cur.execute(
@@ -89,7 +94,9 @@ def iter_active_user_sigs(dbname, startblock=0, lastedit=None, days=365):
                 args=(str(i), lastedit),
             )
             logger.info(f"Block {i}")
-            for username, signature in cur.fetchall_unbuffered():
+            for username, signature in cast(
+                Iterator[Tuple[bytes, bytes]], cur.fetchall_unbuffered()
+            ):
                 yield username.decode(encoding="utf-8"), signature.decode(
                     encoding="utf-8"
                 )
@@ -98,7 +105,7 @@ def iter_active_user_sigs(dbname, startblock=0, lastedit=None, days=365):
 UserProps = NamedTuple("UserProps", [("nickname", str), ("fancysig", bool)])
 
 
-def get_user_properties(user, dbname):
+def get_user_properties(user: str, dbname: str) -> UserProps:
     """Get signature and fancysig values for a user from the replica db"""
     logger.info("Getting user properties")
     conn = toolforge.connect(f"{dbname}_p")
@@ -115,10 +122,10 @@ def get_user_properties(user, dbname):
             """,
             (user),
         )
-        resultset = cur.fetchall()
+        resultset = cast(List[Tuple[bytes, bytes]], cur.fetchall())
     logger.debug(resultset)
 
-    data = {
+    data: Dict[str, str] = {
         key.decode("utf-8"): value.decode("utf-8") for key, value in resultset
     }
     return UserProps(
@@ -139,7 +146,7 @@ SiteData = NamedTuple(
 )
 
 
-def get_site_data(hostname):
+def get_site_data(hostname: str) -> SiteData:
     """Get metadata about a site from the API"""
     url = f"https://{hostname}/w/api.php"
     data = dict(
@@ -160,7 +167,7 @@ def get_site_data(hostname):
     res = session.get(url, params=data)
     res.raise_for_status()
 
-    namespaces = {}
+    namespaces: Dict[str, Set[str]] = {}
     all_namespaces = res.json()["query"]["namespaces"]
     namespace_aliases = res.json()["query"]["namespacealiases"]
     for namespace, nsdata in all_namespaces.items():
@@ -206,7 +213,7 @@ def get_site_data(hostname):
     return sitedata
 
 
-def normal_name(name):
+def normal_name(name: str) -> str:
     """Make first letter uppercase and replace spaces with underscores"""
     if name == "":
         return ""
@@ -214,7 +221,7 @@ def normal_name(name):
     return (name[0].upper() + name[1:]).replace(" ", "_")
 
 
-def check_sig(user, sig, sitedata, hostname):
+def check_sig(user: str, sig: str, sitedata: SiteData, hostname: str) -> Set[str]:
     """Run a signature through the test suite and return any errors"""
     errors = set()
     try:
@@ -235,7 +242,7 @@ def check_sig(user, sig, sitedata, hostname):
     return errors - {""}
 
 
-def get_lint_errors(sig, hostname):
+def get_lint_errors(sig: str, hostname: str) -> Set[str]:
     """Use the REST API to get lint errors from the signature"""
     url = f"https://{hostname}/api/rest_v1/transform/wikitext/to/lint"
     data = {"wikitext": sig}
@@ -253,7 +260,7 @@ def get_lint_errors(sig, hostname):
     return errors
 
 
-def check_links(user, sig, sitedata, hostname):
+def check_links(user: str, sig: str, sitedata: SiteData, hostname: str) -> str:
     """Check for a link to a user, user talk, or contribs page"""
     if compare_links(user, sitedata, sig) is True:
         return ""
@@ -264,6 +271,7 @@ def check_links(user, sig, sitedata, hostname):
         if expanded_errors is True:
             return ""
         else:
+            expanded_errors = cast(Set[str], expanded_errors)
             if "link-username-mismatch" in expanded_errors:
                 return "link-username-mismatch"
             elif "interwiki-user-link" in expanded_errors:
@@ -272,7 +280,7 @@ def check_links(user, sig, sitedata, hostname):
                 return "no-user-links"
 
 
-def compare_links(user, sitedata, sig):
+def compare_links(user: str, sitedata: SiteData, sig: str) -> Union[bool, Set[str]]:
     """Compare links in a sig to data in sitedata"""
     wikitext = mwph.parse(sig)
     user = normal_name(user)
@@ -334,7 +342,7 @@ def compare_links(user, sitedata, sig):
         return errors
 
 
-def evaluate_subst(text, sitedata, hostname):
+def evaluate_subst(text: str, sitedata: SiteData, hostname: str) -> str:
     """Perform substitution by removing "subst:" and expanding the wikitext"""
     for subst in sitedata.subst:
         text = text.replace(subst, "")
@@ -350,7 +358,7 @@ def evaluate_subst(text, sitedata, hostname):
     return res.json()["expandtemplates"]["wikitext"]
 
 
-def check_fanciness(sig):
+def check_fanciness(sig: str) -> str:
     """Check if a signature contains any wikitext formatting
 
     A lack of formatting indicates that fancysig may be incorrectly set"""
@@ -362,7 +370,7 @@ def check_fanciness(sig):
         return "plain-fancy-sig"
 
 
-def check_tildes(sig, sitedata, hostname):
+def check_tildes(sig: str, sitedata: SiteData, hostname: str) -> str:
     """Check a signature for nested substitution using repeated expansion"""
     if "{" not in sig and "~" not in sig:
         return ""
@@ -387,7 +395,7 @@ def check_tildes(sig, sitedata, hostname):
     return "nested-subst"
 
 
-def check_length(sig):
+def check_length(sig: str) -> str:
     """Check if a signature is more than 255 characters long"""
     if len(sig) > 255:
         return "sig-too-long"
@@ -395,7 +403,9 @@ def check_length(sig):
         return ""
 
 
-def main(hostname, startblock=0, lastedit=None, days=30):
+def main(
+    hostname: str, startblock: int = 0, lastedit: Optional[str] = None, days: int = 30
+) -> None:
     """Site-level report mode: Iterate over signatures and check for errors"""
     logger.info(f"Processing signatures for {hostname}")
     config = load_config(hostname)  # noqa

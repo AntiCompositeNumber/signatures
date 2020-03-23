@@ -17,12 +17,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
+import pytest  # type: ignore
 import unittest.mock as mock
 import sys
 import os
 import urllib.parse
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup  # type: ignore
 
 sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/../src"))
 import app  # noqa: E402

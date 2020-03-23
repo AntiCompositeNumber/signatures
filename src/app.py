@@ -19,7 +19,7 @@
 
 
 import flask
-from flask_babel import gettext, ngettext, format_datetime  # noqa: F401
+from flask_babel import gettext, ngettext, format_datetime  # type: ignore  # noqa: F401
 import flask_babel
 import os
 import subprocess

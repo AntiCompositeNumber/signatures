@@ -22,7 +22,7 @@ import toolforge
 import logging
 import requests
 import os
-from typing import Iterator, Any
+from typing import Iterator, Any, Union, Dict, Optional, Sequence, List
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ session = requests.Session()
 session.headers.update({"User-Agent": toolforge.set_user_agent("signatures")})
 
 
-def wmcs():
+def wmcs() -> bool:
     try:
         f = open("/etc/wmcs-project")
     except FileNotFoundError:
@@ -65,7 +65,7 @@ def get_sitematrix() -> Iterator[str]:
         return [""]
 
 
-def validate_username(user):
+def validate_username(user: str) -> None:
     invalid_chars = {"#", "<", ">", "[", "]", "|", "{", "}", "/"}
     if invalid_chars.isdisjoint(set(user)):
         return
@@ -73,7 +73,7 @@ def validate_username(user):
         raise ValueError("Username contains invalid characters")
 
 
-def get_default_sig(site, user="$1", nickname="$2"):
+def get_default_sig(site: str, user: str = "$1", nickname: str = "$2") -> str:
     url = f"https://{site}/w/index.php"
     params = {"title": "MediaWiki:Signature", "action": "raw"}
     res = session.get(url, params=params)
@@ -81,13 +81,15 @@ def get_default_sig(site, user="$1", nickname="$2"):
     return res.text.replace("$1", user).replace("$2", nickname)
 
 
-def check_user_exists(dbname, user):
+def check_user_exists(dbname: str, user: str) -> bool:
     query = "SELECT user_id FROM `user` WHERE user_name = %(user)s"
     res = do_db_query(dbname, query, user=user)
     return bool(res)
 
 
-def check_user(site, user, sig=""):
+def check_user(
+    site: str, user: str, sig: str = ""
+) -> Dict[str, Union[str, Sequence[str], Optional[bool]]]:
     validate_username(user)
     errors = set()
     failure = None
@@ -142,7 +144,7 @@ def check_user(site, user, sig=""):
     return data
 
 
-def get_rendered_sig(site, wikitext):
+def get_rendered_sig(site: str, wikitext: str) -> str:
     url = f"https://{site}/api/rest_v1/transform/wikitext/to/html"
     payload = {"wikitext": wikitext, "body_only": True}
     res = session.post(url, json=payload)
@@ -150,7 +152,7 @@ def get_rendered_sig(site, wikitext):
     return res.text.replace("./", f"https://{site}/wiki/")
 
 
-def list_report_sites(config):
+def list_report_sites(config: Dict[str, Any]) -> List[str]:
     sites = [
         item.rpartition(".json")[0]
         for item in os.listdir(config["data_dir"])
