@@ -20,41 +20,62 @@
 import flask
 import os
 import json
+from flask_restx import Api, Resource, fields
 
 from . import resources
 
 bp = flask.Blueprint("api", __name__, url_prefix="/api")
+api = Api(bp, prefix="/v1")
+
+check_model = api.model(
+    "UserReport",
+    {
+        "site": fields.String(example="en.wikipedia.org"),
+        "username": fields.String(example="Example"),
+        "errors": fields.List(fields.String(example="link-username-mismatch")),
+        "signature": fields.String(
+            example="[[User:Example2|Example]] ([[User talk:Example2|talk]])"
+        ),
+        "html_sig": fields.String(
+            example='<p id="mwAQ"><a rel="mw:WikiLink" '
+            'href="https://en.wikipedia.org/wiki/User:Example2" '
+            'title="User:Example2" id="mwAg">Example</a> '
+            '(<a rel="mw:WikiLink" '
+            'href="https://en.wikipedia.org/wiki/User_talk:Example2" '
+            'title="User talk:Example2" id="mwAw" '
+            'class="mw-redirect">talk</a>)</p>'
+        ),
+    },
+)
 
 
-@bp.route("/v1/check/<site>/<username>")
-def api_check_result(site, username):
-    data = resources.check_user(site, username)
+@api.route("/check/<site>/<username>")
+@api.param("signature", "")
+class Check(Resource):
+    @api.doc(model=check_model)
+    def get(self, site, username):
+        signature = flask.request.values.get("signature", "")
 
-    if data.get("signature"):
-        data["html_sig"] = resources.get_rendered_sig(site, data["signature"])
-    else:
-        data["html_sig"] = ""
+        data = resources.check_user(site, username, signature)
 
-    return flask.jsonify(data)
-
-
-@bp.route("/v1/reports")
-def api_report():
-    sites = [
-        item.rpartition(".json")[0]
-        for item in os.listdir(flask.current_app.config["data_dir"])
-        if item.endswith(".json")
-    ]
-    return flask.jsonify(sites)
+        return data
 
 
-@bp.route("/v1/reports/<site>")
-def api_report_site(site):
-    try:
-        with open(
-            os.path.join(flask.current_app.config["data_dir"], site + ".json")
-        ) as f:
-            data = json.load(f)
-    except FileNotFoundError:
-        flask.abort(404)
-    return flask.jsonify(data)
+@api.route("/reports")
+class Reports(Resource):
+    def get():
+        sites = resources.list_report_sites(flask.current_app.config)
+        return sites
+
+
+@api.route("/reports/<site>")
+class ReportsSite(Resource):
+    def get(site):
+        try:
+            with open(
+                os.path.join(flask.current_app.config["data_dir"], site + ".json")
+            ) as f:
+                data = json.load(f)
+        except FileNotFoundError:
+            flask.abort(404)
+        return data

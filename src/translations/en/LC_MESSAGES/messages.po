@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-19 22:42-0400\n"
+"POT-Creation-Date: 2020-03-22 22:02-0400\n"
 "PO-Revision-Date: 2020-03-13 21:53-0400\n"
 "Last-Translator: AntiCompositeNumber\n"
 "Language: en\n"
@@ -382,32 +382,44 @@ msgid "I'd like to do something more with the data"
 msgstr "I'd like to do something more with the data"
 
 #: templates/about.html:116
-msgid "The tool has a basic API with three endpoints. All return JSON data."
-msgstr "The tool has a basic API with three endpoints. All return JSON data."
-
-#: templates/about.html:123 templates/about.html:141
-msgid "site"
-msgstr "site"
-
-#: templates/about.html:123
-msgid "username"
-msgstr "username"
-
-#: templates/about.html:127
+#, python-format
 msgid ""
-"Returns data about a single user at a single site. Sites are in the form "
-"<code>en.wikipedia.org</code>."
+"The tool has a basic REST API, documented %(apiopen)shere%(close)s. It "
+"should not be considered especially stable."
 msgstr ""
-"Returns data about a single user at a single site. Sites are in the form "
-"<code>en.wikipedia.org</code>."
 
-#: templates/about.html:134
-msgid "Returns a list of sites with prepared batch reports."
-msgstr "Returns a list of sites with prepared batch reports."
+#: templates/check_form.html:10 templates/index.html:29
+#: templates/layout.html:31
+msgid "Check a signature"
+msgstr "Check a signature"
 
-#: templates/about.html:145
-msgid "Returns the prepared report for a given site."
-msgstr "Returns the prepared report for a given site."
+#: templates/check_form.html:14
+msgid "Wiki"
+msgstr ""
+
+#: templates/check_form.html:22 templates/report_site.html:35
+msgid "Username"
+msgstr "Username"
+
+#: templates/check_form.html:23
+msgid "Example"
+msgstr ""
+
+#: templates/check_form.html:31
+msgid "Get signature from database"
+msgstr ""
+
+#: templates/check_form.html:40
+msgid "Use this wikitext:"
+msgstr ""
+
+#: templates/check_form.html:44
+msgid "[[User:Example|Example]] ([[User talk:Example|talk]])"
+msgstr ""
+
+#: templates/check_form.html:44
+msgid "Replacement signature"
+msgstr ""
 
 #: templates/check_result.html:10 templates/check_result_err.html:10
 msgid "Results"
@@ -437,10 +449,6 @@ msgstr "Validates signatures against the proposed new requirements"
 msgid "Go"
 msgstr "Go"
 
-#: templates/index.html:29 templates/layout.html:31
-msgid "Check a signature"
-msgstr "Check a signature"
-
 #: templates/index.html:29
 msgid "Would your signature meet the new requirements?"
 msgstr "Would your signature meet the new requirements?"
@@ -457,7 +465,7 @@ msgstr "How many users on your wiki would be impacted?"
 msgid "Home"
 msgstr "Home"
 
-#: templates/layout.html:68
+#: templates/layout.html:71
 #, python-format
 msgid ""
 "This project is licensed under the %(open_link)sApache License, version "
@@ -466,15 +474,15 @@ msgstr ""
 "This project is licensed under the %(open_link)sApache License, version "
 "2.0%(close)s."
 
-#: templates/layout.html:76
+#: templates/layout.html:79
 msgid "Repository version"
 msgstr "Repository version"
 
-#: templates/layout.html:81
+#: templates/layout.html:84
 msgid "Talk page"
 msgstr "Talk page"
 
-#: templates/layout.html:85
+#: templates/layout.html:88
 msgid "GitHub"
 msgstr ""
 
@@ -518,10 +526,6 @@ msgstr "Count"
 msgid "Users"
 msgstr "Users"
 
-#: templates/report_site.html:35
-msgid "Username"
-msgstr "Username"
-
 #: templates/report_site.html:36
 msgid "Errors"
 msgstr "Errors"
@@ -529,3 +533,28 @@ msgstr "Errors"
 #: templates/report_site.html:37
 msgid "Signature"
 msgstr "Signature"
+
+#~ msgid "The tool has a basic API with three endpoints. All return JSON data."
+#~ msgstr "The tool has a basic API with three endpoints. All return JSON data."
+
+#~ msgid "site"
+#~ msgstr "site"
+
+#~ msgid "username"
+#~ msgstr "username"
+
+#~ msgid ""
+#~ "Returns data about a single user "
+#~ "at a single site. Sites are in "
+#~ "the form <code>en.wikipedia.org</code>."
+#~ msgstr ""
+#~ "Returns data about a single user "
+#~ "at a single site. Sites are in "
+#~ "the form <code>en.wikipedia.org</code>."
+
+#~ msgid "Returns a list of sites with prepared batch reports."
+#~ msgstr "Returns a list of sites with prepared batch reports."
+
+#~ msgid "Returns the prepared report for a given site."
+#~ msgstr "Returns the prepared report for a given site."
+

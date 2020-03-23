@@ -21,6 +21,7 @@ import sigprobs
 import toolforge
 import logging
 import requests
+import os
 from typing import Iterator, Any
 
 logger = logging.getLogger(__name__)
@@ -127,6 +128,7 @@ def check_user(site, user, sig=""):
 
     errors = sigprobs.check_sig(user, sig, sitedata, site)
     data["signature"] = sig
+    data["html_sig"] = get_rendered_sig(site, sig)
     logger.debug(errors)
 
     if not errors:
@@ -146,3 +148,12 @@ def get_rendered_sig(site, wikitext):
     res = session.post(url, json=payload)
     res.raise_for_status()
     return res.text.replace("./", f"https://{site}/wiki/")
+
+
+def list_report_sites(config):
+    sites = [
+        item.rpartition(".json")[0]
+        for item in os.listdir(config["data_dir"])
+        if item.endswith(".json")
+    ]
+    return sites

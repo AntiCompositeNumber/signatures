@@ -91,11 +91,6 @@ def check_result(site, username):
     signature = flask.request.args.get("signature", "")
     data = resources.check_user(site, username, signature)
 
-    if data.get("signature"):
-        data["html_sig"] = resources.get_rendered_sig(site, data["signature"])
-    else:
-        data["html_sig"] = ""
-
     logger.debug(data)
 
     if data.get("failure") is not None:
@@ -107,11 +102,7 @@ def check_result(site, username):
 @bp.route("/reports")
 @setlang
 def report():
-    sites = [
-        item.rpartition(".json")[0]
-        for item in os.listdir(flask.current_app.config["data_dir"])
-        if item.endswith(".json")
-    ]
+    sites = resources.list_report_sites(flask.current_app.config)
     return flask.render_template("report.html", sites=sites)
 
 

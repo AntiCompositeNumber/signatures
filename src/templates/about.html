@@ -113,36 +113,13 @@
 <h3>{% trans %}I'd like to do something more with the data{% endtrans %}</h3>
 <p>
   <p>
-    {% trans trimmed %}
-    The tool has a basic API with three endpoints. All return JSON data.
+    {% trans trimmed 
+      apiopen='<a href="'|safe + url_for("api.doc")|safe + '">'|safe,
+      close=('</a>')|safe
+    %}
+      The tool has a basic REST API, documented {{apiopen}}here{{close}}.
+      It should not be considered especially stable.
     {% endtrans %}
-  </p>
-  <h6>
-    {{ url_for(
-      "api.api_check_result", site="~", username="~", _external=True
-      ).replace("~", "{}").format("<" + _("site") + ">", "<" + _("username") +">")
-    }}
-  </h6>
-  <p class="ml-4">
-    {% trans trimmed %}
-    Returns data about a single user at a single site.
-    Sites are in the form <code>en.wikipedia.org</code>.
-    {% endtrans %}
-  </p>
-  <h6>{{url_for("api.api_report", _external=True)}}</h6>
-  <p class="ml-4">
-    {% trans trimmed %}
-    Returns a list of sites with prepared batch reports.
-    {% endtrans %}
-  </p>
-  <h6>
-    {{url_for(
-      "api.api_report_site", site="~", _external=True
-      ).replace("~", "<" + _("site") +">")
-    }}
-  </h6>
-  <p class="ml-4">
-    {% trans %}Returns the prepared report for a given site.{% endtrans %}
   </p>
 </p>
 {% endblock %}

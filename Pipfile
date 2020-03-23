@@ -19,6 +19,7 @@ requests-oauthlib = "*"
 toolforge = "*"
 flask = "*"
 flask-babel = "*"
+flask-restx = "*"
 
 [requires]
 python_version = "3.7"
