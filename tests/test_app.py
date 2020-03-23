@@ -26,6 +26,7 @@ from bs4 import BeautifulSoup
 
 sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/../src"))
 import app  # noqa: E402
+import sigprobs  # noqa: E402
 from web import resources  # noqa: E402
 
 translated = pytest.mark.skipif(
@@ -224,9 +225,17 @@ def test_check_user_passed(sig, failure):
 @pytest.mark.parametrize(
     "props,failure,errors",
     [
-        ({"nickname": "[[User:Example]]", "fancysig": True}, False, "no-errors"),
-        ({"nickname": "[[User:Example2]]", "fancysig": True}, None, ""),
-        ({"nickname": "Example2", "fancysig": False}, False, "sig-not-fancy"),
+        (
+            sigprobs.UserProps(nickname="[[User:Example]]", fancysig=True),
+            False,
+            "no-errors",
+        ),
+        (sigprobs.UserProps(nickname="[[User:Example2]]", fancysig=True), None, ""),
+        (
+            sigprobs.UserProps(nickname="Example2", fancysig=False),
+            False,
+            "sig-not-fancy",
+        ),
     ],
 )
 def test_check_user_db(props, failure, errors):
@@ -246,7 +255,7 @@ def test_check_user_db(props, failure, errors):
     [(False, True, "user-does-not-exist"), (True, False, "default-sig")],
 )
 def test_check_user_db_nosig(exists, failure, errors):
-    user_props = mock.Mock(return_value={"nickname": "", "fancysig": False})
+    user_props = mock.Mock(return_value=sigprobs.UserProps(nickname="", fancysig=False))
     user_exists = mock.Mock(return_value=exists)
     with mock.patch("sigprobs.get_user_properties", user_props):
         with mock.patch("web.resources.check_user_exists", user_exists):

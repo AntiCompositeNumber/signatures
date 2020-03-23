@@ -29,6 +29,7 @@ import itertools
 import sys
 import logging
 import os
+from typing import NamedTuple
 
 session = requests.Session()
 session.headers.update(
@@ -94,6 +95,9 @@ def iter_active_user_sigs(dbname, startblock=0, lastedit=None, days=365):
                 )
 
 
+UserProps = NamedTuple("UserProps", [("nickname", str), ("fancysig", bool)])
+
+
 def get_user_properties(user, dbname):
     """Get signature and fancysig values for a user from the replica db"""
     logger.info("Getting user properties")
@@ -108,15 +112,31 @@ def get_user_properties(user, dbname):
                 up_user = (SELECT user_id
                            FROM `user`
                            WHERE user_name = %s)
-            """, (user)
+            """,
+            (user),
         )
         resultset = cur.fetchall()
     logger.debug(resultset)
-    if not resultset:
-        return {}
-    data = {key.decode("utf-8"): value.decode("utf-8") for key, value in resultset}
-    data["fancysig"] = bool(int(data.get("fancysig", "0")))
-    return data
+
+    data = {
+        key.decode("utf-8"): value.decode("utf-8") for key, value in resultset
+    }
+    return UserProps(
+        nickname=data.get("nickname", ""), fancysig=bool(int(data.get("fancysig", "0")))
+    )
+
+
+SiteData = NamedTuple(
+    "SiteData",
+    [
+        ("user", Set[str]),
+        ("user_talk", Set[str]),
+        ("special", Set[str]),
+        ("contribs", Set[str]),
+        ("subst", List[str]),
+        ("dbname", str),
+    ],
+)
 
 
 def get_site_data(hostname):
@@ -175,14 +195,14 @@ def get_site_data(hostname):
         )
     )
 
-    sitedata = {
-        "user": namespaces["2"] - {""},
-        "user talk": namespaces["3"] - {""},
-        "special": namespaces["-1"] - {""},
-        "contribs": contribs,
-        "subst": subst,
-        "dbname": general["wikiid"],
-    }
+    sitedata = SiteData(
+        user=namespaces["2"] - {""},
+        user_talk=namespaces["3"] - {""},
+        special=namespaces["-1"] - {""},
+        contribs=contribs,
+        subst=subst,
+        dbname=general["wikiid"],
+    )
     return sitedata
 
 
@@ -287,20 +307,20 @@ def compare_links(user, sitedata, sig):
             continue
         elif ":" in ns:
             errors.add("interwiki-user-link")
-        elif ns in sitedata["user"] or ns in sitedata["user talk"]:
+        elif ns in sitedata.user or ns in sitedata.user_talk:
             # Check that it's the right user or user_talk
             if normal_name(page) == user:
                 return True
             else:
                 errors.add("link-username-mismatch")
                 continue
-        elif ns in sitedata["special"]:
+        elif ns in sitedata.special:
             # Could be a contribs page, check
             # split page and normalize names
             specialpage, slash, target = page.partition("/")
             specialpage = normal_name(specialpage.strip())
             target = normal_name(target.strip())
-            if specialpage in sitedata["contribs"]:
+            if specialpage in sitedata.contribs:
                 # It's contribs
                 if target == user:
                     # The right one
@@ -316,7 +336,7 @@ def compare_links(user, sitedata, sig):
 
 def evaluate_subst(text, sitedata, hostname):
     """Perform substitution by removing "subst:" and expanding the wikitext"""
-    for subst in sitedata["subst"]:
+    for subst in sitedata.subst:
         text = text.replace(subst, "")
     data = {
         "action": "expandtemplates",
@@ -383,7 +403,7 @@ def main(hostname, startblock=0, lastedit=None, days=30):
     total = 0
 
     sitedata = get_site_data(hostname)
-    dbname = sitedata["dbname"]
+    dbname = sitedata.dbname
 
     filename = os.path.realpath(
         os.path.join(os.path.dirname(__file__), f"../data/{hostname}.json")
@@ -426,7 +446,7 @@ def main(hostname, startblock=0, lastedit=None, days=30):
 
     meta = {"last_update": datetime.datetime.utcnow().isoformat(), "site": hostname}
     if lastedit:
-        meta["active_since"] = datetime.datetime.strparse(
+        meta["active_since"] = datetime.datetime.strptime(
             lastedit, "%Y%m%d%H%M%S"
         ).isoformat()
     else:

@@ -89,56 +89,56 @@ def check_user_exists(dbname, user):
 
 def check_user(site, user, sig=""):
     validate_username(user)
-    data = {"site": site, "username": user, "errors": [], "signature": sig}
-    logger.debug(data)
+    errors = set()
+    failure = None
+    html_sig = ""
     sitedata = sigprobs.get_site_data(site)
-    dbname = sitedata["dbname"]
+    dbname = sitedata.dbname
 
     if not sig:
         # signature not supplied, get data from database
         user_props = sigprobs.get_user_properties(user, dbname)
         logger.debug(user_props)
 
-        if not user_props.get("nickname"):
+        if not user_props.nickname:
             # user does not exist or uses default sig
             if not check_user_exists(dbname, user):
                 # user does not exist
-                data["errors"].append("user-does-not-exist")
-                data["failure"] = True
-                return data
+                errors.add("user-does-not-exist")
+                failure = True
             else:
                 # user exists but uses default signature
-                data["errors"].append("default-sig")
-                data["signature"] = get_default_sig(
-                    site, user, user_props.get("nickname", user)
-                )
-                data["failure"] = False
-                return data
-        elif not user_props.get("fancysig"):
+                errors.add("default-sig")
+                sig = get_default_sig(site, user, user)
+                failure = False
+        elif not user_props.fancysig:
             # user exists but uses non-fancy sig with nickname
-            data["errors"].append("sig-not-fancy")
-            data["signature"] = get_default_sig(
-                site, user, user_props.get("nickname", user)
-            )
-            data["failure"] = False
-            return data
+            errors.add("sig-not-fancy")
+            sig = get_default_sig(site, user, user_props.nickname)
+            failure = False
         else:
             # user exists and has custom fancy sig, check it
-            sig = user_props["nickname"]
+            sig = user_props.nickname
 
-    errors = sigprobs.check_sig(user, sig, sitedata, site)
-    data["signature"] = sig
-    data["html_sig"] = get_rendered_sig(site, sig)
-    logger.debug(errors)
+    if failure is None:
+        # OK so far, actually check the signature
+        errors = sigprobs.check_sig(user, sig, sitedata, site)
+        html_sig = get_rendered_sig(site, sig)
+        logger.debug(errors)
 
     if not errors:
         # check returned no errors
-        data["errors"].append("no-errors")
-        data["failure"] = False
-    else:
-        # check returned some errors
-        data["errors"] = list(errors)
+        errors.add("no-errors")
+        failure = False
 
+    data = {
+        "site": site,
+        "username": user,
+        "errors": list(errors),
+        "signature": sig,
+        "failure": failure,
+        "html_sig": html_sig,
+    }
     return data
 
 

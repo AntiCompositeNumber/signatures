@@ -63,7 +63,7 @@ class Check(Resource):
 
 @api.route("/reports")
 class Reports(Resource):
-    def get():
+    def get(self):
         sites = resources.list_report_sites(flask.current_app.config)
         return sites
 
