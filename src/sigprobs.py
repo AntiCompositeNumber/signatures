@@ -425,14 +425,7 @@ def main(
     filename = os.path.realpath(
         os.path.join(os.path.dirname(__file__), f"../data/{hostname}.json")
     )
-    # Clear file to begin
-    if not startblock:
-        with open(filename + "l", "w") as f:
-            f.write("")
-
-    # Collect data into json lines file
-    # Data is written directly as json lines to prevent data loss on database error
-    for user, sig in iter_active_user_sigs(dbname, startblock, lastedit, days):
+    for user, sig in sigsource:
         total += 1
         if not sig:
             continue
@@ -443,23 +436,17 @@ def main(
             raise
         if not errors:
             continue
-        sigerror = {"username": user, "signature": sig, "errors": list(errors)}
-        with open(filename + "l", "a") as f:
-            f.write(json.dumps(sigerror) + "\n")
+        resultdata[user] = {"signature": sig, "errors": list(errors)}
         bad += 1
         if bad % 10 == 0:
             logger.info(f"{bad} bad sigs found in {total} so far")
 
-    # Read back data, collect stats, and generate json file
-    fulldata = {}
+    # Collect stats, and generate json file
     stats = {}
     stats["total"] = bad
-    with open(filename + "l") as f:
-        for rawline in f:
-            line = json.loads(rawline)
-            for error in line.get("errors"):
-                stats[error] = stats.setdefault(error, 0) + 1
-            fulldata[line.pop("username")] = line
+    for user, line in resultdata.items():
+        for error in cast(list, line.get("errors")):
+            stats[error] = stats.setdefault(error, 0) + 1
 
     meta = {"last_update": datetime.datetime.utcnow().isoformat(), "site": hostname}
     if lastedit:
@@ -472,7 +459,7 @@ def main(
         ).isoformat()
     with open(filename, "w") as f:
         json.dump(
-            {"errors": stats, "meta": meta, "sigs": fulldata},
+            {"errors": stats, "meta": meta, "sigs": resultdata},
             f,
             sort_keys=True,
             indent=4,
