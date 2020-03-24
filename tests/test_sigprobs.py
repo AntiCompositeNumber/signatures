@@ -18,10 +18,14 @@
 # limitations under the License.
 
 
-import pytest
+import pytest  # type: ignore
 import unittest.mock as mock
+import os
+import sys
 
-import src.sigprobs as sigprobs  # noqa :E402
+sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/../src"))
+import sigprobs  # noqa: E402
+from datatypes import SigError  # noqa: E402
 
 
 @pytest.fixture(
@@ -61,14 +65,14 @@ def sitedata(site):
         (
             '<font face="arial, helvetica" size="1"><sub>'
             "[[{user}:Example]]</sub></font>",
-            {"obsolete-font-tag"},
+            {SigError("obsolete-font-tag")},
         ),
-        ("<i>Example''", {"missing-end-tag"}),
+        ("<i>Example''", {SigError("missing-end-tag")}),
         (
             """[[{user}:Example|'''<span style="color:#FFFFFF">Example''']]</span>""",
-            {"misnested-tag"},
+            {SigError("misnested-tag")},
         ),
-        ("<tt>[[{user}:Example|Example]]</tt>", {"obsolete-tag"}),
+        ("<tt>[[{user}:Example|Example]]</tt>", {SigError("obsolete-tag")}),
         ("[[{user}:Example|Example]] ([[{talk}:Example|talk]])", set()),
     ],
 )
@@ -80,12 +84,15 @@ def test_get_lint_errors(sig, expected, site):
 @pytest.mark.parametrize(
     "sig,expected",
     [
-        ("~~~~", "nested-subst"),
-        ("%(user)s:Example", ""),
-        ("~~{{%(subst)s:1x{{%(subst)s:1x|{{%(subst)s:!}}}}}}~~", "nested-subst"),
-        ("&ndash;&nbsp;[[%(user)s:Foo {{%(subst)s:ampersand}} Bar]]", ""),
-        ("{{subst:#switch:{{subst:REVISIONUSER}}|foo=Sig}}", ""),
-        ("{{subst:#switch:{{subst:REVISIONUSER}}|foo=~~~~}}", "nested-subst"),
+        ("~~~~", SigError("nested-subst")),
+        ("%(user)s:Example", None),
+        (
+            "~~{{%(subst)s:1x{{%(subst)s:1x|{{%(subst)s:!}}}}}}~~",
+            SigError("nested-subst"),
+        ),
+        ("&ndash;&nbsp;[[%(user)s:Foo {{%(subst)s:ampersand}} Bar]]", None),
+        ("{{subst:#switch:{{subst:REVISIONUSER}}|foo=Sig}}", None),
+        ("{{subst:#switch:{{subst:REVISIONUSER}}|foo=~~~~}}", SigError("nested-subst")),
     ],
 )
 def test_check_tildes(sig, expected, sitedata, site):
@@ -96,15 +103,15 @@ def test_check_tildes(sig, expected, sitedata, site):
 @pytest.mark.parametrize(
     "sig,expected",
     [
-        ("[[{user}:Example]]", ""),
-        ("[[{talk}:Example]]", ""),
-        ("[[{contributions}/Example]]", ""),
-        ("[[{contribs}/Example]]", ""),
-        ("{user}:Example", "no-user-links"),
-        ("[[{user}:Example2|Example]]", "link-username-mismatch"),
-        ("[[meta:{user}:Example|Example]]", "interwiki-user-link"),
-        ("[[meta:{user}:Example|Example]] ([[{talk}:Example|talk]])", ""),
-        ("[[meta:{contribs}/Example]]", "interwiki-user-link"),
+        ("[[{user}:Example]]", None),
+        ("[[{talk}:Example]]", None),
+        ("[[{contributions}/Example]]", None),
+        ("[[{contribs}/Example]]", None),
+        ("{user}:Example", SigError("no-user-links")),
+        ("[[{user}:Example2|Example]]", SigError("link-username-mismatch")),
+        ("[[meta:{user}:Example|Example]]", SigError("interwiki-user-link")),
+        ("[[meta:{user}:Example|Example]] ([[{talk}:Example|talk]])", None),
+        ("[[meta:{contribs}/Example]]", SigError("interwiki-user-link")),
     ],
 )
 def test_check_links(sig, expected, sitedata, site):
@@ -117,9 +124,9 @@ def test_check_links(sig, expected, sitedata, site):
 @pytest.mark.parametrize(
     "sig,expected",
     [
-        ("[[{user}:(:Example:)|(:Example:)]]", ""),
-        ("[[{contributions}/(:Example:)]]", ""),
-        ("[[meta:{user}:(:Example:)]]", "interwiki-user-link"),
+        ("[[{user}:(:Example:)|(:Example:)]]", None),
+        ("[[{contributions}/(:Example:)]]", None),
+        ("[[meta:{user}:(:Example:)]]", SigError("interwiki-user-link")),
     ],
 )
 def test_check_links_colonuser(sig, expected, sitedata, site):
@@ -130,12 +137,13 @@ def test_check_links_colonuser(sig, expected, sitedata, site):
 
 
 @pytest.mark.parametrize(
-    "sig,expected", [("{user}:Example", "no-user-links"), ("[[{user}:Example]]", "")]
+    "sig,expected",
+    [("{user}:Example", SigError("no-user-links")), ("[[{user}:Example]]", None)],
 )
 def test_check_links_expansion(sig, expected, sitedata, site):
     mock_subst = mock.Mock()
     mock_subst.return_value = sig.format(**site)
-    with mock.patch("src.sigprobs.evaluate_subst", mock_subst):
+    with mock.patch("sigprobs.evaluate_subst", mock_subst):
         error = sigprobs.check_links(
             "Example",
             "{{%(subst)s:%(user)s:Example/sig}}" % site,
@@ -151,11 +159,11 @@ def test_check_links_expansion(sig, expected, sitedata, site):
 @pytest.mark.parametrize(
     "sig,expected",
     [
-        ("Example", "plain-fancy-sig"),
-        ("[[{user}:Example]]", ""),
-        ("'''Example'''", ""),
-        ("<span>Example</span>", ""),
-        ("{{{{{subst}:{user}:Example/sig}}}}", ""),
+        ("Example", SigError("plain-fancy-sig")),
+        ("[[{user}:Example]]", None),
+        ("'''Example'''", None),
+        ("<span>Example</span>", None),
+        ("{{{{{subst}:{user}:Example/sig}}}}", None),
     ],
 )
 def test_check_fanciness(sig, expected):
@@ -165,7 +173,7 @@ def test_check_fanciness(sig, expected):
 
 @pytest.mark.parametrize(
     "sig,expected",
-    [("a" * 200, ""), ("a" * 265, "sig-too-long"), ("a" * 255, "")],
+    [("a" * 200, None), ("a" * 265, SigError("sig-too-long")), ("a" * 255, None)],
     ids=["200", "265", "255"],
 )
 def test_check_length(sig, expected):

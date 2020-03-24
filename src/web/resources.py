@@ -22,7 +22,7 @@ import toolforge
 import logging
 import requests
 import os
-from datatypes import UserCheck
+from datatypes import WebAppMessage, UserCheck, Result
 from typing import Iterator, Any, cast, Dict, List, Set
 
 logger = logging.getLogger(__name__)
@@ -90,7 +90,7 @@ def check_user_exists(dbname: str, user: str) -> bool:
 
 def check_user(site: str, user: str, sig: str = "") -> UserCheck:
     validate_username(user)
-    errors = set()
+    errors: Set[Result] = set()
     failure = None
     html_sig = ""
     sitedata = sigprobs.get_site_data(site)
@@ -105,16 +105,16 @@ def check_user(site: str, user: str, sig: str = "") -> UserCheck:
             # user does not exist or uses default sig
             if not check_user_exists(dbname, user):
                 # user does not exist
-                errors.add("user-does-not-exist")
+                errors.add(WebAppMessage.USER_DOES_NOT_EXIST)
                 failure = True
             else:
                 # user exists but uses default signature
-                errors.add("default-sig")
+                errors.add(WebAppMessage.DEFAULT_SIG)
                 sig = get_default_sig(site, user, user)
                 failure = False
         elif not user_props.fancysig:
             # user exists but uses non-fancy sig with nickname
-            errors.add("sig-not-fancy")
+            errors.add(WebAppMessage.SIG_NOT_FANCY)
             sig = get_default_sig(site, user, user_props.nickname)
             failure = False
         else:
@@ -123,13 +123,13 @@ def check_user(site: str, user: str, sig: str = "") -> UserCheck:
 
     if failure is None:
         # OK so far, actually check the signature
-        errors = sigprobs.check_sig(user, sig, sitedata, site)
+        errors = cast(Set[Result], sigprobs.check_sig(user, sig, sitedata, site))
         html_sig = get_rendered_sig(site, sig)
         logger.debug(errors)
 
     if not errors:
         # check returned no errors
-        errors.add("no-errors")
+        errors.add(WebAppMessage.NO_ERRORS)
         failure = False
 
     data = UserCheck(

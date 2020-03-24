@@ -29,7 +29,7 @@ import itertools
 import sys
 import logging
 import os
-from datatypes import UserProps, Checks, SiteData
+from datatypes import UserProps, Checks, SigError, SiteData
 from typing import Iterator, Tuple, Union, Dict, Set, Optional, List, cast
 
 session = requests.Session()
@@ -212,7 +212,7 @@ def check_sig(
     sitedata: SiteData,
     hostname: str,
     checks: Checks = Checks.DEFAULT,
-) -> Set[str]:
+) -> Set[SigError]:
     """Run a signature through the test suite and return any errors"""
     errors = set()
 
@@ -226,16 +226,16 @@ def check_sig(
             # This check short circuits -- there's no point in doing the
             # more expensive checks if there's only plain text
             errors.add(fanciness)
-            return errors - {""}
+            return cast(Set[SigError], errors - {None})
     if checks & Checks.LINT:
         errors.update(get_lint_errors(sig, hostname))
     if checks & Checks.NESTED_SUBST:
         errors.add(check_tildes(sig, sitedata, hostname))
 
-    return errors - {""}
+    return cast(Set[SigError], errors - {None})
 
 
-def get_lint_errors(sig: str, hostname: str) -> Set[str]:
+def get_lint_errors(sig: str, hostname: str) -> Set[SigError]:
     """Use the REST API to get lint errors from the signature"""
     url = f"https://{hostname}/api/rest_v1/transform/wikitext/to/lint"
     data = {"wikitext": sig}
@@ -259,30 +259,32 @@ def get_lint_errors(sig: str, hostname: str) -> Set[str]:
             error.get("type", "") == "obsolete-tag"
             and error.get("params", {}).get("name", "") == "font"
         ):
-            errors.add("obsolete-font-tag")
+            errors.add(SigError("obsolete-font-tag"))
         else:
-            errors.add(error.get("type"))
+            errors.add(SigError(error.get("type")))
     return errors
 
 
-def check_links(user: str, sig: str, sitedata: SiteData, hostname: str) -> str:
+def check_links(
+    user: str, sig: str, sitedata: SiteData, hostname: str
+) -> Optional[SigError]:
     """Check for a link to a user, user talk, or contribs page"""
     if compare_links(user, sitedata, sig) is True:
-        return ""
+        return None
     else:
         expanded_errors = compare_links(
             user, sitedata, evaluate_subst(sig, sitedata, hostname)
         )
         if expanded_errors is True:
-            return ""
+            return None
         else:
             expanded_errors = cast(Set[str], expanded_errors)
             if "link-username-mismatch" in expanded_errors:
-                return "link-username-mismatch"
+                return SigError.LINK_USER_MISMATCH
             elif "interwiki-user-link" in expanded_errors:
-                return "interwiki-user-link"
+                return SigError.INTERWIKI_USER_LINK
             else:
-                return "no-user-links"
+                return SigError.NO_USER_LINKS
 
 
 def compare_links(user: str, sitedata: SiteData, sig: str) -> Union[bool, Set[str]]:
@@ -363,29 +365,29 @@ def evaluate_subst(text: str, sitedata: SiteData, hostname: str) -> str:
     return res.json()["expandtemplates"]["wikitext"]
 
 
-def check_fanciness(sig: str) -> str:
+def check_fanciness(sig: str) -> Optional[SigError]:
     """Check if a signature contains any wikitext formatting
 
     A lack of formatting indicates that fancysig may be incorrectly set"""
     fancychars = {"'", "<", "[", "{"}
     for letter in sig:
         if letter in fancychars:
-            return ""
+            return None
     else:
-        return "plain-fancy-sig"
+        return SigError.PLAIN_FANCY_SIG
 
 
-def check_tildes(sig: str, sitedata: SiteData, hostname: str) -> str:
+def check_tildes(sig: str, sitedata: SiteData, hostname: str) -> Optional[SigError]:
     """Check a signature for nested substitution using repeated expansion"""
     if "{" not in sig and "~" not in sig:
-        return ""
+        return None
     old_wikitext = sig
     for i in range(0, 5):
         new_wikitext = evaluate_subst(old_wikitext, sitedata, hostname)
         if "~~~" in new_wikitext:
             break
         elif new_wikitext == old_wikitext:
-            return ""
+            return None
         elif not new_wikitext:
             # They're using some sort of ParserFunction,
             # likely evaluating REVISIONUSER, that doesn't have a default
@@ -394,18 +396,18 @@ def check_tildes(sig: str, sitedata: SiteData, hostname: str) -> str:
             if old_wikitext.count("~") >= 3:
                 break
             else:
-                return ""
+                return None
         else:
             old_wikitext = new_wikitext
-    return "nested-subst"
+    return SigError.NESTED_SUBST
 
 
-def check_length(sig: str) -> str:
+def check_length(sig: str) -> Optional[SigError]:
     """Check if a signature is more than 255 characters long"""
     if len(sig) > 255:
-        return "sig-too-long"
+        return SigError.SIG_TOO_LONG
     else:
-        return ""
+        return None
 
 
 def main(

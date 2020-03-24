@@ -229,13 +229,13 @@ def test_check_user_passed(sig, failure):
         (
             sigprobs.UserProps(nickname="[[User:Example]]", fancysig=True),
             False,
-            "no-errors",
+            datatypes.WebAppMessage.NO_ERRORS,
         ),
         (sigprobs.UserProps(nickname="[[User:Example2]]", fancysig=True), None, ""),
         (
             sigprobs.UserProps(nickname="Example2", fancysig=False),
             False,
-            "sig-not-fancy",
+            datatypes.WebAppMessage.SIG_NOT_FANCY,
         ),
     ],
 )
@@ -253,7 +253,10 @@ def test_check_user_db(props, failure, errors):
 
 @pytest.mark.parametrize(
     "exists,failure,errors",
-    [(False, True, "user-does-not-exist"), (True, False, "default-sig")],
+    [
+        (False, True, datatypes.WebAppMessage.USER_DOES_NOT_EXIST),
+        (True, False, datatypes.WebAppMessage.DEFAULT_SIG),
+    ],
 )
 def test_check_user_db_nosig(exists, failure, errors):
     user_props = mock.Mock(return_value=sigprobs.UserProps(nickname="", fancysig=False))

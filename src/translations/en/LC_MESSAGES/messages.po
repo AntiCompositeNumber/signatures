@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-22 22:02-0400\n"
+"POT-Creation-Date: 2020-03-24 16:32-0400\n"
 "PO-Revision-Date: 2020-03-13 21:53-0400\n"
 "Last-Translator: AntiCompositeNumber\n"
 "Language: en\n"
@@ -17,200 +17,200 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: i18n.py:7
+#: datatypes.py:82
 msgid "html5-misnesting"
 msgstr "Misnested tag with different rendering in HTML5 and HTML4"
 
-#: i18n.py:8
+#: datatypes.py:82
 msgid "html5-misnesting-help"
 msgstr ""
 "Tags should be closed in the reverse order they were opened "
 "(&ltb&gt&lti&gtFoo&lt/i&gt&lt/b&gt not "
 "&ltb&gt&lti&gtFoo&lt/b&gt&lt/i&gt)."
 
-#: i18n.py:9
+#: datatypes.py:84
 msgid "misc-tidy-replacement-issues"
 msgstr "Miscellaneous issues"
 
-#: i18n.py:10
+#: datatypes.py:85
 msgid "misc-tidy-replacement-issues-help"
 msgstr "Check the Linter documentation for advice"
 
-#: i18n.py:11
+#: datatypes.py:88
 msgid "misnested-tag"
 msgstr "Misnested tag"
 
-#: i18n.py:12
+#: datatypes.py:88
 msgid "misnested-tag-help"
 msgstr ""
 "Tags should be closed in the reverse order they were opened "
 "(&ltb&gt&lti&gtFoo&lt/i&gt&lt/b&gt not "
 "&ltb&gt&lti&gtFoo&lt/b&gt&lt/i&gt)."
 
-#: i18n.py:13
+#: datatypes.py:89
 msgid "missing-end-tag"
 msgstr "Missing end tag"
 
-#: i18n.py:14
+#: datatypes.py:89
 msgid "missing-end-tag-help"
 msgstr ""
 "Make sure that all tags that are opened are closed in the same way "
 "('''Foo''' not &lti&gtFoo''' or &lti&gtFoo)"
 
-#: i18n.py:15
+#: datatypes.py:91
 msgid "multiple-unclosed-formatting-tags"
 msgstr "Multiple unclosed formatting tags"
 
-#: i18n.py:16
+#: datatypes.py:92
 msgid "multiple-unclosed-formatting-tags-help"
 msgstr ""
 "Make sure that all tags that are opened are closed in the same way "
 "('''Foo''' not &lti&gtFoo''' or &lti&gtFoo)"
 
-#: i18n.py:17
+#: datatypes.py:95
 msgid "obsolete-tag"
 msgstr "Obsolete HTML tags"
 
-#: i18n.py:18
+#: datatypes.py:95
 msgid "obsolete-tag-help"
 msgstr "See the Linter documentation for more information."
 
-#: i18n.py:19
+#: datatypes.py:97
 msgid "obsolete-font-tag"
 msgstr "Obsolete font tag"
 
-#: i18n.py:20
+#: datatypes.py:98
 msgid "obsolete-font-tag-help"
 msgstr "The &ltfont&gt tag has been deprecated in HTML5 and should be replaced"
 
-#: i18n.py:21
+#: datatypes.py:101
 msgid "self-closed-tag"
 msgstr "Self-closed tag"
 
-#: i18n.py:22
+#: datatypes.py:101
 msgid "self-closed-tag-help"
 msgstr "See the Linter documentation for more information"
 
-#: i18n.py:23
+#: datatypes.py:102
 msgid "stripped-tag"
 msgstr "Stripped tag"
 
-#: i18n.py:24
+#: datatypes.py:102
 msgid "stripped-tag-help"
 msgstr "See the Linter documentation for more information"
 
-#: i18n.py:25
+#: datatypes.py:103
 msgid "tidy-font-bug"
 msgstr "Tidy font bug"
 
-#: i18n.py:26
+#: datatypes.py:103
 msgid "tidy-font-bug-help"
 msgstr "See the Linter documentation for more information"
 
-#: i18n.py:27
+#: datatypes.py:105
 msgid "tidy-whitespace-bug"
 msgstr "Whitespace parsing bug"
 
-#: i18n.py:28
+#: datatypes.py:106
 msgid "tidy-whitespace-bug-help"
 msgstr "See the Linter documentation for more information"
 
-#: i18n.py:29
+#: datatypes.py:110
 msgid "wikilink-in-extlink"
 msgstr "Wikilink in external link"
 
-#: i18n.py:30
+#: datatypes.py:111
 msgid "wikilink-in-extlink-help"
 msgstr "External link labels can not contain wikilinks"
 
-#: i18n.py:34
+#: datatypes.py:117
 msgid "interwiki-user-link"
 msgstr "Interwiki user link"
 
-#: i18n.py:35
+#: datatypes.py:118
 msgid "interwiki-user-link-help"
 msgstr ""
 "The only link in this signature appears to be an interwiki link. "
 "Signatures should contain a wikilink to the user's local user page, user "
 "talk page, or contributions. "
 
-#: i18n.py:36
+#: datatypes.py:122
 msgid "link-username-mismatch"
 msgstr "Mismatch between link and username"
 
-#: i18n.py:37
+#: datatypes.py:123
 msgid "link-username-mismatch-help"
 msgstr ""
 "The signature contains at least one link to a user page, talk page, or "
 "contributions, but they don't match the username"
 
-#: i18n.py:38
+#: datatypes.py:126
 msgid "nested-subst"
 msgstr "Nested substitution"
 
-#: i18n.py:39
+#: datatypes.py:126
 msgid "nested-subst-help"
 msgstr ""
 "Signatures should not contain markup that could transform into someone "
 "else's signature."
 
-#: i18n.py:40
+#: datatypes.py:127
 msgid "no-user-links"
 msgstr "No user links"
 
-#: i18n.py:41
+#: datatypes.py:127
 msgid "no-user-links-help"
 msgstr ""
 "Signatures should contain a wikilink to the user's local user page, user "
 "talk page, or contributions."
 
-#: i18n.py:42
+#: datatypes.py:128
 msgid "plain-fancy-sig"
 msgstr "Plain fancy signature"
 
-#: i18n.py:43
+#: datatypes.py:128
 msgid "plain-fancy-sig-help"
 msgstr ""
 "The \"Treat the above as wiki markup\" box was ticked, but this signature"
 " doesn't contain any markup."
 
-#: i18n.py:44
+#: datatypes.py:129
 msgid "sig-too-long"
 msgstr "Signature too long"
 
-#: i18n.py:45
+#: datatypes.py:129
 msgid "sig-too-long-help"
 msgstr "Signatures must contain less than 255 bytes of wikitext."
 
-#: i18n.py:49
+#: datatypes.py:133
 msgid "default-sig"
 msgstr "Default signature"
 
-#: i18n.py:50
+#: datatypes.py:133
 msgid "default-sig-help"
 msgstr "No custom signature has been set for this user."
 
-#: i18n.py:51
+#: datatypes.py:134
 msgid "no-errors"
 msgstr "No errors"
 
-#: i18n.py:52
+#: datatypes.py:134
 msgid "no-errors-help"
 msgstr "No problems were detected with this signature."
 
-#: i18n.py:53
+#: datatypes.py:135
 msgid "sig-not-fancy"
 msgstr "Non-fancy signature"
 
-#: i18n.py:54
+#: datatypes.py:135
 msgid "sig-not-fancy-help"
 msgstr "This signature is only a nickname, and is not interpreted as wikitext."
 
-#: i18n.py:55
+#: datatypes.py:136
 msgid "user-does-not-exist"
 msgstr "User does not exist"
 
-#: i18n.py:56
+#: datatypes.py:136
 msgid "user-does-not-exist-help"
 msgstr "The provided username does not exist on this wiki."
 
@@ -387,6 +387,8 @@ msgid ""
 "The tool has a basic REST API, documented %(apiopen)shere%(close)s. It "
 "should not be considered especially stable."
 msgstr ""
+"The tool has a basic REST API, documented %(apiopen)shere%(close)s. It "
+"should not be considered especially stable."
 
 #: templates/check_form.html:10 templates/index.html:29
 #: templates/layout.html:31
@@ -395,7 +397,7 @@ msgstr "Check a signature"
 
 #: templates/check_form.html:14
 msgid "Wiki"
-msgstr ""
+msgstr "Wiki"
 
 #: templates/check_form.html:22 templates/report_site.html:35
 msgid "Username"
@@ -403,23 +405,23 @@ msgstr "Username"
 
 #: templates/check_form.html:23
 msgid "Example"
-msgstr ""
+msgstr "Example"
 
 #: templates/check_form.html:31
 msgid "Get signature from database"
-msgstr ""
+msgstr "Get signature from database"
 
 #: templates/check_form.html:40
 msgid "Use this wikitext:"
-msgstr ""
+msgstr "Get signature from database"
 
 #: templates/check_form.html:44
 msgid "[[User:Example|Example]] ([[User talk:Example|talk]])"
-msgstr ""
+msgstr "[[User:Example|Example]] ([[User talk:Example|talk]])"
 
 #: templates/check_form.html:44
 msgid "Replacement signature"
-msgstr ""
+msgstr "Replacement signature"
 
 #: templates/check_result.html:10 templates/check_result_err.html:10
 msgid "Results"
@@ -484,7 +486,7 @@ msgstr "Talk page"
 
 #: templates/layout.html:88
 msgid "GitHub"
-msgstr ""
+msgstr "GitHub"
 
 #: templates/report.html:2 templates/report.html:10
 msgid "Site reports"
@@ -533,28 +535,3 @@ msgstr "Errors"
 #: templates/report_site.html:37
 msgid "Signature"
 msgstr "Signature"
-
-#~ msgid "The tool has a basic API with three endpoints. All return JSON data."
-#~ msgstr "The tool has a basic API with three endpoints. All return JSON data."
-
-#~ msgid "site"
-#~ msgstr "site"
-
-#~ msgid "username"
-#~ msgstr "username"
-
-#~ msgid ""
-#~ "Returns data about a single user "
-#~ "at a single site. Sites are in "
-#~ "the form <code>en.wikipedia.org</code>."
-#~ msgstr ""
-#~ "Returns data about a single user "
-#~ "at a single site. Sites are in "
-#~ "the form <code>en.wikipedia.org</code>."
-
-#~ msgid "Returns a list of sites with prepared batch reports."
-#~ msgstr "Returns a list of sites with prepared batch reports."
-
-#~ msgid "Returns the prepared report for a given site."
-#~ msgstr "Returns the prepared report for a given site."
-

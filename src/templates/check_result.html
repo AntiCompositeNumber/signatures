@@ -22,7 +22,7 @@
   <h2>{% trans count=errors|length %}{{count}} error found{% pluralize %}{{count}} errors found{% endtrans %}</h2>
   <ul>
     {% for error in errors %}
-    <li><b>{{ _(error) | escape}}</b>: {{ _(error + "-help") | escape }}</li>
+    <li><b>{{ _(error.value) | escape}}</b>: {{ _(error.desc) | escape }}</li>
     {% endfor %}
   </ul>
 
