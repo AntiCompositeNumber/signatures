@@ -29,7 +29,8 @@ import itertools
 import sys
 import logging
 import os
-from typing import Iterator, Tuple, Union, Dict, Set, Optional, List, cast, NamedTuple
+from datatypes import UserProps, SiteData
+from typing import Iterator, Tuple, Union, Dict, Set, Optional, List, cast
 
 session = requests.Session()
 session.headers.update(
@@ -102,9 +103,6 @@ def iter_active_user_sigs(
                 )
 
 
-UserProps = NamedTuple("UserProps", [("nickname", str), ("fancysig", bool)])
-
-
 def get_user_properties(user: str, dbname: str) -> UserProps:
     """Get signature and fancysig values for a user from the replica db"""
     logger.info("Getting user properties")
@@ -131,19 +129,6 @@ def get_user_properties(user: str, dbname: str) -> UserProps:
     return UserProps(
         nickname=data.get("nickname", ""), fancysig=bool(int(data.get("fancysig", "0")))
     )
-
-
-SiteData = NamedTuple(
-    "SiteData",
-    [
-        ("user", Set[str]),
-        ("user_talk", Set[str]),
-        ("special", Set[str]),
-        ("contribs", Set[str]),
-        ("subst", List[str]),
-        ("dbname", str),
-    ],
-)
 
 
 def get_site_data(hostname: str) -> SiteData:
