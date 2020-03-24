@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import NamedTuple, Set, List
+from typing import NamedTuple, Set, List, Optional
 
 
 UserProps = NamedTuple("UserProps", [("nickname", str), ("fancysig", bool)])
@@ -31,5 +31,18 @@ SiteData = NamedTuple(
         ("contribs", Set[str]),
         ("subst", List[str]),
         ("dbname", str),
+    ],
+)
+
+
+UserCheck = NamedTuple(
+    "UserCheck",
+    [
+        ("site", str),
+        ("username", str),
+        ("errors", List),
+        ("signature", str),
+        ("failure", Optional[bool]),
+        ("html_sig", str),
     ],
 )

@@ -22,7 +22,8 @@ import toolforge
 import logging
 import requests
 import os
-from typing import Iterator, Any, Union, Dict, Optional, Sequence, List
+from datatypes import UserCheck
+from typing import Iterator, Any, cast, Dict, List, Set
 
 logger = logging.getLogger(__name__)
 
@@ -87,9 +88,7 @@ def check_user_exists(dbname: str, user: str) -> bool:
     return bool(res)
 
 
-def check_user(
-    site: str, user: str, sig: str = ""
-) -> Dict[str, Union[str, Sequence[str], Optional[bool]]]:
+def check_user(site: str, user: str, sig: str = "") -> UserCheck:
     validate_username(user)
     errors = set()
     failure = None
@@ -133,14 +132,14 @@ def check_user(
         errors.add("no-errors")
         failure = False
 
-    data = {
-        "site": site,
-        "username": user,
-        "errors": list(errors),
-        "signature": sig,
-        "failure": failure,
-        "html_sig": html_sig,
-    }
+    data = UserCheck(
+        site=site,
+        username=user,
+        errors=list(errors),
+        signature=sig,
+        failure=failure,
+        html_sig=html_sig,
+    )
     return data
 
 

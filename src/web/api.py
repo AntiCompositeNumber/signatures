@@ -58,7 +58,7 @@ class Check(Resource):
 
         data = resources.check_user(site, username, signature)
 
-        return data
+        return data._asdict()
 
 
 @api.route("/reports")

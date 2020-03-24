@@ -28,6 +28,7 @@ sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/../src"))
 import app  # noqa: E402
 import sigprobs  # noqa: E402
 from web import resources  # noqa: E402
+import datatypes  # noqa: E402
 
 translated = pytest.mark.skipif(
     len(app.babel.list_translations()) < 2,
@@ -216,10 +217,10 @@ def test_check_user_exists(userid, expected):
 )
 def test_check_user_passed(sig, failure):
     data = resources.check_user("en.wikipedia.org", "Example", sig)
-    assert data["signature"] == sig
-    assert data.get("failure") is failure
-    assert data.get("username") == "Example"
-    assert data.get("site") == "en.wikipedia.org"
+    assert data.signature == sig
+    assert data.failure is failure
+    assert data.username == "Example"
+    assert data.site == "en.wikipedia.org"
 
 
 @pytest.mark.parametrize(
@@ -243,10 +244,10 @@ def test_check_user_db(props, failure, errors):
     with mock.patch("sigprobs.get_user_properties", user_props):
         data = resources.check_user("en.wikipedia.org", "Example")
 
-    assert data["signature"]
+    assert data.signature
     if errors:
-        assert errors in data["errors"]
-    assert data.get("failure") is failure
+        assert errors in data.errors
+    assert data.failure is failure
     user_props.assert_called_once_with("Example", "enwiki")
 
 
@@ -263,8 +264,8 @@ def test_check_user_db_nosig(exists, failure, errors):
 
     user_exists.assert_called_once_with("enwiki", "Example")
     user_props.assert_called_once_with("Example", "enwiki")
-    assert data.get("failure") is failure
-    assert errors in data["errors"]
+    assert data.failure is failure
+    assert errors in data.errors
 
 
 @pytest.mark.parametrize(
