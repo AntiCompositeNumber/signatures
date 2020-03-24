@@ -17,6 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import enum
 from typing import NamedTuple, Set, List, Optional
 
 
@@ -46,3 +47,14 @@ UserCheck = NamedTuple(
         ("html_sig", str),
     ],
 )
+
+
+class Checks(enum.Flag):
+    """Enum of signature tests and test groups"""
+
+    LINT = enum.auto()
+    NESTED_SUBST = enum.auto()
+    LINKS = enum.auto()
+    LENGTH = enum.auto()
+    FANCY = enum.auto()
+    DEFAULT = LINT | NESTED_SUBST | LINKS | LENGTH | FANCY

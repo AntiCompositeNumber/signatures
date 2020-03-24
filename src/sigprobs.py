@@ -29,7 +29,7 @@ import itertools
 import sys
 import logging
 import os
-from datatypes import UserProps, SiteData
+from datatypes import UserProps, Checks, SiteData
 from typing import Iterator, Tuple, Union, Dict, Set, Optional, List, cast
 
 session = requests.Session()
@@ -206,24 +206,32 @@ def normal_name(name: str) -> str:
     return (name[0].upper() + name[1:]).replace(" ", "_")
 
 
-def check_sig(user: str, sig: str, sitedata: SiteData, hostname: str) -> Set[str]:
+def check_sig(
+    user: str,
+    sig: str,
+    sitedata: SiteData,
+    hostname: str,
+    checks: Checks = Checks.DEFAULT,
+) -> Set[str]:
     """Run a signature through the test suite and return any errors"""
     errors = set()
-    try:
-        errors.update(get_lint_errors(sig, hostname))
-    except Exception:
-        for i in range(0, 5):
-            logger.info(f"Request failed, sleeping for {3**i}")
-            time.sleep(3 ** i)
-            errors.update(get_lint_errors(sig, hostname))
-            break
-        else:
-            raise
 
-    errors.add(check_tildes(sig, sitedata, hostname))
-    errors.add(check_links(user, sig, sitedata, hostname))
-    errors.add(check_fanciness(sig))
-    errors.add(check_length(sig))
+    if checks & Checks.LINKS:
+        errors.add(check_links(user, sig, sitedata, hostname))
+    if checks & Checks.LENGTH:
+        errors.add(check_length(sig))
+    if checks & Checks.FANCY:
+        fanciness = check_fanciness(sig)
+        if fanciness:
+            # This check short circuits -- there's no point in doing the
+            # more expensive checks if there's only plain text
+            errors.add(fanciness)
+            return errors - {""}
+    if checks & Checks.LINT:
+        errors.update(get_lint_errors(sig, hostname))
+    if checks & Checks.NESTED_SUBST:
+        errors.add(check_tildes(sig, sitedata, hostname))
+
     return errors - {""}
 
 
@@ -231,10 +239,22 @@ def get_lint_errors(sig: str, hostname: str) -> Set[str]:
     """Use the REST API to get lint errors from the signature"""
     url = f"https://{hostname}/api/rest_v1/transform/wikitext/to/lint"
     data = {"wikitext": sig}
-    res = session.post(url, json=data)
-    res.raise_for_status()
+    for i in range(0, 5):
+        try:
+            res = session.post(url, json=data)
+            res.raise_for_status()
+            res_json = res.json()
+        except Exception as exc:
+            err = exc
+            logger.info(f"Request failed, sleeping for {3**i}")
+            time.sleep(3 ** i)
+        else:
+            break
+    else:
+        raise err
+
     errors = set()
-    for error in res.json():
+    for error in res_json:
         if (
             error.get("type", "") == "obsolete-tag"
             and error.get("params", {}).get("name", "") == "font"
