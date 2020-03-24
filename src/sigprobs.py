@@ -131,6 +131,14 @@ def get_user_properties(user: str, dbname: str) -> UserProps:
     )
 
 
+def iter_listed_user_sigs(userlist: list, dbname: str) -> Iterator[Tuple[str, str]]:
+    """Iterate users and signatures from a list of usernames"""
+    for user in userlist:
+        props = get_user_properties(user, dbname)
+        if props.fancysig and props.nickname:
+            yield user, props.nickname
+
+
 def get_site_data(hostname: str) -> SiteData:
     """Get metadata about a site from the API"""
     url = f"https://{hostname}/w/api.php"
@@ -411,11 +419,14 @@ def check_length(sig: str) -> Optional[SigError]:
 
 
 def main(
-    hostname: str, startblock: int = 0, lastedit: Optional[str] = None, days: int = 30
+    hostname: str,
+    startblock: int = 0,
+    lastedit: Optional[str] = None,
+    days: int = 30,
+    data: Optional[Union[Dict[str, str], List[str]]] = None,
 ) -> None:
     """Site-level report mode: Iterate over signatures and check for errors"""
     logger.info(f"Processing signatures for {hostname}")
-    config = load_config(hostname)  # noqa
     bad = 0
     total = 0
 
@@ -425,6 +436,15 @@ def main(
     filename = os.path.realpath(
         os.path.join(os.path.dirname(__file__), f"../data/{hostname}.json")
     )
+
+    if data is None:
+        sigsource = iter_active_user_sigs(dbname, startblock, lastedit, days)
+    elif isinstance(data, list):
+        sigsource = iter_listed_user_sigs(data, dbname)
+    elif isinstance(data, dict):
+        sigsource = data.items()  # type: ignore
+
+    resultdata = {}
     for user, sig in sigsource:
         total += 1
         if not sig:
