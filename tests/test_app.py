@@ -26,9 +26,9 @@ from bs4 import BeautifulSoup  # type: ignore
 
 sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/../src"))
 import app  # noqa: E402
-import sigprobs  # noqa: E402
 from web import resources  # noqa: E402
 import datatypes  # noqa: E402
+import datasources  # noqa: E402
 
 translated = pytest.mark.skipif(
     len(app.babel.list_translations()) < 2,
@@ -101,62 +101,7 @@ def test_setlang(client):
     assert en_lang2 == "English"
 
 
-def test_wmcs_true():
-    m = mock.mock_open(read_data="toolforge")
-    with mock.patch("web.resources.open", m):
-        assert resources.wmcs() is True
-    m.assert_called_once_with("/etc/wmcs-project")
-    m().close.assert_called_once
-
-
-def test_wmcs_false():
-    assert resources.wmcs() is False
-
-
-def test_do_db_query_nodb():
-    m = mock.Mock(return_value=False)
-    with mock.patch("web.resources.wmcs", m):
-        with pytest.raises(ConnectionError):
-            resources.do_db_query("meta_p", "")
-
-
-@mock.patch("web.resources.wmcs", return_value=True)
-def test_do_db_query(wmcs):
-    cur = mock.MagicMock()
-    cur.fetchall.return_value = mock.sentinel.fetchall
-    conn = mock.MagicMock()
-    conn.cursor.return_value.__enter__.return_value = cur
-    connect = mock.MagicMock(return_value=conn)
-    with mock.patch("toolforge.connect", connect):
-        res = resources.do_db_query(
-            mock.sentinel.db_name, mock.sentinel.query, foo="bar"
-        )
-
-    assert res is mock.sentinel.fetchall
-    connect.assert_called_once_with(mock.sentinel.db_name)
-    conn.cursor.assert_called_once()
-    cur.execute.assert_called_once_with(mock.sentinel.query, {"foo": "bar"})
-    cur.fetchall.assert_called_once()
-
-
-def test_get_sitematrix():
-    test_data = [
-        "en.wikipedia.org",
-        "commons.wikimedia.org",
-        "fr.wikipedia.org",
-    ]
-    mock_db_query = mock.Mock()
-    mock_db_query.return_value = [("https://" + site,) for site in test_data]
-    with mock.patch("web.resources.do_db_query", mock_db_query):
-        sitematrix = list(resources.get_sitematrix())
-    assert sitematrix == test_data
-
-    mock_db_query.assert_called_once_with(
-        "meta_p", "SELECT url FROM meta_p.wiki WHERE is_closed = 0;"
-    )
-
-
-@mock.patch("web.resources.get_sitematrix", return_value=[])
+@mock.patch("datasources.get_sitematrix", return_value=[])
 def test_check(get_sitematrix, client):
     req = client.get("/check")
     assert req.status_code == 200
@@ -188,26 +133,26 @@ def test_validate_username_pass():
 
 def test_get_default_sig():
     res = mock.Mock()
-    res.text = "[[User:$1|$2]] ([[User talk:$1|talk]])"
-    get = mock.Mock(return_value=res)
-    with mock.patch("web.resources.session.get", get):
+    res.return_value = "[[User:$1|$2]] ([[User talk:$1|talk]])"
+    with mock.patch("datasources.backoff_retry", res):
         sig = resources.get_default_sig(
             "en.wikipedia.org", user="user", nickname="nick"
         )
 
     assert sig == "[[User:user|nick]] ([[User talk:user|talk]])"
-    get.assert_called_once_with(
+    res.assert_called_once_with(
+        "get",
         "https://en.wikipedia.org/w/index.php",
+        output="text",
         params={"title": "MediaWiki:Signature", "action": "raw"},
     )
-    res.raise_for_status.assert_called_once()
 
 
 @pytest.mark.parametrize("userid,expected", [(((12345,),), True), ((), False)])
 def test_check_user_exists(userid, expected):
     db_query = mock.Mock(return_value=userid)
-    with mock.patch("web.resources.do_db_query", db_query):
-        exists = resources.check_user_exists("enwiki", "Example")
+    with mock.patch("datasources.db.do_db_query", db_query):
+        exists = datasources.check_user_exists("enwiki", "Example")
         assert expected == exists
     db_query.assert_called_once_with("enwiki", mock.ANY, user="Example")
 
@@ -227,13 +172,13 @@ def test_check_user_passed(sig, failure):
     "props,failure,errors",
     [
         (
-            sigprobs.UserProps(nickname="[[User:Example]]", fancysig=True),
+            datatypes.UserProps(nickname="[[User:Example]]", fancysig=True),
             False,
             datatypes.WebAppMessage.NO_ERRORS,
         ),
-        (sigprobs.UserProps(nickname="[[User:Example2]]", fancysig=True), None, ""),
+        (datatypes.UserProps(nickname="[[User:Example2]]", fancysig=True), None, ""),
         (
-            sigprobs.UserProps(nickname="Example2", fancysig=False),
+            datatypes.UserProps(nickname="Example2", fancysig=False),
             False,
             datatypes.WebAppMessage.SIG_NOT_FANCY,
         ),
@@ -241,7 +186,7 @@ def test_check_user_passed(sig, failure):
 )
 def test_check_user_db(props, failure, errors):
     user_props = mock.Mock(return_value=props)
-    with mock.patch("sigprobs.get_user_properties", user_props):
+    with mock.patch("datasources.get_user_properties", user_props):
         data = resources.check_user("en.wikipedia.org", "Example")
 
     assert data.signature
@@ -259,10 +204,12 @@ def test_check_user_db(props, failure, errors):
     ],
 )
 def test_check_user_db_nosig(exists, failure, errors):
-    user_props = mock.Mock(return_value=sigprobs.UserProps(nickname="", fancysig=False))
+    user_props = mock.Mock(
+        return_value=datatypes.UserProps(nickname="", fancysig=False)
+    )
     user_exists = mock.Mock(return_value=exists)
-    with mock.patch("sigprobs.get_user_properties", user_props):
-        with mock.patch("web.resources.check_user_exists", user_exists):
+    with mock.patch("datasources.get_user_properties", user_props):
+        with mock.patch("datasources.check_user_exists", user_exists):
             data = resources.check_user("en.wikipedia.org", "Example")
 
     user_exists.assert_called_once_with("enwiki", "Example")

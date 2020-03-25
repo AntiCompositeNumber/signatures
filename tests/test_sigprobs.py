@@ -26,6 +26,7 @@ import sys
 sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/../src"))
 import sigprobs  # noqa: E402
 from datatypes import SigError  # noqa: E402
+import datasources  # noqa: E402
 
 
 @pytest.fixture(
@@ -55,7 +56,7 @@ def site(request):
 
 @pytest.fixture(scope="module")
 def sitedata(site):
-    data = sigprobs.get_site_data(site["domain"])
+    data = datasources.get_site_data(site["domain"])
     return data
 
 

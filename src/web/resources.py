@@ -18,52 +18,13 @@
 # limitations under the License.
 
 import sigprobs
-import toolforge
 import logging
-import requests
 import os
+import datasources
 from datatypes import WebAppMessage, UserCheck, Result
-from typing import Iterator, Any, cast, Dict, List, Set
+from typing import Any, cast, Dict, List, Set
 
 logger = logging.getLogger(__name__)
-
-# Create requests HTTP session
-session = requests.Session()
-session.headers.update({"User-Agent": toolforge.set_user_agent("signatures")})
-
-
-def wmcs() -> bool:
-    try:
-        f = open("/etc/wmcs-project")
-    except FileNotFoundError:
-        return False
-    else:
-        f.close()
-        return True
-
-
-def do_db_query(db_name: str, query: str, **kwargs) -> Any:
-    """Uses the toolforge library to query the replica databases"""
-    if not wmcs():
-        raise ConnectionError("Not running on Toolforge, database unavailable")
-
-    conn = toolforge.connect(db_name)
-    with conn.cursor() as cur:
-        cur.execute(query, kwargs)
-        res = cur.fetchall()
-    return res
-
-
-def get_sitematrix() -> Iterator[str]:
-    """Try to get the sitematrix from the db, falling back to the API"""
-    query = "SELECT url FROM meta_p.wiki WHERE is_closed = 0;"
-    try:
-        sitematrix = do_db_query("meta_p", query)
-
-        for site in sitematrix:
-            yield site[0].rpartition("//")[2]
-    except ConnectionError:
-        return [""]
 
 
 def validate_username(user: str) -> None:
@@ -77,15 +38,8 @@ def validate_username(user: str) -> None:
 def get_default_sig(site: str, user: str = "$1", nickname: str = "$2") -> str:
     url = f"https://{site}/w/index.php"
     params = {"title": "MediaWiki:Signature", "action": "raw"}
-    res = session.get(url, params=params)
-    res.raise_for_status()
-    return res.text.replace("$1", user).replace("$2", nickname)
-
-
-def check_user_exists(dbname: str, user: str) -> bool:
-    query = "SELECT user_id FROM `user` WHERE user_name = %(user)s"
-    res = do_db_query(dbname, query, user=user)
-    return bool(res)
+    text = datasources.backoff_retry("get", url, output="text", params=params)
+    return text.replace("$1", user).replace("$2", nickname)
 
 
 def check_user(site: str, user: str, sig: str = "") -> UserCheck:
@@ -93,17 +47,17 @@ def check_user(site: str, user: str, sig: str = "") -> UserCheck:
     errors: Set[Result] = set()
     failure = None
     html_sig = ""
-    sitedata = sigprobs.get_site_data(site)
+    sitedata = datasources.get_site_data(site)
     dbname = sitedata.dbname
 
     if not sig:
         # signature not supplied, get data from database
-        user_props = sigprobs.get_user_properties(user, dbname)
+        user_props = datasources.get_user_properties(user, dbname)
         logger.debug(user_props)
 
         if not user_props.nickname:
             # user does not exist or uses default sig
-            if not check_user_exists(dbname, user):
+            if not datasources.check_user_exists(dbname, user):
                 # user does not exist
                 errors.add(WebAppMessage.USER_DOES_NOT_EXIST)
                 failure = True
@@ -146,9 +100,8 @@ def check_user(site: str, user: str, sig: str = "") -> UserCheck:
 def get_rendered_sig(site: str, wikitext: str) -> str:
     url = f"https://{site}/api/rest_v1/transform/wikitext/to/html"
     payload = {"wikitext": wikitext, "body_only": True}
-    res = session.post(url, json=payload)
-    res.raise_for_status()
-    return res.text.replace("./", f"https://{site}/wiki/")
+    text = datasources.backoff_retry("post", url, json=payload)
+    return text.replace("./", f"https://{site}/wiki/")
 
 
 def list_report_sites(config: Dict[str, Any]) -> List[str]:

@@ -28,6 +28,7 @@ import functools
 import logging
 
 from . import resources
+import datasources
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +82,7 @@ def check():
         )
 
     return flask.render_template(
-        "check_form.html", sitematrix=resources.get_sitematrix()
+        "check_form.html", sitematrix=datasources.get_sitematrix()
     )
 
 

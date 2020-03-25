@@ -18,24 +18,15 @@
 # limitations under the License.
 
 
-import requests
 import mwparserfromhell as mwph  # type: ignore
-import toolforge
 import json
-import pymysql
-import time
 import datetime
-import itertools
 import sys
 import logging
 import os
-from datatypes import UserProps, Checks, SigError, SiteData
-from typing import Iterator, Tuple, Union, Dict, Set, Optional, List, cast
-
-session = requests.Session()
-session.headers.update(
-    {"User-Agent": "sigprobs " + toolforge.set_user_agent("signatures")}
-)
+import datasources
+from datatypes import Checks, SigError, SiteData
+from typing import Union, Dict, Set, Optional, List, cast
 
 
 def load_config(site):
@@ -57,161 +48,6 @@ def load_config(site):
         config.update(conf.get("default", {}))
         config.update(conf.get(site, {}))
     return config
-
-
-def iter_active_user_sigs(
-    dbname: str, startblock: int = 0, lastedit: str = None, days: int = 365
-) -> Iterator[Tuple[str, str]]:
-    """Get usernames and signatures from the replica database"""
-    if lastedit is None:
-        lastedit = (
-            datetime.datetime.utcnow() - datetime.timedelta(days=days)
-        ).strftime("%Y%m%d%H%M%S")
-    conn = toolforge.connect(f"{dbname}_p", cluster="analytics")
-    with cast(
-        pymysql.cursors.SSCursor, conn.cursor(cursor=pymysql.cursors.SSCursor),
-    ) as cur:
-
-        # Break query into 100 queries paginated by last digits of user id
-        for i in range(startblock, 100):
-            cur.execute(
-                """
-                SELECT user_name, up_value
-                FROM
-                    user_properties
-                    JOIN `user` ON user_id = up_user
-                WHERE
-                    RIGHT(up_user, 2) = %s AND
-                    up_property = "nickname" AND
-                    user_name IN (SELECT actor_name
-                                  FROM revision_userindex
-                                  JOIN actor_revision ON rev_actor = actor_id
-                                  WHERE rev_timestamp > %s) AND
-                    up_user IN (SELECT up_user
-                                FROM user_properties
-                                WHERE up_property = "fancysig" AND up_value = 1) AND
-                    up_value != user_name
-                ORDER BY up_user ASC""",
-                args=(str(i), lastedit),
-            )
-            logger.info(f"Block {i}")
-            for username, signature in cast(
-                Iterator[Tuple[bytes, bytes]], cur.fetchall_unbuffered()
-            ):
-                yield username.decode(encoding="utf-8"), signature.decode(
-                    encoding="utf-8"
-                )
-
-
-def get_user_properties(user: str, dbname: str) -> UserProps:
-    """Get signature and fancysig values for a user from the replica db"""
-    logger.info("Getting user properties")
-    conn = toolforge.connect(f"{dbname}_p")
-    with conn.cursor() as cur:
-        cur.execute(
-            """
-            SELECT up_property, up_value
-            FROM
-                user_properties
-            WHERE
-                up_user = (SELECT user_id
-                           FROM `user`
-                           WHERE user_name = %s)
-            """,
-            (user),
-        )
-        resultset = cast(List[Tuple[bytes, bytes]], cur.fetchall())
-    logger.debug(resultset)
-
-    data: Dict[str, str] = {
-        key.decode("utf-8"): value.decode("utf-8") for key, value in resultset
-    }
-    return UserProps(
-        nickname=data.get("nickname", ""), fancysig=bool(int(data.get("fancysig", "0")))
-    )
-
-
-def iter_listed_user_sigs(userlist: list, dbname: str) -> Iterator[Tuple[str, str]]:
-    """Iterate users and signatures from a list of usernames"""
-    for user in userlist:
-        props = get_user_properties(user, dbname)
-        if props.fancysig and props.nickname:
-            yield user, props.nickname
-
-
-def get_site_data(hostname: str) -> SiteData:
-    """Get metadata about a site from the API"""
-    url = f"https://{hostname}/w/api.php"
-    data = dict(
-        action="query",
-        meta="siteinfo",
-        siprop="|".join(
-            [
-                "namespaces",
-                "namespacealiases",
-                "specialpagealiases",
-                "magicwords",
-                "general",
-            ]
-        ),
-        formatversion="2",
-        format="json",
-    )
-    res = session.get(url, params=data)
-    res.raise_for_status()
-
-    namespaces: Dict[str, Set[str]] = {}
-    all_namespaces = res.json()["query"]["namespaces"]
-    namespace_aliases = res.json()["query"]["namespacealiases"]
-    for namespace, nsdata in all_namespaces.items():
-        namespaces.setdefault(namespace, set()).update(
-            [
-                normal_name(nsdata.get("canonical", "")),
-                normal_name(nsdata.get("name", "")),
-            ]
-        )
-
-    for nsdata in namespace_aliases:
-        namespaces.setdefault(str(nsdata["id"]), set()).add(
-            normal_name(nsdata.get("alias", ""))
-        )
-
-    specialpages = {
-        item["realname"]: item["aliases"]
-        for item in res.json()["query"]["specialpagealiases"]
-    }
-    magicwords = {
-        item["name"]: item["aliases"] for item in res.json()["query"]["magicwords"]
-    }
-    general = res.json()["query"]["general"]
-
-    contribs = {normal_name(name) for name in specialpages["Contributions"]}
-
-    subst = list(
-        itertools.chain(
-            magicwords.get("subst", ["SUBST"]),
-            [item.lower() for item in magicwords.get("subst", ["SUBST"])],
-            [item[0] + item[1:].lower() for item in magicwords.get("subst", ["SUBST"])],
-        )
-    )
-
-    sitedata = SiteData(
-        user=namespaces["2"] - {""},
-        user_talk=namespaces["3"] - {""},
-        special=namespaces["-1"] - {""},
-        contribs=contribs,
-        subst=subst,
-        dbname=general["wikiid"],
-    )
-    return sitedata
-
-
-def normal_name(name: str) -> str:
-    """Make first letter uppercase and replace spaces with underscores"""
-    if name == "":
-        return ""
-    name = str(name)
-    return (name[0].upper() + name[1:]).replace(" ", "_")
 
 
 def check_sig(
@@ -247,19 +83,8 @@ def get_lint_errors(sig: str, hostname: str) -> Set[SigError]:
     """Use the REST API to get lint errors from the signature"""
     url = f"https://{hostname}/api/rest_v1/transform/wikitext/to/lint"
     data = {"wikitext": sig}
-    for i in range(0, 5):
-        try:
-            res = session.post(url, json=data)
-            res.raise_for_status()
-            res_json = res.json()
-        except Exception as exc:
-            err = exc
-            logger.info(f"Request failed, sleeping for {3**i}")
-            time.sleep(3 ** i)
-        else:
-            break
-    else:
-        raise err
+
+    res_json = datasources.backoff_retry("post", url, json=data, output="json")
 
     errors = set()
     for error in res_json:
@@ -298,7 +123,7 @@ def check_links(
 def compare_links(user: str, sitedata: SiteData, sig: str) -> Union[bool, Set[str]]:
     """Compare links in a sig to data in sitedata"""
     wikitext = mwph.parse(sig)
-    user = normal_name(user)
+    user = datasources.normal_name(user)
     errors = set()
     for link in wikitext.ifilter_wikilinks():
         title = str(link.title)
@@ -319,7 +144,7 @@ def compare_links(user: str, sitedata: SiteData, sig: str) -> Union[bool, Set[st
         else:
             ns, sep, page = title.rpartition(":")
         # normalize namespace and strip whitespace from both
-        ns, page = normal_name(ns.strip()), page.strip()
+        ns, page = datasources.normal_name(ns.strip()), page.strip()
 
         # remove leading colon from namespace
         if ns.startswith(":"):
@@ -332,7 +157,7 @@ def compare_links(user: str, sitedata: SiteData, sig: str) -> Union[bool, Set[st
             errors.add("interwiki-user-link")
         elif ns in sitedata.user or ns in sitedata.user_talk:
             # Check that it's the right user or user_talk
-            if normal_name(page) == user:
+            if datasources.normal_name(page) == user:
                 return True
             else:
                 errors.add("link-username-mismatch")
@@ -341,8 +166,8 @@ def compare_links(user: str, sitedata: SiteData, sig: str) -> Union[bool, Set[st
             # Could be a contribs page, check
             # split page and normalize names
             specialpage, slash, target = page.partition("/")
-            specialpage = normal_name(specialpage.strip())
-            target = normal_name(target.strip())
+            specialpage = datasources.normal_name(specialpage.strip())
+            target = datasources.normal_name(target.strip())
             if specialpage in sitedata.contribs:
                 # It's contribs
                 if target == user:
@@ -368,9 +193,8 @@ def evaluate_subst(text: str, sitedata: SiteData, hostname: str) -> str:
         "prop": "wikitext",
     }
     url = f"https://{hostname}/w/api.php"
-    res = session.get(url, params=data)
-    res.raise_for_status()
-    return res.json()["expandtemplates"]["wikitext"]
+    res = datasources.backoff_retry("get", url, params=data, output="json")
+    return res["expandtemplates"]["wikitext"]
 
 
 def check_fanciness(sig: str) -> Optional[SigError]:
@@ -430,7 +254,7 @@ def main(
     bad = 0
     total = 0
 
-    sitedata = get_site_data(hostname)
+    sitedata = datasources.get_site_data(hostname)
     dbname = sitedata.dbname
 
     filename = os.path.realpath(
@@ -438,9 +262,11 @@ def main(
     )
 
     if data is None:
-        sigsource = iter_active_user_sigs(dbname, startblock, lastedit, days)
+        sigsource = datasources.iter_active_user_sigs(
+            dbname, startblock, lastedit, days
+        )
     elif isinstance(data, list):
-        sigsource = iter_listed_user_sigs(data, dbname)
+        sigsource = datasources.iter_listed_user_sigs(data, dbname)
     elif isinstance(data, dict):
         sigsource = data.items()  # type: ignore
 
