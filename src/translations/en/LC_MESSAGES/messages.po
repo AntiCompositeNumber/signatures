@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-24 16:32-0400\n"
+"POT-Creation-Date: 2020-03-28 13:54-0400\n"
 "PO-Revision-Date: 2020-03-13 21:53-0400\n"
 "Last-Translator: AntiCompositeNumber\n"
 "Language: en\n"
@@ -154,63 +154,73 @@ msgstr ""
 "Signatures should not contain markup that could transform into someone "
 "else's signature."
 
-#: datatypes.py:127
+#: datatypes.py:128
+msgid "complex-template"
+msgstr "Complex template markup"
+
+#: datatypes.py:129
+msgid "complex-template-help"
+msgstr ""
+"This signature contains complex markup that caused it to change for each of "
+"five substitutions."
+
+#: datatypes.py:132
 msgid "no-user-links"
 msgstr "No user links"
 
-#: datatypes.py:127
+#: datatypes.py:132
 msgid "no-user-links-help"
 msgstr ""
 "Signatures should contain a wikilink to the user's local user page, user "
 "talk page, or contributions."
 
-#: datatypes.py:128
+#: datatypes.py:133
 msgid "plain-fancy-sig"
 msgstr "Plain fancy signature"
 
-#: datatypes.py:128
+#: datatypes.py:133
 msgid "plain-fancy-sig-help"
 msgstr ""
 "The \"Treat the above as wiki markup\" box was ticked, but this signature"
 " doesn't contain any markup."
 
-#: datatypes.py:129
+#: datatypes.py:134
 msgid "sig-too-long"
 msgstr "Signature too long"
 
-#: datatypes.py:129
+#: datatypes.py:134
 msgid "sig-too-long-help"
 msgstr "Signatures must contain less than 255 bytes of wikitext."
 
-#: datatypes.py:133
+#: datatypes.py:138
 msgid "default-sig"
 msgstr "Default signature"
 
-#: datatypes.py:133
+#: datatypes.py:138
 msgid "default-sig-help"
 msgstr "No custom signature has been set for this user."
 
-#: datatypes.py:134
+#: datatypes.py:139
 msgid "no-errors"
 msgstr "No errors"
 
-#: datatypes.py:134
+#: datatypes.py:139
 msgid "no-errors-help"
 msgstr "No problems were detected with this signature."
 
-#: datatypes.py:135
+#: datatypes.py:140
 msgid "sig-not-fancy"
 msgstr "Non-fancy signature"
 
-#: datatypes.py:135
+#: datatypes.py:140
 msgid "sig-not-fancy-help"
 msgstr "This signature is only a nickname, and is not interpreted as wikitext."
 
-#: datatypes.py:136
+#: datatypes.py:141
 msgid "user-does-not-exist"
 msgstr "User does not exist"
 
-#: datatypes.py:136
+#: datatypes.py:141
 msgid "user-does-not-exist-help"
 msgstr "The provided username does not exist on this wiki."
 
@@ -535,3 +545,4 @@ msgstr "Errors"
 #: templates/report_site.html:37
 msgid "Signature"
 msgstr "Signature"
+

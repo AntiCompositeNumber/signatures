@@ -124,6 +124,11 @@ class SigError(Result):
         Checks.LINKS,
     )
     NESTED_SUBST = N_("nested-subst"), N_("nested-subst-help"), Checks.NESTED_SUBST
+    COMPLEX_TEMPL = (
+        N_("complex-template"),
+        N_("complex-template-help"),
+        Checks.NESTED_SUBST,
+    )
     NO_USER_LINKS = N_("no-user-links"), N_("no-user-links-help"), Checks.LINKS
     PLAIN_FANCY_SIG = N_("plain-fancy-sig"), N_("plain-fancy-sig-help"), Checks.FANCY
     SIG_TOO_LONG = N_("sig-too-long"), N_("sig-too-long-help"), Checks.LENGTH

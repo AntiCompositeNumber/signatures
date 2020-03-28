@@ -231,6 +231,9 @@ def check_tildes(sig: str, sitedata: SiteData, hostname: str) -> Optional[SigErr
                 return None
         else:
             old_wikitext = new_wikitext
+    else:
+        # after 5 rounds of substitution, the wikitext keeps changing.
+        return SigError.COMPLEX_TEMPL
     return SigError.NESTED_SUBST
 
 

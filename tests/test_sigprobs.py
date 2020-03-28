@@ -101,6 +101,13 @@ def test_check_tildes(sig, expected, sitedata, site):
     assert errors == expected
 
 
+def test_check_tildes_fallthrough():
+    mock_subst = mock.Mock(side_effect=[f"{{{{{i}}}}}" for i in range(0, 6)])
+    with mock.patch("sigprobs.evaluate_subst", mock_subst):
+        errors = sigprobs.check_tildes("{}", None, "")
+    assert errors == SigError.COMPLEX_TEMPL
+
+
 @pytest.mark.parametrize(
     "sig,expected",
     [
