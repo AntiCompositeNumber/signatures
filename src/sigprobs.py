@@ -146,7 +146,7 @@ def compare_links(user: str, sitedata: SiteData, sig: str) -> Union[bool, Set[st
                 ns, sep, page = raw.rpartition(":")
                 page += f"/{user}"
             else:
-                continue
+                continue  # pragma: no cover
         else:
             ns, sep, page = title.rpartition(":")
         # normalize namespace and strip whitespace from both
@@ -181,9 +181,9 @@ def compare_links(user: str, sitedata: SiteData, sig: str) -> Union[bool, Set[st
                     return True
                 else:
                     errors.add("link-username-mismatch")
-                    continue
+                    continue  # pragma: no cover
             else:
-                continue
+                continue  # pragma: no cover
     else:
         return errors
 
@@ -297,6 +297,10 @@ def main(
         sigsource = datasources.iter_listed_user_sigs(data, dbname)
     elif isinstance(data, dict):
         sigsource = data.items()  # type: ignore
+    else:
+        raise TypeError(
+            "Data is of type %s when None, list, or dict expected" % (type(data))
+        )
 
     resultdata: Dict[str, Dict[str, Union[str, List[SigError]]]] = {}
     accumulate = {}
