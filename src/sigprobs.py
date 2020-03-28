@@ -325,7 +325,7 @@ def main(
         # Batch requests to lint, since network requests are slow
         # There is probably a better way to do this with async, but
         # that's more work.
-        if len(accumulate) >= 10:
+        if len(accumulate) >= 5:
             accumulate, resultdata = batch_check_lint(accumulate, resultdata, hostname)
 
     # Catch any sigs that didn't get linted

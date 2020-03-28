@@ -217,7 +217,7 @@ def test_main(site):
     }
 
 
-@pytest.mark.parametrize("count", [10, 3])
+@pytest.mark.parametrize("count", [5, 3])
 def test_main_accumulate(site, count):
     mock_linter = mock.Mock(
         side_effect=lambda asig, host: {SigError.MISSING_END_TAG}
