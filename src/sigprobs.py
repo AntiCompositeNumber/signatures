@@ -25,8 +25,9 @@ import sys
 import logging
 import os
 import datasources
+import datatypes
 from datatypes import Checks, SigError, SiteData
-from typing import Union, Dict, Set, Optional, List, cast
+from typing import Union, Dict, Set, Optional, List, cast, Tuple
 
 
 def load_config(site):
@@ -245,10 +246,37 @@ def check_length(sig: str) -> Optional[SigError]:
         return None
 
 
+def batch_check_lint(
+    accumulate: Dict[str, str],
+    resultdata: Dict[str, Dict[str, Union[str, List[SigError]]]],
+    hostname: str,
+) -> Tuple[Dict[str, str], Dict[str, Dict[str, Union[str, List[SigError]]]]]:
+    logger.debug("Contstructing batched request to linter")
+    batch = "\n\n".join(accumulate.values())
+    lint_errors = get_lint_errors(batch, hostname)
+    if lint_errors:
+        # At least one signature has errors. Check them all individually
+        userlist = list(accumulate.keys())
+        for auser in userlist:
+            asig = accumulate.pop(auser)
+            indiv_lints = get_lint_errors(asig, hostname)
+            if indiv_lints:
+                resultdata.setdefault(auser, {})
+                cast(
+                    List[SigError], resultdata[auser].setdefault("errors", []),
+                ).extend(list(indiv_lints))
+                resultdata[auser].setdefault("signature", asig)
+    else:
+        accumulate = {}
+
+    return accumulate, resultdata
+
+
 def main(
     hostname: str,
     lastedit: Optional[str] = None,
     days: int = 30,
+    checks: datatypes.Checks = datatypes.Checks.DEFAULT,
     data: Optional[Union[Dict[str, str], List[str]]] = None,
 ) -> None:
     """Site-level report mode: Iterate over signatures and check for errors"""
@@ -270,26 +298,35 @@ def main(
     elif isinstance(data, dict):
         sigsource = data.items()  # type: ignore
 
-    resultdata = {}
+    resultdata: Dict[str, Dict[str, Union[str, List[SigError]]]] = {}
+    accumulate = {}
     for user, sig in sigsource:
         total += 1
         if not sig:
             continue
         try:
-            errors = check_sig(user, sig, sitedata, hostname)
+            errors = check_sig(
+                user, sig, sitedata, hostname, checks=checks ^ Checks.LINT
+            )
+            accumulate[user] = sig
         except Exception:
             logger.error(f"Processing User:{user}: {sig}")
             raise
-        if not errors:
-            continue
-        resultdata[user] = {"signature": sig, "errors": list(errors)}
-        bad += 1
-        if bad % 10 == 0:
-            logger.info(f"{bad} bad sigs found in {total} so far")
+        if errors:
+            resultdata[user] = {"signature": sig, "errors": list(errors)}
+        # Batch requests to lint, since network requests are slow
+        # There is probably a better way to do this with async, but
+        # that's more work.
+        if len(accumulate) >= 10:
+            accumulate, resultdata = batch_check_lint(accumulate, resultdata, hostname)
+
+    # Catch any sigs that didn't get linted
+    if accumulate:
+        accumulate, resultdata = batch_check_lint(accumulate, resultdata, hostname)
 
     # Collect stats, and generate json file
     stats = {}
-    stats["total"] = bad
+    stats["total"] = len(resultdata)
     for user, line in resultdata.items():
         for error in cast(list, line.get("errors")):
             stats[error] = stats.setdefault(error, 0) + 1
