@@ -24,10 +24,15 @@ import datetime
 import sys
 import logging
 import os
+import itertools
+import functools
+import operator
+import argparse
 import datasources
 import datatypes
+import pathlib
 from datatypes import Checks, SigError, SiteData
-from typing import Union, Dict, Set, Optional, List, cast, Tuple
+from typing import Union, Dict, Set, Optional, List, cast, Tuple, TextIO
 
 
 def load_config(site):
@@ -278,18 +283,13 @@ def main(
     days: int = 30,
     checks: datatypes.Checks = datatypes.Checks.DEFAULT,
     data: Optional[Union[Dict[str, str], List[str]]] = None,
-) -> None:
+) -> Optional[Dict]:
     """Site-level report mode: Iterate over signatures and check for errors"""
     logger.info(f"Processing signatures for {hostname}")
-    bad = 0
     total = 0
 
     sitedata = datasources.get_site_data(hostname)
     dbname = sitedata.dbname
-
-    filename = os.path.realpath(
-        os.path.join(os.path.dirname(__file__), f"../data/{hostname}.json")
-    )
 
     if data is None:
         sigsource = datasources.iter_active_user_sigs(dbname, lastedit, days)
@@ -328,7 +328,8 @@ def main(
     stats = {}
     stats["total"] = len(resultdata)
     for user, line in resultdata.items():
-        for error in cast(list, line.get("errors")):
+        line["errors"] = [error.value for error in cast(List[SigError], line["errors"])]
+        for error in line.get("errors", []):
             stats[error] = stats.setdefault(error, 0) + 1
 
     meta = {"last_update": datetime.datetime.utcnow().isoformat(), "site": hostname}
@@ -340,13 +341,107 @@ def main(
         meta["active_since"] = (
             datetime.datetime.utcnow() - datetime.timedelta(days=days)
         ).isoformat()
-    with open(filename, "w") as f:
-        json.dump(
-            {"errors": stats, "meta": meta, "sigs": resultdata},
-            f,
-            sort_keys=True,
-            indent=4,
+
+    outdata = {
+        "errors": stats,
+        "meta": meta,
+        "sigs": {key: resultdata[key] for key in sorted(resultdata)},
+    }
+
+    return outdata
+
+
+def handle_args(args=sys.argv[1:]):
+    check_flags = Checks.__members__
+    parser = argparse.ArgumentParser(prog=__file__)
+    parser.add_argument("hostnames", nargs="+", help="Hostnames of sites to check.")
+    inputsources = parser.add_mutually_exclusive_group()
+    inputsources.add_argument(
+        "--days",
+        type=int,
+        default=30,
+        help="Only check signatures for users with edits in the last DAYS days",
+    )
+    parser.add_argument(
+        "--checks",
+        default=[Checks.DEFAULT],
+        type=lambda flag: check_flags[flag.upper()],
+        # action="extend",  # removed, not supported until py 3.8
+        nargs="+",
+        metavar="CHECK",
+        help=(
+            "List of checks to run on the signatures. Must be at least one of ("
+            + ", ".join(f"'{flag.lower()}'" for flag in check_flags.keys())
+            + ")."
+        ),
+    )
+    inputsources.add_argument(
+        "--input",
+        type=argparse.FileType("r"),
+        help="JSON file to read user and signature data from "
+        "instead of querying the database.",
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        default=[""],
+        help="Output files or directory. "
+        "If output files are specified, a filename must be specified for each site. "
+        "If a directory is specified, a <hostname>.json file will be created for "
+        "each site. The default location is a data/ directory one directory above "
+        "the script.",
+        nargs="+",
+        # action="extend",  # removed, not supported until py 3.8
+    )
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Overwrite output files if they already exist.",
+    )
+    args = parser.parse_args(args)
+
+    kwargs = dict(
+        days=args.days,
+        checks=functools.reduce(operator.or_, args.checks),
+        data=json.load(args.input) if args.input else None,
+    )
+    if len(args.output) == len(args.hostnames):
+        outputs = args.output
+    elif len(args.output) == 1 and not args.output[0].endswith(".json"):
+        # One output location, use for all sites.
+        outputs = itertools.repeat(args.output[0], len(args.hostnames))
+    else:
+        raise ValueError("Number of sites and number of output files does not match")
+    if isinstance(kwargs["data"], dict) and len(args.hostnames) != 1:
+        raise ValueError(
+            "If multiple sites are given, input data must not include signatures"
         )
+
+    for hostname, output in zip(args.hostnames, outputs):
+        with output_file(output, hostname, args.overwrite) as f:
+            result = main(hostname, **kwargs)
+            json.dump(result, f)
+
+
+def output_file(output: Optional[str], hostname: str, overwrite: bool) -> TextIO:
+    if output == "-":
+        return sys.stdout
+    else:
+        if not output:
+            out_dir = (
+                pathlib.Path(__file__)
+                .resolve(strict=True)
+                .parent.parent.joinpath("data")
+            )
+        else:
+            path = pathlib.Path(output)
+            if path.is_dir():
+                out_dir = path.resolve(strict=True)
+            else:
+                return path.open("w") if overwrite else path.open("x")
+
+        out_file = out_dir.joinpath(f"{hostname}.json")
+        return out_file.open("w") if overwrite else out_file.open("x")
 
 
 if __name__ == "__main__":
@@ -354,6 +449,6 @@ if __name__ == "__main__":
         format="%(asctime)s %(levelname)s:%(name)s:%(message)s", level=logging.DEBUG,
     )
     logger = logging.getLogger("sigprobs")
-    main(sys.argv[1])
+    handle_args()
 else:
     logger = logging.getLogger(__name__)

@@ -21,7 +21,8 @@ To stop the webservice, run `webservice stop`
 On Toolforge, reports are run from a Kubernetes Job. 
 A custom script is used to start the job. 
 Any arguments passed to the start script will be passed to the report script. 
-Currently, the only accepted parameter is the site that should be scanned.
+
+See `python3 src/sigprobs.py --help` for CLI details.
 
 To create or update a report, run `./sigprobs_start.py <site>`
 
