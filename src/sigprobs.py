@@ -256,12 +256,13 @@ def batch_check_lint(
     resultdata: Dict[str, Dict[str, Union[str, List[SigError]]]],
     hostname: str,
 ) -> Tuple[Dict[str, str], Dict[str, Dict[str, Union[str, List[SigError]]]]]:
-    logger.debug("Contstructing batched request to linter")
+    logger.info("Contstructing batched request to linter")
     batch = "\n\n".join(accumulate.values())
     lint_errors = get_lint_errors(batch, hostname)
     if lint_errors:
         # At least one signature has errors. Check them all individually
         userlist = list(accumulate.keys())
+        count = 0
         for auser in userlist:
             asig = accumulate.pop(auser)
             indiv_lints = get_lint_errors(asig, hostname)
@@ -271,7 +272,10 @@ def batch_check_lint(
                     List[SigError], resultdata[auser].setdefault("errors", []),
                 ).extend(list(indiv_lints))
                 resultdata[auser].setdefault("signature", asig)
+                count += 1
+        logger.info(f"{count} users with errors found in batch")
     else:
+        logger.info("No errors in batch")
         accumulate = {}
 
     return accumulate, resultdata
