@@ -38,7 +38,7 @@ def wmcs() -> bool:
 
 
 def iter_active_user_sigs(
-    dbname: str, startblock: int = 0, lastedit: str = None, days: int = 365
+    dbname: str, lastedit: str = None, days: int = 365
 ) -> Iterator[Tuple[str, str]]:
     """Get usernames and signatures from the replica database"""
     if lastedit is None:
@@ -51,7 +51,7 @@ def iter_active_user_sigs(
     ) as cur:
 
         # Break query into 100 queries paginated by last digits of user id
-        for i in range(startblock, 100):
+        for i in range(0, 100):
             cur.execute(
                 """
                 SELECT user_name, up_value

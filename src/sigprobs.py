@@ -247,7 +247,6 @@ def check_length(sig: str) -> Optional[SigError]:
 
 def main(
     hostname: str,
-    startblock: int = 0,
     lastedit: Optional[str] = None,
     days: int = 30,
     data: Optional[Union[Dict[str, str], List[str]]] = None,
@@ -265,9 +264,7 @@ def main(
     )
 
     if data is None:
-        sigsource = datasources.iter_active_user_sigs(
-            dbname, startblock, lastedit, days
-        )
+        sigsource = datasources.iter_active_user_sigs(dbname, lastedit, days)
     elif isinstance(data, list):
         sigsource = datasources.iter_listed_user_sigs(data, dbname)
     elif isinstance(data, dict):
