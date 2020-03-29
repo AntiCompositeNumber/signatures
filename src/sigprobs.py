@@ -316,7 +316,7 @@ def main(
             errors = check_sig(
                 user, sig, sitedata, hostname, checks=checks ^ Checks.LINT
             )
-            if SigError.SIG_NOT_FANCY not in errors:
+            if SigError.PLAIN_FANCY_SIG not in errors:
                 accumulate[user] = sig
         except Exception:
             logger.error(f"Processing User:{user}: {sig}")
