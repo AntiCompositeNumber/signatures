@@ -17,7 +17,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pymysql
 import datetime
 import toolforge
 import logging
@@ -46,9 +45,7 @@ def iter_active_user_sigs(
             datetime.datetime.utcnow() - datetime.timedelta(days=days)
         ).strftime("%Y%m%d%H%M%S")
     conn = toolforge.connect(f"{dbname}_p", cluster="analytics")
-    with cast(
-        pymysql.cursors.SSCursor, conn.cursor(cursor=pymysql.cursors.SSCursor),
-    ) as cur:
+    with conn.cursor() as cur:
 
         # Break query into 100 queries paginated by last digits of user id
         for i in range(0, 100):
@@ -74,7 +71,7 @@ def iter_active_user_sigs(
             )
             logger.info(f"Block {i}")
             for username, signature in cast(
-                Iterator[Tuple[bytes, bytes]], cur.fetchall_unbuffered()
+                Iterator[Tuple[bytes, bytes]], cur.fetchall()
             ):
                 yield username.decode(encoding="utf-8"), signature.decode(
                     encoding="utf-8"
