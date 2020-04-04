@@ -85,6 +85,8 @@ def check_sig(
         errors.add(check_images(sig, sitedata))
     if checks & Checks.TRANSCLUSION:
         errors.add(check_transclusion(sig, sitedata))
+    if checks & Checks.SUBST_LENGTH:
+        errors.add(check_post_subst_length(sig, sitedata, hostname))
 
     return cast(Set[SigError], errors - {None})
 
@@ -290,8 +292,25 @@ def check_transclusion(sig: str, sitedata: SiteData) -> Optional[SigError]:
     return None
 
 
-def check_post_subst_length(sig: str, sitedata: SiteData) -> Optional[SigError]:
-    return NotImplemented
+def check_post_subst_length(
+    sig: str, sitedata: SiteData, hostname: str
+) -> Optional[SigError]:
+    """Checks for long signatures after substitution"""
+
+    # if the wikitext is already long, don't bother.
+    if check_length(sig) is not None:
+        return None
+
+    # if the wikitext doesn't have a template, don't bother.
+    if "{" not in sig:
+        return None
+    new_wikitext = evaluate_subst(sig, sitedata, hostname)
+    if new_wikitext == sig:
+        return None
+    elif not new_wikitext:
+        return None
+    elif check_length(new_wikitext) is not None:
+        return SigError.SUBST_LENGTH
 
 
 def check_impersonation(sig: str, user: str) -> Optional[SigError]:

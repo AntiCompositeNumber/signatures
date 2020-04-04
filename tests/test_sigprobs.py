@@ -228,18 +228,17 @@ def test_check_transclusion(sig, expected, site, sitedata):
     assert error == expected
 
 
-@pytest.mark.xfail
 @pytest.mark.parametrize(
     "sig,expected",
-    [("a" * 200, None), ("a" * 265, SigError("sig-too-long")), ("a" * 255, None)],
+    [("a" * 200, None), ("a" * 265, SigError.SUBST_LENGTH), ("a" * 255, None)],
     ids=["200", "265", "255"],
 )
-def test_post_subst_length(sig, expected, site, sitedata):
+def test_check_post_subst_length(sig, expected, site, sitedata):
     mock_subst = mock.Mock()
     mock_subst.return_value = sig % site
     with mock.patch("sigprobs.evaluate_subst", mock_subst):
         error = sigprobs.check_post_subst_length(
-            "{{%(subst)s:%(user)s:Example/sig}}" % site, sitedata,
+            "{{%(subst)s:%(user)s:Example/sig}}" % site, sitedata, site["domain"]
         )
         assert error == expected
 
