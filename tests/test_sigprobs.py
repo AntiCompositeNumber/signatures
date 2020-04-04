@@ -214,7 +214,6 @@ def test_check_images(sig, expected, site, sitedata):
     assert error == expected
 
 
-@pytest.mark.xfail
 @pytest.mark.parametrize(
     "sig,expected",
     [

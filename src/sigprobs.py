@@ -83,6 +83,8 @@ def check_sig(
         errors.add(check_tildes(sig, sitedata, hostname))
     if checks & Checks.IMAGES:
         errors.add(check_images(sig, sitedata))
+    if checks & Checks.TRANSCLUSION:
+        errors.add(check_transclusion(sig, sitedata))
 
     return cast(Set[SigError], errors - {None})
 
@@ -273,7 +275,19 @@ def check_images(sig: str, sitedata: SiteData) -> Optional[SigError]:
 
 
 def check_transclusion(sig: str, sitedata: SiteData) -> Optional[SigError]:
-    return NotImplemented
+    """Checks for template or parser function transclusion in the sig"""
+    wikitext = mwph.parse(sig)
+    for templ in wikitext.ifilter_templates():
+        title = str(templ.name)
+        for subst in sitedata.subst:
+            # {{!}} isn't actually a template, it's a parser function that
+            # is used to escape pipes and should never be subst'd.
+            if title.startswith(subst) or title == "!":
+                break
+        else:
+            return SigError.TRANSCLUSION
+
+    return None
 
 
 def check_post_subst_length(sig: str, sitedata: SiteData) -> Optional[SigError]:
