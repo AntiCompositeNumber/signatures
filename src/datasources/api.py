@@ -119,3 +119,10 @@ def get_site_data(hostname: str) -> SiteData:
         hostname=hostname,
     )
     return sitedata
+
+
+def _check_user_exists(user: str, hostname: str) -> bool:
+    params = {"action": "query", "format": "json", "list": "users", "ususers": user}
+    url = f"https://{hostname}/w/api.php"
+    result = backoff_retry("get", url, output="json", params=params)
+    return bool(result["query"]["users"][0].get("missing", True))

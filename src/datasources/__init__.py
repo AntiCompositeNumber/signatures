@@ -17,8 +17,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from datatypes import SiteData
+from . import api, db
 from .api import *  # noqa: F403, F401
 from .db import *  # noqa: F403, F401
+import pymysql
 
 
 def normal_name(name: str) -> str:
@@ -27,3 +30,15 @@ def normal_name(name: str) -> str:
         return ""
     name = str(name)
     return (name[0].upper() + name[1:]).replace(" ", "_")
+
+
+def check_user_exists(user: str, sitedata: SiteData) -> bool:
+    """Check if a user exists on the given wiki.
+
+    Uses database if available, falling back to the API if not.
+    """
+    try:
+        result = db._check_user_exists(user, sitedata.dbname)
+    except (ConnectionError, pymysql.err.OperationalError):
+        result = api._check_user_exists(user, sitedata.hostname)
+    return result

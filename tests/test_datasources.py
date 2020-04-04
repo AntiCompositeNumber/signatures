@@ -21,6 +21,7 @@ import pytest  # type: ignore
 import unittest.mock as mock
 import sys
 import os
+
 # import urllib.parse
 # from bs4 import BeautifulSoup  # type: ignore
 
@@ -28,7 +29,19 @@ sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/../src"))
 # import app  # noqa: E402
 # import sigprobs  # noqa: E402
 import datasources  # noqa: E402
-# import datatypes  # noqa: E402
+
+
+@pytest.fixture(
+    scope="module", params=[dict(domain="en.wikipedia.org", dbname="enwiki")],
+)
+def site(request):
+    return request.param
+
+
+@pytest.fixture(scope="module")
+def sitedata(site):
+    data = datasources.get_site_data(site["domain"])
+    return data
 
 
 def test_wmcs_true():
@@ -84,3 +97,22 @@ def test_get_sitematrix():
     mock_db_query.assert_called_once_with(
         "meta_p", "SELECT url FROM meta_p.wiki WHERE is_closed = 0;"
     )
+
+
+@pytest.mark.parametrize(
+    "user,expected", [("AntiCompositeNumber", True), ("AntiCompositeLetter", False)]
+)
+def test_api_check_user_exists(user, expected, sitedata):
+    result = datasources.check_user_exists(user, sitedata)
+    assert result is expected
+
+
+@pytest.mark.parametrize(
+    "user,expected", [("AntiCompositeNumber", True), ("AntiCompositeLetter", False)]
+)
+def test_db_check_user_exists(user, expected, sitedata):
+    with mock.patch(
+        "datasources.do_db_query", return_value=((12345,),) if expected else ()
+    ):
+        result = datasources.check_user_exists(user, sitedata)
+    assert result is expected

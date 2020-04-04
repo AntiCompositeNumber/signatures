@@ -138,7 +138,7 @@ def get_sitematrix() -> Iterator[str]:
         return [""]
 
 
-def check_user_exists(dbname: str, user: str) -> bool:
+def _check_user_exists(user: str, dbname: str) -> bool:
     query = "SELECT user_id FROM `user` WHERE user_name = %(user)s"
     res = do_db_query(dbname, query, user=user)
     return bool(res)

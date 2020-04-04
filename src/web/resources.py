@@ -57,7 +57,7 @@ def check_user(site: str, user: str, sig: str = "") -> UserCheck:
 
         if not user_props.nickname:
             # user does not exist or uses default sig
-            if not datasources.check_user_exists(dbname, user):
+            if not datasources.check_user_exists(user, sitedata):
                 # user does not exist
                 errors.add(WebAppMessage.USER_DOES_NOT_EXIST)
                 failure = True

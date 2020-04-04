@@ -49,6 +49,31 @@ def client(flask_app):
         yield client
 
 
+@pytest.fixture(
+    scope="module",
+    params=[
+        dict(
+            domain="en.wikipedia.org",
+            dbname="enwiki",
+            user="User",
+            talk="User talk",
+            file="File",
+            contribs="Special:Contribs",
+            contributions="Special:Contributions",
+            subst="subst",
+        ),
+    ],
+)
+def site(request):
+    return request.param
+
+
+@pytest.fixture(scope="module")
+def sitedata(site):
+    data = datasources.get_site_data(site["domain"])
+    return data
+
+
 def test_index(client):
     res = client.get("/")
     assert res.status_code == 200
@@ -149,18 +174,18 @@ def test_get_default_sig():
 
 
 @pytest.mark.parametrize("userid,expected", [(((12345,),), True), ((), False)])
-def test_check_user_exists(userid, expected):
+def test_check_user_exists(userid, expected, site, sitedata):
     db_query = mock.Mock(return_value=userid)
     with mock.patch("datasources.db.do_db_query", db_query):
-        exists = datasources.check_user_exists("enwiki", "Example")
+        exists = datasources.check_user_exists("Example", sitedata)
         assert expected == exists
-    db_query.assert_called_once_with("enwiki", mock.ANY, user="Example")
+    db_query.assert_called_once_with(site["dbname"], mock.ANY, user="Example")
 
 
 @pytest.mark.parametrize(
     "sig,failure", [("[[User:Example]]", False), ("[[User:Example2]]", None)]
 )
-def test_check_user_passed(sig, failure):
+def test_check_user_passed(sig, failure, site, sitedata):
     data = resources.check_user("en.wikipedia.org", "Example", sig)
     assert data.signature == sig
     assert data.failure is failure
@@ -212,7 +237,7 @@ def test_check_user_db_nosig(exists, failure, errors):
         with mock.patch("datasources.check_user_exists", user_exists):
             data = resources.check_user("en.wikipedia.org", "Example")
 
-    user_exists.assert_called_once_with("enwiki", "Example")
+    user_exists.assert_called_once_with("Example", mock.ANY)
     user_props.assert_called_once_with("Example", "enwiki")
     assert data.failure is failure
     assert errors in data.errors
