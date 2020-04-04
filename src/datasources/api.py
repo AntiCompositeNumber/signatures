@@ -24,7 +24,7 @@ import itertools
 import logging
 import time
 from datatypes import SiteData
-from typing import Dict, Set
+from typing import Dict, Set, Iterator
 import datasources
 
 
@@ -119,6 +119,42 @@ def get_site_data(hostname: str) -> SiteData:
         hostname=hostname,
     )
     return sitedata
+
+
+def _get_sitematrix() -> Iterator[str]:
+    # Construct the request to the Extension:Sitematrix api
+    payload = {
+        "action": "sitematrix",
+        "format": "json",
+        "smlangprop": "site",
+        "smsiteprop": "url",
+    }
+    url = "https://meta.wikimedia.org/w/api.php"
+
+    # Send the request, except on HTTP errors, and try to decode the json
+    result = backoff_retry("get", url, output="json", params=payload)["sitematrix"]
+
+    # Parse the result into a generator of urls of public open wikis
+    for key, lang in result.items():
+        if key == "count":
+            continue
+        elif key == "specials":
+            for site in lang:
+                if _check_status(site):
+                    yield site["url"].rpartition("//")[2]
+        else:
+            for site in lang["site"]:
+                if _check_status(site):
+                    yield site["url"].rpartition("//")[2]
+
+
+def _check_status(checksite: Dict[str, str]) -> bool:
+    """Return true only if wiki is public and open"""
+    return (
+        (checksite.get("closed") is None)
+        and (checksite.get("private") is None)
+        and (checksite.get("fishbowl") is None)
+    )
 
 
 def _check_user_exists(user: str, hostname: str) -> bool:

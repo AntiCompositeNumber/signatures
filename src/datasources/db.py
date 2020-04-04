@@ -126,16 +126,13 @@ def do_db_query(db_name: str, query: str, **kwargs) -> Any:
     return res
 
 
-def get_sitematrix() -> Iterator[str]:
+def _get_sitematrix() -> Iterator[str]:
     """Try to get the sitematrix from the db, falling back to the API"""
     query = "SELECT url FROM meta_p.wiki WHERE is_closed = 0;"
-    try:
-        sitematrix = do_db_query("meta_p", query)
+    sitematrix = do_db_query("meta_p", query)
 
-        for site in sitematrix:
-            yield site[0].rpartition("//")[2]
-    except ConnectionError:
-        return [""]
+    for site in sitematrix:
+        yield site[0].rpartition("//")[2]
 
 
 def _check_user_exists(user: str, dbname: str) -> bool:

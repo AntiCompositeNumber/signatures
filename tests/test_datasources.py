@@ -82,7 +82,7 @@ def test_do_db_query(wmcs):
     cur.fetchall.assert_called_once()
 
 
-def test_get_sitematrix():
+def test_db_get_sitematrix():
     test_data = [
         "en.wikipedia.org",
         "commons.wikimedia.org",
@@ -97,6 +97,18 @@ def test_get_sitematrix():
     mock_db_query.assert_called_once_with(
         "meta_p", "SELECT url FROM meta_p.wiki WHERE is_closed = 0;"
     )
+
+
+def test_api_get_sitematrix():
+    test_data = [
+        "en.wikipedia.org",
+        "commons.wikimedia.org",
+        "fr.wikipedia.org",
+    ]
+    sitematrix = datasources.get_sitematrix()
+    for site in test_data:
+        assert site in sitematrix
+    assert "otrs-wiki.wikimedia.org" not in sitematrix
 
 
 @pytest.mark.parametrize(

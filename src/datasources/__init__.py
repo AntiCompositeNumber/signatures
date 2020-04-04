@@ -42,3 +42,15 @@ def check_user_exists(user: str, sitedata: SiteData) -> bool:
     except (ConnectionError, pymysql.err.OperationalError):
         result = api._check_user_exists(user, sitedata.hostname)
     return result
+
+
+def get_sitematrix():
+    """Get list of domains for Wikimedia site matrix
+
+    Uses database if available, falling back to the API if not.
+    """
+    try:
+        result = list(db._get_sitematrix())
+    except (ConnectionError, pymysql.err.OperationalError):
+        result = list(api._get_sitematrix())
+    return result
