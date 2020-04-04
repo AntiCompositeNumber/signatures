@@ -67,7 +67,7 @@ def check_sig(
     errors = set()
 
     if checks & Checks.LINKS:
-        errors.add(check_links(user, sig, sitedata, hostname))
+        errors.add(check_links(user, sig, sitedata))
     if checks & Checks.LENGTH:
         errors.add(check_length(sig))
     if checks & Checks.FANCY:
@@ -80,13 +80,13 @@ def check_sig(
     if checks & Checks.LINT:
         errors.update(get_lint_errors(sig, hostname))
     if checks & Checks.NESTED_SUBST:
-        errors.add(check_tildes(sig, sitedata, hostname))
+        errors.add(check_tildes(sig, sitedata))
     if checks & Checks.IMAGES:
         errors.add(check_images(sig, sitedata))
     if checks & Checks.TRANSCLUSION:
         errors.add(check_transclusion(sig, sitedata))
     if checks & Checks.SUBST_LENGTH:
-        errors.add(check_post_subst_length(sig, sitedata, hostname))
+        errors.add(check_post_subst_length(sig, sitedata))
 
     return cast(Set[SigError], errors - {None})
 
@@ -110,16 +110,12 @@ def get_lint_errors(sig: str, hostname: str) -> Set[SigError]:
     return errors
 
 
-def check_links(
-    user: str, sig: str, sitedata: SiteData, hostname: str
-) -> Optional[SigError]:
+def check_links(user: str, sig: str, sitedata: SiteData) -> Optional[SigError]:
     """Check for a link to a user, user talk, or contribs page"""
     if compare_links(user, sitedata, sig) is True:
         return None
     else:
-        expanded_errors = compare_links(
-            user, sitedata, evaluate_subst(sig, sitedata, hostname)
-        )
+        expanded_errors = compare_links(user, sitedata, evaluate_subst(sig, sitedata))
         if expanded_errors is True:
             return None
         else:
@@ -194,7 +190,7 @@ def compare_links(user: str, sitedata: SiteData, sig: str) -> Union[bool, Set[st
         return errors
 
 
-def evaluate_subst(text: str, sitedata: SiteData, hostname: str) -> str:
+def evaluate_subst(text: str, sitedata: SiteData) -> str:
     """Perform substitution by removing "subst:" and expanding the wikitext"""
     for subst in sitedata.subst:
         text = text.replace(subst, "")
@@ -204,7 +200,7 @@ def evaluate_subst(text: str, sitedata: SiteData, hostname: str) -> str:
         "text": text,
         "prop": "wikitext",
     }
-    url = f"https://{hostname}/w/api.php"
+    url = f"https://{sitedata.hostname}/w/api.php"
     res = datasources.backoff_retry("get", url, params=data, output="json")
     return res["expandtemplates"]["wikitext"]
 
@@ -221,13 +217,13 @@ def check_fanciness(sig: str) -> Optional[SigError]:
         return SigError.PLAIN_FANCY_SIG
 
 
-def check_tildes(sig: str, sitedata: SiteData, hostname: str) -> Optional[SigError]:
+def check_tildes(sig: str, sitedata: SiteData) -> Optional[SigError]:
     """Check a signature for nested substitution using repeated expansion"""
     if "{" not in sig and "~" not in sig:
         return None
     old_wikitext = sig
     for i in range(0, 5):
-        new_wikitext = evaluate_subst(old_wikitext, sitedata, hostname)
+        new_wikitext = evaluate_subst(old_wikitext, sitedata)
         if "~~~" in new_wikitext:
             break
         elif new_wikitext == old_wikitext:
@@ -292,9 +288,7 @@ def check_transclusion(sig: str, sitedata: SiteData) -> Optional[SigError]:
     return None
 
 
-def check_post_subst_length(
-    sig: str, sitedata: SiteData, hostname: str
-) -> Optional[SigError]:
+def check_post_subst_length(sig: str, sitedata: SiteData) -> Optional[SigError]:
     """Checks for long signatures after substitution"""
 
     # if the wikitext is already long, don't bother.
@@ -304,7 +298,7 @@ def check_post_subst_length(
     # if the wikitext doesn't have a template, don't bother.
     if "{" not in sig:
         return None
-    new_wikitext = evaluate_subst(sig, sitedata, hostname)
+    new_wikitext = evaluate_subst(sig, sitedata)
     if new_wikitext == sig:
         return None
     elif not new_wikitext:

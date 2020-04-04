@@ -38,6 +38,7 @@ SiteData = NamedTuple(
         ("contribs", Set[str]),
         ("subst", List[str]),
         ("dbname", str),
+        ("hostname", str),
     ],
 )
 

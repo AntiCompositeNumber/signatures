@@ -116,5 +116,6 @@ def get_site_data(hostname: str) -> SiteData:
         contribs=contribs,
         subst=subst,
         dbname=general["wikiid"],
+        hostname=hostname,
     )
     return sitedata

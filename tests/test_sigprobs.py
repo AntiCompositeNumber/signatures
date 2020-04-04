@@ -100,14 +100,14 @@ def test_get_lint_errors(sig, expected, site):
     ],
 )
 def test_check_tildes(sig, expected, sitedata, site):
-    errors = sigprobs.check_tildes(sig % site, sitedata, site["domain"])
+    errors = sigprobs.check_tildes(sig % site, sitedata)
     assert errors == expected
 
 
 def test_check_tildes_fallthrough():
     mock_subst = mock.Mock(side_effect=[f"{{{{{i}}}}}" for i in range(0, 6)])
     with mock.patch("sigprobs.evaluate_subst", mock_subst):
-        errors = sigprobs.check_tildes("{}", None, "")
+        errors = sigprobs.check_tildes("{}", None)
     assert errors == SigError.COMPLEX_TEMPL
 
 
@@ -131,7 +131,7 @@ def test_check_tildes_fallthrough():
 )
 def test_check_links(sig, expected, sitedata, site):
     error = sigprobs.check_links(
-        "Example", sig.format(**site), sitedata, site["domain"]
+        "Example", sig.format(**site), sitedata
     )
     assert error == expected
 
@@ -149,7 +149,7 @@ def test_check_links(sig, expected, sitedata, site):
 )
 def test_check_links_colonuser(sig, expected, sitedata, site):
     error = sigprobs.check_links(
-        "(:Example:)", sig.format(**site), sitedata, site["domain"]
+        "(:Example:)", sig.format(**site), sitedata
     )
     assert error == expected
 
@@ -166,11 +166,10 @@ def test_check_links_expansion(sig, expected, sitedata, site):
             "Example",
             "{{%(subst)s:%(user)s:Example/sig}}" % site,
             sitedata,
-            site["domain"],
         )
     assert error == expected
     mock_subst.assert_called_once_with(
-        "{{%(subst)s:%(user)s:Example/sig}}" % site, sitedata, site["domain"]
+        "{{%(subst)s:%(user)s:Example/sig}}" % site, sitedata
     )
 
 
@@ -238,7 +237,7 @@ def test_check_post_subst_length(sig, expected, site, sitedata):
     mock_subst.return_value = sig % site
     with mock.patch("sigprobs.evaluate_subst", mock_subst):
         error = sigprobs.check_post_subst_length(
-            "{{%(subst)s:%(user)s:Example/sig}}" % site, sitedata, site["domain"]
+            "{{%(subst)s:%(user)s:Example/sig}}" % site, sitedata
         )
         assert error == expected
 
@@ -254,10 +253,10 @@ def test_check_post_subst_length(sig, expected, site, sitedata):
         ("[[%(user)s:Example|Example2]]", True, SigError.LINK_NAME),
     ],
 )
-def test_check_impersonation(sig, exists, expected, site):
+def test_check_impersonation(sig, exists, expected, site, sitedata):
     mock_user_exists = mock.Mock(return_value=exists)
     with mock.patch("datasources.check_user_exists", mock_user_exists):
-        error = sigprobs.check_impersonation(sig % site, "Example")
+        error = sigprobs.check_impersonation(sig % site, "Example", sitedata)
         assert error == expected
         if exists is None:
             mock_user_exists.assert_not_called()
