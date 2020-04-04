@@ -111,6 +111,7 @@ def get_site_data(hostname: str) -> SiteData:
     sitedata = SiteData(
         user=namespaces["2"] - {""},
         user_talk=namespaces["3"] - {""},
+        file=namespaces["6"] - {""},
         special=namespaces["-1"] - {""},
         contribs=contribs,
         subst=subst,

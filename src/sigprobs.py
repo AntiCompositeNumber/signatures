@@ -81,6 +81,8 @@ def check_sig(
         errors.update(get_lint_errors(sig, hostname))
     if checks & Checks.NESTED_SUBST:
         errors.add(check_tildes(sig, sitedata, hostname))
+    if checks & Checks.IMAGES:
+        errors.add(check_images(sig, sitedata))
 
     return cast(Set[SigError], errors - {None})
 
@@ -252,7 +254,22 @@ def check_length(sig: str) -> Optional[SigError]:
 
 
 def check_images(sig: str, sitedata: SiteData) -> Optional[SigError]:
-    return NotImplemented
+    """Check for displayed images in a signature"""
+    wikitext = mwph.parse(sig)
+    for link in wikitext.ifilter_wikilinks():
+        title = link.title
+        # if it starts with :, it's not a displayed image
+        if title.startswith(":"):
+            continue
+        # Can't interwiki transclude an image, so the extra safety
+        # in check_links isn't required
+        ns, sep, page = title.partition(":")
+        if not sep:
+            continue
+        if datasources.normal_name(ns) in sitedata.file:
+            return SigError.IMAGES
+    else:
+        return None
 
 
 def check_transclusion(sig: str, sitedata: SiteData) -> Optional[SigError]:

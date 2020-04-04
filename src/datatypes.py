@@ -33,6 +33,7 @@ SiteData = NamedTuple(
     [
         ("user", Set[str]),
         ("user_talk", Set[str]),
+        ("file", Set[str]),
         ("special", Set[str]),
         ("contribs", Set[str]),
         ("subst", List[str]),
