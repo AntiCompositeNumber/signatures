@@ -64,6 +64,25 @@ class Checks(enum.Flag):
     FANCY = enum.auto()
     DEFAULT = LINT | NESTED_SUBST | LINKS | LENGTH | FANCY
 
+    IMAGES = enum.auto()
+    TRANSCLUSION = enum.auto()
+    SUBST_LENGTH = enum.auto()
+    LINK_NAME = enum.auto()
+    FREE_PIPES = enum.auto()
+    EXTLINKS = enum.auto()
+    BREAKS = enum.auto()
+    HRULE = enum.auto()
+    EXTENDED = (
+        IMAGES
+        | TRANSCLUSION
+        | SUBST_LENGTH
+        | LINK_NAME
+        | FREE_PIPES
+        | EXTLINKS
+        | BREAKS
+        | HRULE
+    )
+
 
 class Result(str, enum.Enum):
     def __new__(cls, value, desc="", test=None):
@@ -132,6 +151,28 @@ class SigError(Result):
     NO_USER_LINKS = N_("no-user-links"), N_("no-user-links-help"), Checks.LINKS
     PLAIN_FANCY_SIG = N_("plain-fancy-sig"), N_("plain-fancy-sig-help"), Checks.FANCY
     SIG_TOO_LONG = N_("sig-too-long"), N_("sig-too-long-help"), Checks.LENGTH
+
+    # Extended set errors
+    IMAGES = N_("images-in-sig"), N_("images-in-sig-help"), Checks.IMAGES
+    TRANSCLUSION = (
+        N_("transcluded-templates"),
+        N_("transcluded-templates-help"),
+        Checks.TRANSCLUSION,
+    )
+    SUBST_LENGTH = (
+        N_("sig-too-long-post-subst"),
+        N_("sig-too-long-post-subst-help"),
+        Checks.SUBST_LENGTH,
+    )
+    LINK_NAME = (
+        N_("link-name-impersonation"),
+        N_("link-name-impersonation-help"),
+        Checks.LINK_NAME,
+    )
+    FREE_PIPES = N_("unescaped-pipes"), N_("unescaped-pipes-help"), Checks.FREE_PIPES
+    EXTLINKS = N_("external-links"), N_("external-links-help"), Checks.EXTLINKS
+    BREAKS = N_("line-breaks"), N_("line-breaks-help"), Checks.BREAKS
+    HRULE = N_("horizontal-rule"), N_("horizontal-rule-help"), Checks.HRULE
 
 
 class WebAppMessage(Result):

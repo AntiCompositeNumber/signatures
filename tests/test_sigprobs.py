@@ -37,6 +37,7 @@ import datasources  # noqa: E402
             domain="en.wikipedia.org",
             user="User",
             talk="User talk",
+            file="File",
             contribs="Special:Contribs",
             contributions="Special:Contributions",
             subst="subst",
@@ -45,6 +46,7 @@ import datasources  # noqa: E402
             domain="de.wikipedia.org",
             user="Benutzerin",
             talk="Benutzerin Diskussion",
+            file="Datei",
             contribs="Spezial:Beiträge",
             contributions="Special:Contributions",
             subst="ers",
@@ -194,6 +196,124 @@ def test_check_fanciness(sig, expected):
 )
 def test_check_length(sig, expected):
     error = sigprobs.check_length(sig)
+    assert error == expected
+
+
+@pytest.mark.xfail
+@pytest.mark.parametrize(
+    "sig,expected",
+    [
+        ("[[%(user)s:Example]] [[%(file)s:Example.jpg]]", SigError.IMAGES),
+        ("[[Image:Example.jpg]]", SigError.IMAGES),
+        ("[[%(user)s:Example]] [[:%(file)s:Example.jpg]]", None),
+        ("[[%(user)s:Example]]", None),
+        ("[[meta:%(user)s:Example]]", None),
+    ],
+)
+def test_check_images(sig, expected, site, sitedata):
+    error = sigprobs.check_images(sig % site, sitedata)
+    assert error == expected
+
+
+@pytest.mark.xfail
+@pytest.mark.parametrize(
+    "sig,expected",
+    [
+        ("{{Template}}", SigError.TRANSCLUSION),
+        ("{{%(subst)s:Template}}", None),
+        ("[[Template:Template]]", None),
+        ("{{!}}", None),
+    ],
+)
+def test_check_transclusion(sig, expected, site, sitedata):
+    error = sigprobs.check_transclusion(sig % site, sitedata)
+    assert error == expected
+
+
+@pytest.mark.xfail
+@pytest.mark.parametrize(
+    "sig,expected",
+    [("a" * 200, None), ("a" * 265, SigError("sig-too-long")), ("a" * 255, None)],
+    ids=["200", "265", "255"],
+)
+def test_post_subst_length(sig, expected, site, sitedata):
+    mock_subst = mock.Mock()
+    mock_subst.return_value = sig % site
+    with mock.patch("sigprobs.evaluate_subst", mock_subst):
+        error = sigprobs.check_post_subst_length(
+            "{{%(subst)s:%(user)s:Example/sig}}" % site, sitedata,
+        )
+        assert error == expected
+
+
+@pytest.mark.xfail
+@pytest.mark.parametrize(
+    "sig,exists,expected",
+    [
+        ("[[%(user)s:Example]]", None, None),
+        ("[[%(user)s:Example|Example]]", None, None),
+        ("[[Example]]", None, None),
+        ("[[%(user)s:Example|Example2]]", False, None),
+        ("[[%(user)s:Example|Example2]]", True, SigError.LINK_NAME),
+    ],
+)
+def test_check_impersonation(sig, exists, expected, site):
+    mock_user_exists = mock.Mock(return_value=exists)
+    with mock.patch("datasources.check_user_exists", mock_user_exists):
+        error = sigprobs.check_impersonation(sig % site, "Example")
+        assert error == expected
+        if exists is None:
+            mock_user_exists.assert_not_called()
+
+
+@pytest.mark.xfail
+@pytest.mark.parametrize(
+    "sig,expected",
+    [("[[User:Example|Example]]", None), ("(Talk|Contribs)", SigError.FREE_PIPES)],
+)
+def test_check_pipes(sig, expected):
+    error = sigprobs.check_pipes(sig)
+    assert error == expected
+
+
+@pytest.mark.xfail
+@pytest.mark.parametrize(
+    "sig,expected",
+    [
+        ("[http://example.com]", SigError.EXTLINKS),
+        ("[[Example]]", None),
+        ("http://example.com", SigError.EXTLINKS),
+    ],
+)
+def test_check_extlinks(sig, expected):
+    error = sigprobs.check_extlinks(sig)
+    assert error == expected
+
+
+@pytest.mark.xfail
+@pytest.mark.parametrize(
+    "sig,expected",
+    [
+        ("\n", None),
+        ("Foo \n\n Bar", SigError.BREAKS),
+        ("Foo <br>Bar", SigError.BREAKS),
+        ("Foo <br /> Bar", SigError.BREAKS),
+        ("Foo <p> Bar</p>", SigError.BREAKS),
+        ("foo <div> bar</div>", SigError.BREAKS),
+    ],
+)
+def test_check_line_breaks(sig, expected):
+    error = sigprobs.check_line_breaks(sig)
+    assert error == expected
+
+
+@pytest.mark.xfail
+@pytest.mark.parametrize(
+    "sig,expected",
+    [("---", None), ("----", SigError.HRULE), ("foo <hr />", SigError.HRULE)],
+)
+def test_check_hrule(sig, expected):
+    error = sigprobs.check_hrule(sig)
     assert error == expected
 
 

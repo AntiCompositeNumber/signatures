@@ -251,6 +251,38 @@ def check_length(sig: str) -> Optional[SigError]:
         return None
 
 
+def check_images(sig: str, sitedata: SiteData) -> Optional[SigError]:
+    return NotImplemented
+
+
+def check_transclusion(sig: str, sitedata: SiteData) -> Optional[SigError]:
+    return NotImplemented
+
+
+def check_post_subst_length(sig: str, sitedata: SiteData) -> Optional[SigError]:
+    return NotImplemented
+
+
+def check_impersonation(sig: str, user: str) -> Optional[SigError]:
+    return NotImplemented
+
+
+def check_pipes(sig: str) -> Optional[SigError]:
+    return NotImplemented
+
+
+def check_extlinks(sig: str) -> Optional[SigError]:
+    return NotImplemented
+
+
+def check_line_breaks(sig: str) -> Optional[SigError]:
+    return NotImplemented
+
+
+def check_hrule(sig: str) -> Optional[SigError]:
+    return NotImplemented
+
+
 def batch_check_lint(
     accumulate: Dict[str, str],
     resultdata: Dict[str, Dict[str, Union[str, List[SigError]]]],
