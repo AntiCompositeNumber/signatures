@@ -307,6 +307,8 @@ def check_post_subst_length(sig: str, sitedata: SiteData) -> Optional[SigError]:
         return None
     elif check_length(new_wikitext) is not None:
         return SigError.SUBST_LENGTH
+    else:
+        return None
 
 
 def check_impersonation(sig: str, user: str, sitedata: SiteData) -> Optional[SigError]:
