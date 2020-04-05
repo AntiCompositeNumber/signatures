@@ -318,7 +318,7 @@ def check_impersonation(sig: str, user: str, sitedata: SiteData) -> Optional[Sig
     problem = False
     for link in wikitext.ifilter_wikilinks():
         if not link.text:
-            break
+            continue
         text = datasources.normal_name(link.text)
         if compare_links(user, sitedata, link) is True:
             if text == datasources.normal_name(user):
