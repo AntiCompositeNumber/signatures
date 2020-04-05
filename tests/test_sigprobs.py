@@ -262,7 +262,6 @@ def test_check_impersonation(sig, exists, expected, site, sitedata):
             mock_user_exists.assert_not_called()
 
 
-@pytest.mark.xfail
 @pytest.mark.parametrize(
     "sig,expected",
     [("[[User:Example|Example]]", None), ("(Talk|Contribs)", SigError.FREE_PIPES)],

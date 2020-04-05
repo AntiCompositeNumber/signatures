@@ -89,6 +89,8 @@ def check_sig(
         errors.add(check_post_subst_length(sig, sitedata))
     if checks & Checks.LINK_NAME:
         errors.add(check_impersonation(sig, user, sitedata))
+    if checks & Checks.FREE_PIPES:
+        errors.add(check_pipes(sig))
 
     return cast(Set[SigError], errors - {None})
 
@@ -332,7 +334,12 @@ def check_impersonation(sig: str, user: str, sitedata: SiteData) -> Optional[Sig
 
 
 def check_pipes(sig: str) -> Optional[SigError]:
-    return NotImplemented
+    wikitext = mwph.parse(sig)
+    for text in wikitext.ifilter_text():
+        if "|" in text:
+            return SigError.FREE_PIPES
+
+    return None
 
 
 def check_extlinks(sig: str) -> Optional[SigError]:
