@@ -242,7 +242,6 @@ def test_check_post_subst_length(sig, expected, site, sitedata):
         assert error == expected
 
 
-@pytest.mark.xfail
 @pytest.mark.parametrize(
     "sig,exists,expected",
     [
@@ -251,6 +250,7 @@ def test_check_post_subst_length(sig, expected, site, sitedata):
         ("[[Example]]", None, None),
         ("[[%(user)s:Example|Example2]]", False, None),
         ("[[%(user)s:Example|Example2]]", True, SigError.LINK_NAME),
+        ("[[%(user)s:Example|Example]] ([[%(talk)s:Example|talk]])", True, None)
     ],
 )
 def test_check_impersonation(sig, exists, expected, site, sitedata):

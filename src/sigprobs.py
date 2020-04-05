@@ -87,6 +87,8 @@ def check_sig(
         errors.add(check_transclusion(sig, sitedata))
     if checks & Checks.SUBST_LENGTH:
         errors.add(check_post_subst_length(sig, sitedata))
+    if checks & Checks.LINK_NAME:
+        errors.add(check_impersonation(sig, user, sitedata))
 
     return cast(Set[SigError], errors - {None})
 
@@ -307,8 +309,24 @@ def check_post_subst_length(sig: str, sitedata: SiteData) -> Optional[SigError]:
         return SigError.SUBST_LENGTH
 
 
-def check_impersonation(sig: str, user: str) -> Optional[SigError]:
-    return NotImplemented
+def check_impersonation(sig: str, user: str, sitedata: SiteData) -> Optional[SigError]:
+    wikitext = mwph.parse(sig)
+    problem = False
+    for link in wikitext.ifilter_wikilinks():
+        if not link.text:
+            break
+        text = datasources.normal_name(link.text)
+        if compare_links(user, sitedata, link) is True:
+            if text == datasources.normal_name(user):
+                # one link matches, that's good enough
+                break
+            elif datasources.check_user_exists(text, sitedata):
+                problem = True
+
+    if problem:
+        return SigError.LINK_NAME
+    else:
+        return None
 
 
 def check_pipes(sig: str) -> Optional[SigError]:
