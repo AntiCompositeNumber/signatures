@@ -343,7 +343,10 @@ def check_pipes(sig: str) -> Optional[SigError]:
 
 
 def check_extlinks(sig: str) -> Optional[SigError]:
-    return NotImplemented
+    wikitext = mwph.parse(sig)
+    if wikitext.filter_external_links():
+        return SigError.EXTLINKS
+    return None
 
 
 def check_line_breaks(sig: str) -> Optional[SigError]:
