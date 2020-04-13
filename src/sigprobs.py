@@ -349,12 +349,22 @@ def check_extlinks(sig: str) -> Optional[SigError]:
     return None
 
 
+def check_bad_tags(sig: str, bad_tags: Set[str]) -> bool:
+    wikitext = mwph.parse(sig)
+    tags = {str(t.tag).strip() for t in wikitext.ifilter_tags()}
+    return not tags.isdisjoint(bad_tags)
+
+
 def check_line_breaks(sig: str) -> Optional[SigError]:
-    return NotImplemented
+    if "\n" in sig or check_bad_tags(sig, {"br", "p", "div"}):
+        return SigError.BREAKS
+    return None
 
 
 def check_hrule(sig: str) -> Optional[SigError]:
-    return NotImplemented
+    if "----" in sig or check_bad_tags(sig, {"hr"}):
+        return SigError.HRULE
+    return None
 
 
 def batch_check_lint(

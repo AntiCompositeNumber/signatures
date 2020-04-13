@@ -284,11 +284,10 @@ def test_check_extlinks(sig, expected):
     assert error == expected
 
 
-@pytest.mark.xfail
 @pytest.mark.parametrize(
     "sig,expected",
     [
-        ("\n", None),
+        ("Foo", None),
         ("Foo \n\n Bar", SigError.BREAKS),
         ("Foo <br>Bar", SigError.BREAKS),
         ("Foo <br /> Bar", SigError.BREAKS),
@@ -301,7 +300,6 @@ def test_check_line_breaks(sig, expected):
     assert error == expected
 
 
-@pytest.mark.xfail
 @pytest.mark.parametrize(
     "sig,expected",
     [("---", None), ("----", SigError.HRULE), ("foo <hr />", SigError.HRULE)],
