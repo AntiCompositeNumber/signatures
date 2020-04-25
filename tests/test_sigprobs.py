@@ -541,7 +541,7 @@ def test_handle_args_input(tmp_path, data):
     cliargs, kwargs, ofargs = (
         ["en.wikipedia.org", "--input", str(path)],
         {"days": 30, "checks": Checks.DEFAULT, "data": data},
-        ("", "en.wikipedia.org", False),
+        ("", "en.wikipedia.org", True),
     )
     output_file = mock.MagicMock(__enter__=devnull())
     main = mock.MagicMock(return_value="")
