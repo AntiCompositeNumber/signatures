@@ -481,7 +481,7 @@ def devnull():
         (
             ["en.wikipedia.org", "--days", "60"],
             [mock.call("en.wikipedia.org", days=60, checks=Checks.DEFAULT, data=None)],
-            [mock.call("", "en.wikipedia.org", False)],
+            [mock.call("", "en.wikipedia.org", True)],
         ),
         (
             ["en.wikipedia.org", "--checks", "lint", "links"],
@@ -493,17 +493,17 @@ def devnull():
                     data=None,
                 )
             ],
-            [mock.call("", "en.wikipedia.org", False)],
+            [mock.call("", "en.wikipedia.org", True)],
         ),
         (
             ["en.wikipedia.org", "--output", "data.json"],
             [mock.call("en.wikipedia.org", days=30, checks=Checks.DEFAULT, data=None)],
-            [mock.call("data.json", "en.wikipedia.org", False)],
+            [mock.call("data.json", "en.wikipedia.org", True)],
         ),
         (
-            ["en.wikipedia.org", "--output", "data.json", "--overwrite"],
+            ["en.wikipedia.org", "--output", "data.json", "--no-overwrite"],
             [mock.call("en.wikipedia.org", days=30, checks=Checks.DEFAULT, data=None)],
-            [mock.call("data.json", "en.wikipedia.org", True)],
+            [mock.call("data.json", "en.wikipedia.org", False)],
         ),
         (
             ["de.wikipedia.org", "en.wikipedia.org", "--output", "de.json", "en.json"],
@@ -516,8 +516,8 @@ def devnull():
                 ),
             ],
             [
-                mock.call("de.json", "de.wikipedia.org", False),
-                mock.call("en.json", "en.wikipedia.org", False),
+                mock.call("de.json", "de.wikipedia.org", True),
+                mock.call("en.json", "en.wikipedia.org", True),
             ],
         ),
     ],
