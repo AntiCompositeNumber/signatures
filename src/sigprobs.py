@@ -520,8 +520,16 @@ def handle_args(args=sys.argv[1:]):
     )
     parser.add_argument(
         "--overwrite",
-        action="store_true",
-        help="Overwrite output files if they already exist.",
+        action="store_const",
+        const=True,
+        help="Overwrite output files if they already exist (default).",
+    )
+    parser.add_argument(
+        "--no-overwrite",
+        action="store_const",
+        const=False,
+        dest="overwrite",
+        help="Do not overwrite existing files",
     )
     args = parser.parse_args(args)
 
@@ -543,7 +551,9 @@ def handle_args(args=sys.argv[1:]):
         )
 
     for hostname, output in zip(args.hostnames, outputs):
-        with output_file(output, hostname, args.overwrite) as f:
+        with output_file(
+            output, hostname, (args.overwrite if args.overwrite is not None else True)
+        ) as f:
             result = main(hostname, **kwargs)
             json.dump(result, f)
 

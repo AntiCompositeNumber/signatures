@@ -30,6 +30,7 @@ config = {
         "labels": {"name": "signatures.sigprobs", "toolforge": "tool"},
     },
     "spec": {
+        "ttlSecondsAfterFinished": 86400,  # 1 day
         "template": {
             "metadata": {
                 "labels": {"name": "signatures.sigprobs", "toolforge": "tool"},
