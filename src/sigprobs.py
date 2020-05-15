@@ -23,6 +23,7 @@ import json
 import datetime
 import sys
 import logging
+import logging.handlers
 import os
 import itertools
 import functools
@@ -584,7 +585,16 @@ if __name__ == "__main__":
         format="%(asctime)s %(levelname)s:%(name)s:%(message)s",
         level=getattr(logging, os.environ.get("LOGLEVEL", "INFO").upper()),
     )
+    mail = logging.handlers.SMTPHandler(
+        "mail.tools.wmflabs.org",
+        "tools.signatures@wmflabs.org",
+        "tools.signatures@wmflabs.org",
+        "signatures.sigprobs error",
+    )
+    mail.setLevel(logging.ERROR)
+    logging.getLogger("").addHandler(mail)
     logger = logging.getLogger("sigprobs")
+
     handle_args()
 else:
     logger = logging.getLogger(__name__)
