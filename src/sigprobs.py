@@ -581,7 +581,8 @@ def output_file(output: Optional[str], hostname: str, overwrite: bool) -> TextIO
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s %(levelname)s:%(name)s:%(message)s", level=logging.DEBUG,
+        format="%(asctime)s %(levelname)s:%(name)s:%(message)s",
+        level=getattr(logging, os.environ.get("LOGLEVEL", "INFO").upper()),
     )
     logger = logging.getLogger("sigprobs")
     handle_args()
