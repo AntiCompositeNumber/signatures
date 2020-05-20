@@ -1,0 +1,38 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: signatures.sigprobs-cron
+  labels:
+    name: signatures.sigprobs-cron
+    # The toolforge=tool label will cause $HOME and other paths to be mounted from Toolforge
+    toolforge: tool
+spec:
+  schedule: "15 4 * * 0"
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            toolforge: tool
+        spec:
+          containers:
+          - name: signatures.sigprobs-cron
+            image: docker-registry.tools.wmflabs.org/toolforge-python37-sssd-base:latest
+            command: ["/data/project/signatures/signatures/venv/bin/python3",
+                      "/data/project/signatures/signatures/src/sigprobs.py"]
+            args: [
+              "en.wikipedia.org", 
+              "de.wikipedia.org", 
+              "meta.wikipedia.org", 
+              "commons.wikimedia.org", 
+              "www.mediawiki.org", 
+              "es.wikipedia.org", 
+              "fr.wikipedia.org"
+            ]
+            workingDir: /data/project/signatures
+            env: 
+            - name: HOME 
+              value: /data/project/signatures
+            imagePullPolicy: Always
+          restartPolicy: OnFailure
