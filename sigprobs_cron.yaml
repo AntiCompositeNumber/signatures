@@ -17,7 +17,7 @@ spec:
             toolforge: tool
         spec:
           containers:
-          - name: signatures.sigprobs-cron
+          - name: sigprobs-cron
             image: docker-registry.tools.wmflabs.org/toolforge-python37-sssd-base:latest
             command: ["/data/project/signatures/signatures/venv/bin/python3",
                       "/data/project/signatures/signatures/src/sigprobs.py"]
