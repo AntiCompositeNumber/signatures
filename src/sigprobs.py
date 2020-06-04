@@ -587,8 +587,8 @@ if __name__ == "__main__":
     )
     mail = logging.handlers.SMTPHandler(
         "mail.tools.wmflabs.org",
-        "tools.signatures@wmflabs.org",
-        ["tools.signatures@wmflabs.org"],
+        "tools.signatures@tools.wmflabs.org",
+        ["tools.signatures@tools.wmflabs.org"],
         "signatures.sigprobs error",
     )
     mail.setLevel(logging.ERROR)
