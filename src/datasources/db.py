@@ -93,7 +93,7 @@ def get_user_properties(user: str, dbname: str) -> UserProps:
                            FROM `user`
                            WHERE user_name = %s)
             """,
-            (user),
+            [user],
         )
         resultset = cast(List[Tuple[bytes, bytes]], cur.fetchall())
     logger.debug(resultset)
