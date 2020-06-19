@@ -373,17 +373,18 @@ def batch_check_lint(
     accumulate: Dict[str, str],
     resultdata: Dict[str, Dict[str, Union[str, List[SigError]]]],
     hostname: str,
+    checks: Checks,
 ) -> Tuple[Dict[str, str], Dict[str, Dict[str, Union[str, List[SigError]]]]]:
     logger.debug("Contstructing batched request to linter")
     batch = "\n\n".join(accumulate.values())
-    lint_errors = get_lint_errors(batch, hostname)
+    lint_errors = get_lint_errors(batch, hostname, checks)
     if lint_errors:
         # At least one signature has errors. Check them all individually
         userlist = list(accumulate.keys())
         count = 0
         for auser in userlist:
             asig = accumulate.pop(auser)
-            indiv_lints = get_lint_errors(asig, hostname)
+            indiv_lints = get_lint_errors(asig, hostname, checks)
             if indiv_lints:
                 resultdata.setdefault(auser, {})
                 cast(
@@ -445,11 +446,15 @@ def main(
         # There is probably a better way to do this with async, but
         # that's more work.
         if len(accumulate) >= 5:
-            accumulate, resultdata = batch_check_lint(accumulate, resultdata, hostname)
+            accumulate, resultdata = batch_check_lint(
+                accumulate, resultdata, hostname, checks
+            )
 
     # Catch any sigs that didn't get linted
     if accumulate:
-        accumulate, resultdata = batch_check_lint(accumulate, resultdata, hostname)
+        accumulate, resultdata = batch_check_lint(
+            accumulate, resultdata, hostname, checks
+        )
 
     # Collect stats, and generate json file
     stats = {}
