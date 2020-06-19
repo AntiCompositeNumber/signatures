@@ -79,7 +79,7 @@ def check_sig(
             errors.add(fanciness)
             return cast(Set[SigError], errors - {None})
     if checks & Checks.LINT:
-        errors.update(get_lint_errors(sig, hostname))
+        errors.update(get_lint_errors(sig, hostname, checks))
     if checks & Checks.NESTED_SUBST:
         errors.add(check_tildes(sig, sitedata))
     if checks & Checks.IMAGES:
@@ -96,7 +96,7 @@ def check_sig(
     return cast(Set[SigError], errors - {None})
 
 
-def get_lint_errors(sig: str, hostname: str) -> Set[SigError]:
+def get_lint_errors(sig: str, hostname: str, checks: Checks) -> Set[SigError]:
     """Use the REST API to get lint errors from the signature"""
     url = f"https://{hostname}/api/rest_v1/transform/wikitext/to/lint"
     data = {"wikitext": sig}
@@ -109,7 +109,8 @@ def get_lint_errors(sig: str, hostname: str) -> Set[SigError]:
             error.get("type", "") == "obsolete-tag"
             and error.get("params", {}).get("name", "") == "font"
         ):
-            errors.add(SigError("obsolete-font-tag"))
+            if checks & Checks.OBSOLETE_FONT:
+                errors.add(SigError("obsolete-font-tag"))
         else:
             errors.add(SigError(error.get("type")))
     return errors

@@ -60,6 +60,7 @@ class Checks(enum.Flag):
     """Enum of signature tests and test groups"""
 
     LINT = enum.auto()
+    OBSOLETE_FONT = enum.auto()
     NESTED_SUBST = enum.auto()
     LINKS = enum.auto()
     LENGTH = enum.auto()
