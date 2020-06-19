@@ -82,7 +82,7 @@ def sitedata(site):
 )
 def test_get_lint_errors(sig, expected, site):
     errors = sigprobs.get_lint_errors(
-        sig.format(**site), site["domain"], Checks.DEFAULT | Checks.OBSOLETE_FONT
+        sig.format(**site), site["domain"], Checks.DEFAULT | Checks.OBSOLETE_TAG
     )
     assert errors == expected
 
