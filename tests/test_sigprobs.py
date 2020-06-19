@@ -81,7 +81,9 @@ def sitedata(site):
     ],
 )
 def test_get_lint_errors(sig, expected, site):
-    errors = sigprobs.get_lint_errors(sig.format(**site), site["domain"])
+    errors = sigprobs.get_lint_errors(
+        sig.format(**site), site["domain"], Checks.DEFAULT | Checks.OBSOLETE_FONT
+    )
     assert errors == expected
 
 
@@ -130,9 +132,7 @@ def test_check_tildes_fallthrough():
     ],
 )
 def test_check_links(sig, expected, sitedata, site):
-    error = sigprobs.check_links(
-        "Example", sig.format(**site), sitedata
-    )
+    error = sigprobs.check_links("Example", sig.format(**site), sitedata)
     assert error == expected
 
 
@@ -148,9 +148,7 @@ def test_check_links(sig, expected, sitedata, site):
     ],
 )
 def test_check_links_colonuser(sig, expected, sitedata, site):
-    error = sigprobs.check_links(
-        "(:Example:)", sig.format(**site), sitedata
-    )
+    error = sigprobs.check_links("(:Example:)", sig.format(**site), sitedata)
     assert error == expected
 
 
@@ -163,9 +161,7 @@ def test_check_links_expansion(sig, expected, sitedata, site):
     mock_subst.return_value = sig.format(**site)
     with mock.patch("sigprobs.evaluate_subst", mock_subst):
         error = sigprobs.check_links(
-            "Example",
-            "{{%(subst)s:%(user)s:Example/sig}}" % site,
-            sitedata,
+            "Example", "{{%(subst)s:%(user)s:Example/sig}}" % site, sitedata,
         )
     assert error == expected
     mock_subst.assert_called_once_with(
@@ -250,7 +246,7 @@ def test_check_post_subst_length(sig, expected, site, sitedata):
         ("[[Example]]", None, None),
         ("[[%(user)s:Example|Example2]]", False, None),
         ("[[%(user)s:Example|Example2]]", True, SigError.LINK_NAME),
-        ("[[%(user)s:Example|Example]] ([[%(talk)s:Example|talk]])", True, None)
+        ("[[%(user)s:Example|Example]] ([[%(talk)s:Example|talk]])", True, None),
     ],
 )
 def test_check_impersonation(sig, exists, expected, site, sitedata):
@@ -332,7 +328,7 @@ def test_main(site):
 @pytest.mark.parametrize("count", [5, 3])
 def test_main_accumulate(site, count):
     mock_linter = mock.Mock(
-        side_effect=lambda asig, host: {SigError.MISSING_END_TAG}
+        side_effect=lambda asig, host, checks: {SigError.MISSING_END_TAG}
         if "Example2" in asig
         else set()
     )
