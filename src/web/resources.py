@@ -101,7 +101,13 @@ def get_rendered_sig(site: str, wikitext: str) -> str:
     url = f"https://{site}/api/rest_v1/transform/wikitext/to/html"
     payload = {"wikitext": wikitext, "body_only": True}
     text = datasources.backoff_retry("post", url, json=payload)
-    return text.replace("./", f"https://{site}/wiki/")
+    text = text.replace("./", f"https://{site}/wiki/")
+    _, sep1, rest = text.partition(">")
+    inside, sep2, _ = rest.rpartition("</p>")
+    if not sep1 or not sep2:
+        return text
+    else:
+        return inside
 
 
 def list_report_sites(config: Dict[str, Any]) -> List[str]:
