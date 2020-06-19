@@ -58,6 +58,7 @@ def create_app():
         stderr=subprocess.PIPE,
     )
     app.config["version"] = rev.stdout
+    app.config["SWAGGER_UI_DOC_EXPANSION"] = "full"
     # Setup i18n extensions
     babel = flask_babel.Babel(app)
     app.jinja_env.add_extension("jinja2.ext.i18n")
