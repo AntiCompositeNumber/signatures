@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-28 13:54-0400\n"
+"POT-Creation-Date: 2020-06-18 21:37-0400\n"
 "PO-Revision-Date: 2020-03-13 21:53-0400\n"
 "Last-Translator: AntiCompositeNumber\n"
 "Language: en\n"
@@ -17,214 +17,278 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: datatypes.py:82
+#: datatypes.py:103
 msgid "html5-misnesting"
 msgstr "Misnested tag with different rendering in HTML5 and HTML4"
 
-#: datatypes.py:82
+#: datatypes.py:103
 msgid "html5-misnesting-help"
 msgstr ""
 "Tags should be closed in the reverse order they were opened "
 "(&ltb&gt&lti&gtFoo&lt/i&gt&lt/b&gt not "
 "&ltb&gt&lti&gtFoo&lt/b&gt&lt/i&gt)."
 
-#: datatypes.py:84
+#: datatypes.py:105
 msgid "misc-tidy-replacement-issues"
 msgstr "Miscellaneous issues"
 
-#: datatypes.py:85
+#: datatypes.py:106
 msgid "misc-tidy-replacement-issues-help"
 msgstr "Check the Linter documentation for advice"
 
-#: datatypes.py:88
+#: datatypes.py:109
 msgid "misnested-tag"
 msgstr "Misnested tag"
 
-#: datatypes.py:88
+#: datatypes.py:109
 msgid "misnested-tag-help"
 msgstr ""
 "Tags should be closed in the reverse order they were opened "
 "(&ltb&gt&lti&gtFoo&lt/i&gt&lt/b&gt not "
 "&ltb&gt&lti&gtFoo&lt/b&gt&lt/i&gt)."
 
-#: datatypes.py:89
+#: datatypes.py:110
 msgid "missing-end-tag"
 msgstr "Missing end tag"
 
-#: datatypes.py:89
+#: datatypes.py:110
 msgid "missing-end-tag-help"
 msgstr ""
 "Make sure that all tags that are opened are closed in the same way "
 "('''Foo''' not &lti&gtFoo''' or &lti&gtFoo)"
 
-#: datatypes.py:91
+#: datatypes.py:112
 msgid "multiple-unclosed-formatting-tags"
 msgstr "Multiple unclosed formatting tags"
 
-#: datatypes.py:92
+#: datatypes.py:113
 msgid "multiple-unclosed-formatting-tags-help"
 msgstr ""
 "Make sure that all tags that are opened are closed in the same way "
 "('''Foo''' not &lti&gtFoo''' or &lti&gtFoo)"
 
-#: datatypes.py:95
+#: datatypes.py:116
 msgid "obsolete-tag"
 msgstr "Obsolete HTML tags"
 
-#: datatypes.py:95
+#: datatypes.py:116
 msgid "obsolete-tag-help"
 msgstr "See the Linter documentation for more information."
 
-#: datatypes.py:97
+#: datatypes.py:118
 msgid "obsolete-font-tag"
 msgstr "Obsolete font tag"
 
-#: datatypes.py:98
+#: datatypes.py:119
 msgid "obsolete-font-tag-help"
 msgstr "The &ltfont&gt tag has been deprecated in HTML5 and should be replaced"
 
-#: datatypes.py:101
+#: datatypes.py:122
 msgid "self-closed-tag"
 msgstr "Self-closed tag"
 
-#: datatypes.py:101
+#: datatypes.py:122
 msgid "self-closed-tag-help"
 msgstr "See the Linter documentation for more information"
 
-#: datatypes.py:102
+#: datatypes.py:123
 msgid "stripped-tag"
 msgstr "Stripped tag"
 
-#: datatypes.py:102
+#: datatypes.py:123
 msgid "stripped-tag-help"
 msgstr "See the Linter documentation for more information"
 
-#: datatypes.py:103
+#: datatypes.py:124
 msgid "tidy-font-bug"
 msgstr "Tidy font bug"
 
-#: datatypes.py:103
+#: datatypes.py:124
 msgid "tidy-font-bug-help"
 msgstr "See the Linter documentation for more information"
 
-#: datatypes.py:105
+#: datatypes.py:126
 msgid "tidy-whitespace-bug"
 msgstr "Whitespace parsing bug"
 
-#: datatypes.py:106
+#: datatypes.py:127
 msgid "tidy-whitespace-bug-help"
 msgstr "See the Linter documentation for more information"
 
-#: datatypes.py:110
+#: datatypes.py:131
 msgid "wikilink-in-extlink"
 msgstr "Wikilink in external link"
 
-#: datatypes.py:111
+#: datatypes.py:132
 msgid "wikilink-in-extlink-help"
 msgstr "External link labels can not contain wikilinks"
 
-#: datatypes.py:117
+#: datatypes.py:138
 msgid "interwiki-user-link"
 msgstr "Interwiki user link"
 
-#: datatypes.py:118
+#: datatypes.py:139
 msgid "interwiki-user-link-help"
 msgstr ""
 "The only link in this signature appears to be an interwiki link. "
 "Signatures should contain a wikilink to the user's local user page, user "
 "talk page, or contributions. "
 
-#: datatypes.py:122
+#: datatypes.py:143
 msgid "link-username-mismatch"
 msgstr "Mismatch between link and username"
 
-#: datatypes.py:123
+#: datatypes.py:144
 msgid "link-username-mismatch-help"
 msgstr ""
 "The signature contains at least one link to a user page, talk page, or "
 "contributions, but they don't match the username"
 
-#: datatypes.py:126
+#: datatypes.py:147
 msgid "nested-subst"
 msgstr "Nested substitution"
 
-#: datatypes.py:126
+#: datatypes.py:147
 msgid "nested-subst-help"
 msgstr ""
 "Signatures should not contain markup that could transform into someone "
 "else's signature."
 
-#: datatypes.py:128
+#: datatypes.py:149
 msgid "complex-template"
 msgstr "Complex template markup"
 
-#: datatypes.py:129
+#: datatypes.py:150
 msgid "complex-template-help"
 msgstr ""
-"This signature contains complex markup that caused it to change for each of "
-"five substitutions."
+"This signature contains complex markup that caused it to change for each "
+"of five substitutions."
 
-#: datatypes.py:132
+#: datatypes.py:153
 msgid "no-user-links"
 msgstr "No user links"
 
-#: datatypes.py:132
+#: datatypes.py:153
 msgid "no-user-links-help"
 msgstr ""
 "Signatures should contain a wikilink to the user's local user page, user "
 "talk page, or contributions."
 
-#: datatypes.py:133
+#: datatypes.py:154
 msgid "plain-fancy-sig"
 msgstr "Plain fancy signature"
 
-#: datatypes.py:133
+#: datatypes.py:154
 msgid "plain-fancy-sig-help"
 msgstr ""
 "The \"Treat the above as wiki markup\" box was ticked, but this signature"
 " doesn't contain any markup."
 
-#: datatypes.py:134
+#: datatypes.py:155
 msgid "sig-too-long"
 msgstr "Signature too long"
 
-#: datatypes.py:134
+#: datatypes.py:155
 msgid "sig-too-long-help"
 msgstr "Signatures must contain less than 255 bytes of wikitext."
 
-#: datatypes.py:138
+#: datatypes.py:158
+msgid "images-in-sig"
+msgstr ""
+
+#: datatypes.py:158
+msgid "images-in-sig-help"
+msgstr ""
+
+#: datatypes.py:160
+msgid "transcluded-templates"
+msgstr ""
+
+#: datatypes.py:161
+msgid "transcluded-templates-help"
+msgstr ""
+
+#: datatypes.py:165
+msgid "sig-too-long-post-subst"
+msgstr ""
+
+#: datatypes.py:166
+msgid "sig-too-long-post-subst-help"
+msgstr ""
+
+#: datatypes.py:170
+msgid "link-name-impersonation"
+msgstr ""
+
+#: datatypes.py:171
+msgid "link-name-impersonation-help"
+msgstr ""
+
+#: datatypes.py:174
+msgid "unescaped-pipes"
+msgstr ""
+
+#: datatypes.py:174
+msgid "unescaped-pipes-help"
+msgstr ""
+
+#: datatypes.py:175
+msgid "external-links"
+msgstr ""
+
+#: datatypes.py:175
+msgid "external-links-help"
+msgstr ""
+
+#: datatypes.py:176
+msgid "line-breaks"
+msgstr ""
+
+#: datatypes.py:176
+msgid "line-breaks-help"
+msgstr ""
+
+#: datatypes.py:177
+msgid "horizontal-rule"
+msgstr ""
+
+#: datatypes.py:177
+msgid "horizontal-rule-help"
+msgstr ""
+
+#: datatypes.py:181
 msgid "default-sig"
 msgstr "Default signature"
 
-#: datatypes.py:138
+#: datatypes.py:181
 msgid "default-sig-help"
 msgstr "No custom signature has been set for this user."
 
-#: datatypes.py:139
+#: datatypes.py:182
 msgid "no-errors"
 msgstr "No errors"
 
-#: datatypes.py:139
+#: datatypes.py:182
 msgid "no-errors-help"
 msgstr "No problems were detected with this signature."
 
-#: datatypes.py:140
+#: datatypes.py:183
 msgid "sig-not-fancy"
 msgstr "Non-fancy signature"
 
-#: datatypes.py:140
+#: datatypes.py:183
 msgid "sig-not-fancy-help"
 msgstr "This signature is only a nickname, and is not interpreted as wikitext."
 
-#: datatypes.py:141
+#: datatypes.py:184
 msgid "user-does-not-exist"
 msgstr "User does not exist"
 
-#: datatypes.py:141
+#: datatypes.py:184
 msgid "user-does-not-exist-help"
 msgstr "The provided username does not exist on this wiki."
 
-#: templates/about.html:4 templates/layout.html:33
+#: templates/about.html:4 templates/layout.html:34
 msgid "About"
 msgstr "About"
 
@@ -401,7 +465,7 @@ msgstr ""
 "should not be considered especially stable."
 
 #: templates/check_form.html:10 templates/index.html:29
-#: templates/layout.html:31
+#: templates/layout.html:32
 msgid "Check a signature"
 msgstr "Check a signature"
 
@@ -423,7 +487,7 @@ msgstr "Get signature from database"
 
 #: templates/check_form.html:40
 msgid "Use this wikitext:"
-msgstr "Get signature from database"
+msgstr "Use this wikitext:"
 
 #: templates/check_form.html:44
 msgid "[[User:Example|Example]] ([[User talk:Example|talk]])"
@@ -465,7 +529,7 @@ msgstr "Go"
 msgid "Would your signature meet the new requirements?"
 msgstr "Would your signature meet the new requirements?"
 
-#: templates/index.html:30 templates/layout.html:32
+#: templates/index.html:30 templates/layout.html:33
 msgid "Site-level data"
 msgstr "Site-level data"
 
@@ -473,11 +537,11 @@ msgstr "Site-level data"
 msgid "How many users on your wiki would be impacted?"
 msgstr "How many users on your wiki would be impacted?"
 
-#: templates/layout.html:30
+#: templates/layout.html:31
 msgid "Home"
 msgstr "Home"
 
-#: templates/layout.html:71
+#: templates/layout.html:72
 #, python-format
 msgid ""
 "This project is licensed under the %(open_link)sApache License, version "
@@ -486,15 +550,15 @@ msgstr ""
 "This project is licensed under the %(open_link)sApache License, version "
 "2.0%(close)s."
 
-#: templates/layout.html:79
+#: templates/layout.html:80
 msgid "Repository version"
 msgstr "Repository version"
 
-#: templates/layout.html:84
+#: templates/layout.html:85
 msgid "Talk page"
 msgstr "Talk page"
 
-#: templates/layout.html:88
+#: templates/layout.html:89
 msgid "GitHub"
 msgstr "GitHub"
 
