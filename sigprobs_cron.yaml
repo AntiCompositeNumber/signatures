@@ -24,7 +24,7 @@ spec:
             args: [
               "en.wikipedia.org", 
               "de.wikipedia.org", 
-              "meta.wikipedia.org", 
+              "meta.wikimedia.org", 
               "commons.wikimedia.org", 
               "www.mediawiki.org", 
               "es.wikipedia.org", 
