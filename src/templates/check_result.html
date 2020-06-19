@@ -9,6 +9,7 @@
 {% block content %}
   <h1>{% trans %}Results{% endtrans%}</h1>
   <h3>{% trans %}{{username}} at {{site}}{% endtrans %}</h3>
+  {% if signature %}
   <div class="container">
     <div class="row">
       <div class="col-lg py-1">
@@ -19,12 +20,28 @@
       </div>
     </div>
   </div>
-  <h2>{% trans count=errors|length %}{{count}} error found{% pluralize %}{{count}} errors found{% endtrans %}</h2>
-  <ul>
-    {% for error in errors %}
-    <li><b>{{ _(error.value) | escape}}</b>: {{ _(error.desc) | escape }}</li>
-    {% endfor %}
-  </ul>
+  {% endif %}
+  {% if failure is none %}
+  <div class="container">
+    <h2>{% trans count=errors|length %}{{count}} error found{% pluralize %}{{count}} errors found{% endtrans %}</h2>
+    <ul>
+      {% for error in errors %}
+      <li><b>{{ _(error.value) | escape}}</b>: {{ _(error.desc) | escape }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% elif failure %}
+  <div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">{{ _(errors[0].value) | escape}}</h4>
+    <p>{{ _(errors[0].desc) | escape}}</p>
+  </div>
+  {% else %}
+  <div class="alert alert-success" role="alert">
+    <h4 class="alert-heading">{% trans %}All clear!{% endtrans %}</h4>
+    <p><b>{{ _(errors[0].value|escape)}}</b> {{ _(errors[0].desc )|escape}}</p>
+  </div>
+  {% endif %}
+
 
 
 {% endblock %}

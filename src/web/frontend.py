@@ -94,9 +94,6 @@ def check_result(site, username):
 
     logger.debug(data)
 
-    if data.failure is not None:
-        return flask.render_template("check_result_err.html", **data._asdict())
-
     return flask.render_template("check_result.html", **data._asdict())
 
 

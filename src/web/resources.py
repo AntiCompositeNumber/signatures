@@ -103,7 +103,7 @@ def get_rendered_sig(site: str, wikitext: str) -> str:
     text = datasources.backoff_retry("post", url, json=payload)
     text = text.replace("./", f"https://{site}/wiki/")
     _, sep1, rest = text.partition(">")
-    inside, sep2, _ = rest.rpartition("</p>")
+    inside, sep2, _ = rest.rpartition("</")
     if not sep1 or not sep2:
         return text
     else:
