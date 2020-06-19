@@ -117,6 +117,7 @@ class ReportsSiteErrors(Resource):
     "format", "Output format; may be 'json' (default), 'plain', or 'massmessage'"
 )
 @api.route("/reports/<string:site>/error/<string:error>")
+@api.produces(["application/json", "text/plain"])
 class ReportsSiteSingleError(Resource):
     """Batch report for a single error on a single site"""
 
@@ -144,9 +145,12 @@ class ReportsSiteSingleError(Resource):
             meta["error"] = error
             return {"errors": data, "meta": meta}
         elif out_format == "plain":
-            return api.make_response("\n".join(data), fallback_mediatype="text/plain")
+            return flask.Response(
+                response="\n".join(data), status=200, mimetype="text/plain"
+            )
         elif out_format == "massmessage":
-            return api.make_response(
-                "\n".join(f"User talk:{user}@{site}" for user in data),
-                fallback_mediatype="text/plain",
+            return flask.Response(
+                response="\n".join(f"User talk:{user}@{site}" for user in data),
+                status=200,
+                mimetype="text/plain",
             )
