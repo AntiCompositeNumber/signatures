@@ -107,10 +107,12 @@ def get_lint_errors(sig: str, hostname: str, checks: Checks) -> Set[SigError]:
     for error in res_json:
         if (
             error.get("type", "") == "obsolete-tag"
-            and error.get("params", {}).get("name", "") == "font"
         ):
-            if checks & Checks.OBSOLETE_FONT:
-                errors.add(SigError("obsolete-font-tag"))
+            if checks & Checks.OBSOLETE_TAG:
+                if error.get("params", {}).get("name", "") == "font":
+                    errors.add(SigError("obsolete-font-tag"))
+                else:
+                    errors.add(SigError(error.get("type")))
         else:
             errors.add(SigError(error.get("type")))
     return errors
