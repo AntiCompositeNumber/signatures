@@ -10,13 +10,13 @@
   <h1>{% trans %}Results{% endtrans%}</h1>
   <h3>{% trans %}{{username}} at {{site}}{% endtrans %}</h3>
   {% if signature %}
-  <div class="container">
+  <div class="container my-3 pl-4">
     <div class="row">
       <div class="col-lg py-1">
-        <code>{{signature}}</code>
+        <code class="border rounded-sm p-1 bg-light text-reset">{{signature}}</code>
       </div>
       <div class="col-lg py-1">
-        {{html_sig|safe()}}
+        <span class="pl-1">{{html_sig|safe()}}</span>
       </div>
     </div>
   </div>
@@ -33,12 +33,12 @@
   {% elif failure %}
   <div class="alert alert-danger" role="alert">
     <h4 class="alert-heading">{{ _(errors[0].value) | escape}}</h4>
-    <p>{{ _(errors[0].desc) | escape}}</p>
+    <p class="font-weight-normal">{{ _(errors[0].desc) | escape}}</p>
   </div>
   {% else %}
   <div class="alert alert-success" role="alert">
     <h4 class="alert-heading">{% trans %}All clear!{% endtrans %}</h4>
-    <p><b>{{ _(errors[0].value|escape)}}</b> {{ _(errors[0].desc )|escape}}</p>
+    <p class="font-weight-normal"><b>{{ _(errors[0].value|escape)}}</b>: {{ _(errors[0].desc )|escape}}</p>
   </div>
   {% endif %}
 
