@@ -25,7 +25,7 @@ from flask_restx import Api, Resource, fields  # type: ignore
 from . import resources
 
 bp = flask.Blueprint("api", __name__, url_prefix="/api")
-api = Api(bp, prefix="/v1")
+api = Api(bp, prefix="/v1", title="Signatures API", version="1.0")
 
 check_model = api.model(
     "UserReport",
@@ -52,10 +52,9 @@ check_model = api.model(
 @api.route("/check/<site>/<username>")
 @api.param("signature", "")
 class Check(Resource):
-    """Checks a single user's signature for problems"""
-
     @api.doc(model=check_model)
     def get(self, site, username):
+        """Checks a single user's signature for problems"""
         signature = flask.request.values.get("signature", "")
 
         data = resources.check_user(site, username, signature)
@@ -65,18 +64,18 @@ class Check(Resource):
 
 @api.route("/reports")
 class Reports(Resource):
-    """Lists sites for which a batch report is available"""
-
     def get(self):
+        """Lists sites for which a batch report is available"""
         sites = resources.list_report_sites(flask.current_app.config)
         return sites
 
 
-@api.route("/reports/<site>")
+@api.route("/reports/<string:site>")
 class ReportsSite(Resource):
-    """Batch report for a single site, organized by user"""
-
+    @api.response(200, "Success")
+    @api.response(404, "Report not found")
     def get(self, site):
+        """Batch report for a single site, organized by user"""
         try:
             with open(
                 os.path.join(flask.current_app.config["data_dir"], site + ".json")
@@ -87,11 +86,12 @@ class ReportsSite(Resource):
         return data
 
 
-@api.route("/reports/<site>/error")
+@api.route("/reports/<string:site>/error")
 class ReportsSiteErrors(Resource):
-    """Batch report for a single site, organized by error"""
-
+    @api.response(200, "Success")
+    @api.response(404, "Report not found")
     def get(self, site):
+        """Batch report for a single site, organized by error"""
         try:
             with open(
                 os.path.join(flask.current_app.config["data_dir"], site + ".json")
@@ -116,12 +116,14 @@ class ReportsSiteErrors(Resource):
 @api.param(
     "format", "Output format; may be 'json' (default), 'plain', or 'massmessage'"
 )
+@api.produces("application/json,text/plain")
 @api.route("/reports/<string:site>/error/<string:error>")
-@api.produces(["application/json", "text/plain"])
 class ReportsSiteSingleError(Resource):
-    """Batch report for a single error on a single site"""
-
+    @api.response(200, "Success")
+    @api.response(404, "Report not found")
+    @api.response(400, "Specified error does not exist in data")
     def get(self, site, error):
+        """Batch report for a single error on a single site"""
         try:
             with open(
                 os.path.join(flask.current_app.config["data_dir"], site + ".json")
