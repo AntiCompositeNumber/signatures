@@ -248,9 +248,9 @@ def test_check_user_db_nosig(exists, failure, errors):
     [
         (
             "[[User:Example]]",
-            '<p id="mwAQ"><a rel="mw:WikiLink" '
+            '<a rel="mw:WikiLink" '
             'href="https://en.wikipedia.org/wiki/User:Example" '
-            'title="User:Example" id="mwAg">User:Example</a></p>',
+            'title="User:Example" id="mwAg">User:Example</a>',
         )
     ],
 )
