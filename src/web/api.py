@@ -119,6 +119,7 @@ class ReportsSiteErrors(Resource):
 @api.route("/reports/<string:site>/error/<string:error>")
 class ReportsSiteSingleError(Resource):
     """Batch report for a single error on a single site"""
+
     def get(self, site, error):
         try:
             with open(
@@ -143,6 +144,9 @@ class ReportsSiteSingleError(Resource):
             meta["error"] = error
             return {"errors": data, "meta": meta}
         elif out_format == "plain":
-            return "\n".join(data)
+            return api.make_response("\n".join(data), fallback_mediatype="text/plain")
         elif out_format == "massmessage":
-            return "\n".join(f"User talk:{user}@{site}" for user in data)
+            return api.make_response(
+                "\n".join(f"User talk:{user}@{site}" for user in data),
+                fallback_mediatype="text/plain",
+            )
