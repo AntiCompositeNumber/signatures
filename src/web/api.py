@@ -70,7 +70,7 @@ class Reports(Resource):
 
 @api.route("/reports/<site>")
 class ReportsSite(Resource):
-    def get(site):
+    def get(self, site):
         try:
             with open(
                 os.path.join(flask.current_app.config["data_dir"], site + ".json")
