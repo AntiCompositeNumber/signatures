@@ -28,7 +28,8 @@ spec:
               "commons.wikimedia.org", 
               "www.mediawiki.org", 
               "es.wikipedia.org", 
-              "fr.wikipedia.org"
+              "fr.wikipedia.org",
+              "www.wikidata.org",
             ]
             workingDir: /data/project/signatures
             env: 

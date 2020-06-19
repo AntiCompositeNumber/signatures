@@ -553,10 +553,10 @@ def handle_args(args=sys.argv[1:]):
         )
 
     for hostname, output in zip(args.hostnames, outputs):
+        result = main(hostname, **kwargs)
         with output_file(
             output, hostname, (args.overwrite if args.overwrite is not None else True)
         ) as f:
-            result = main(hostname, **kwargs)
             json.dump(result, f)
 
 
