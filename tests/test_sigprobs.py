@@ -129,6 +129,7 @@ def test_check_tildes_fallthrough():
         ("[[:{user}:Example]]", None),
         ("[[Special:Log/Example]]", SigError.NO_USER_LINKS),
         ("[[{contribs}/Example2]]", SigError.LINK_USER_MISMATCH),
+        ("[[{user}:Example#section|Example]]", None)
     ],
 )
 def test_check_links(sig, expected, sitedata, site):
