@@ -78,7 +78,7 @@ class ReportsSite(Resource):
     def get(self, site):
         """Batch report for a single site, organized by user"""
         if flask.request.values.get("purge", False):
-            resources.purge(site)
+            resources.purge_site(site)
 
         try:
             with open(
@@ -98,7 +98,7 @@ class ReportsSiteErrors(Resource):
     def get(self, site):
         """Batch report for a single site, organized by error"""
         if flask.request.values.get("purge", False):
-            resources.purge(site)
+            resources.purge_site(site)
 
         try:
             with open(
@@ -134,7 +134,7 @@ class ReportsSiteSingleError(Resource):
     def get(self, site, error):
         """Batch report for a single error on a single site"""
         if flask.request.values.get("purge", False):
-            resources.purge(site)
+            resources.purge_site(site)
 
         try:
             with open(
