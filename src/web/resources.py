@@ -19,8 +19,11 @@
 
 import sigprobs
 import logging
+import datetime
 import os
 import datasources
+import json
+import flask
 from datatypes import WebAppMessage, UserCheck, Result
 from typing import Any, cast, Dict, List, Set
 
@@ -117,3 +120,23 @@ def list_report_sites(config: Dict[str, Any]) -> List[str]:
         if item.endswith(".json")
     ]
     return sites
+
+
+def purge_site(site: str) -> bool:
+    try:
+        with open(
+            os.path.join(flask.current_app.config["data_dir"], site + ".json")
+        ) as f:
+            raw_data = json.load(f)
+    except FileNotFoundError:
+        raw_data = {}
+
+    if raw_data and datetime.datetime.now() - datetime.datetime.fromisoformat(
+        raw_data["meta"]["last_update"]
+    ) < datetime.timedelta(days=1):
+        return False
+
+    result = sigprobs.main(site)
+    with sigprobs.output_file(result, site, True) as f:
+        json.dump(result, f)
+    return True

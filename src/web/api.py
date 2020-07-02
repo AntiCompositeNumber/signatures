@@ -70,12 +70,16 @@ class Reports(Resource):
         return sites
 
 
+@api.param("purge", "Force generation of a new report")
 @api.route("/reports/<string:site>")
 class ReportsSite(Resource):
     @api.response(200, "Success")
     @api.response(404, "Report not found")
     def get(self, site):
         """Batch report for a single site, organized by user"""
+        if flask.request.values.get("purge", False):
+            resources.purge(site)
+
         try:
             with open(
                 os.path.join(flask.current_app.config["data_dir"], site + ".json")
@@ -86,12 +90,16 @@ class ReportsSite(Resource):
         return data
 
 
+@api.param("purge", "Force generation of a new report")
 @api.route("/reports/<string:site>/error")
 class ReportsSiteErrors(Resource):
     @api.response(200, "Success")
     @api.response(404, "Report not found")
     def get(self, site):
         """Batch report for a single site, organized by error"""
+        if flask.request.values.get("purge", False):
+            resources.purge(site)
+
         try:
             with open(
                 os.path.join(flask.current_app.config["data_dir"], site + ".json")
@@ -116,6 +124,7 @@ class ReportsSiteErrors(Resource):
 @api.param(
     "format", "Output format; may be 'json' (default), 'plain', or 'massmessage'"
 )
+@api.param("purge", "Force generation of a new report")
 @api.produces("application/json,text/plain")
 @api.route("/reports/<string:site>/error/<string:error>")
 class ReportsSiteSingleError(Resource):
@@ -124,6 +133,9 @@ class ReportsSiteSingleError(Resource):
     @api.response(400, "Specified error does not exist in data")
     def get(self, site, error):
         """Batch report for a single error on a single site"""
+        if flask.request.values.get("purge", False):
+            resources.purge(site)
+
         try:
             with open(
                 os.path.join(flask.current_app.config["data_dir"], site + ".json")
