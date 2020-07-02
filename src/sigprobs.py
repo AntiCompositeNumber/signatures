@@ -77,7 +77,7 @@ def check_sig(
             # This check short circuits -- there's no point in doing the
             # more expensive checks if there's only plain text
             errors.add(fanciness)
-            return cast(Set[SigError], errors - {None})
+            return cast(Set[SigError], errors - {None, SigError.NO_USER_LINKS})
     if checks & Checks.LINT:
         errors.update(get_lint_errors(sig, hostname, checks))
     if checks & Checks.NESTED_SUBST:
