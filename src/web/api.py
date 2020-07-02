@@ -70,7 +70,7 @@ class Reports(Resource):
         return sites
 
 
-@api.param("purge", "Force generation of a new report")
+@api.param("purge", "Force generation of a new report", type=bool)
 @api.route("/reports/<string:site>")
 class ReportsSite(Resource):
     @api.response(200, "Success")
@@ -90,7 +90,7 @@ class ReportsSite(Resource):
         return data
 
 
-@api.param("purge", "Force generation of a new report")
+@api.param("purge", "Force generation of a new report", type=bool)
 @api.route("/reports/<string:site>/error")
 class ReportsSiteErrors(Resource):
     @api.response(200, "Success")
@@ -124,7 +124,7 @@ class ReportsSiteErrors(Resource):
 @api.param(
     "format", "Output format; may be 'json' (default), 'plain', or 'massmessage'"
 )
-@api.param("purge", "Force generation of a new report")
+@api.param("purge", "Force generation of a new report", type=bool)
 @api.produces("application/json,text/plain")
 @api.route("/reports/<string:site>/error/<string:error>")
 class ReportsSiteSingleError(Resource):

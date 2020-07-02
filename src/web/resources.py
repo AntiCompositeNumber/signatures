@@ -137,6 +137,6 @@ def purge_site(site: str) -> bool:
         return False
 
     result = sigprobs.main(site)
-    with sigprobs.output_file(result, site, True) as f:
+    with sigprobs.output_file("", site, True) as f:
         json.dump(result, f)
     return True
