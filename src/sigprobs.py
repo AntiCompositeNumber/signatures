@@ -97,7 +97,10 @@ def check_sig(
 
 
 def lint_to_error(error: Dict[str, str]) -> Optional[SigError]:
-    return getattr(SigError, error.get("type", ""), None)
+    try:
+        return SigError(error.get("type", ""))
+    except ValueError:
+        return None
 
 
 def get_lint_errors(sig: str, hostname: str, checks: Checks) -> Set[Optional[SigError]]:
