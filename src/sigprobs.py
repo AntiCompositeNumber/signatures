@@ -96,27 +96,27 @@ def check_sig(
     return cast(Set[SigError], errors - {None})
 
 
-def to_error(name: Optional[str]) -> Optional[SigError]:
-    return getattr(SigError, name, None)
+def lint_to_error(error: Dict[str, str]) -> Optional[SigError]:
+    return getattr(SigError, error.get("type", ""), None)
 
 
-def get_lint_errors(sig: str, hostname: str, checks: Checks) -> Set[SigError]:
+def get_lint_errors(sig: str, hostname: str, checks: Checks) -> Set[Optional[SigError]]:
     """Use the REST API to get lint errors from the signature"""
     url = f"https://{hostname}/api/rest_v1/transform/wikitext/to/lint"
     data = {"wikitext": sig}
 
     res_json = datasources.backoff_retry("post", url, json=data, output="json")
 
-    errors = set()
+    errors: Set[Optional[SigError]] = set()
     for error in res_json:
         if error.get("type", "") == "obsolete-tag":
             if checks & Checks.OBSOLETE_TAG:
                 if error.get("params", {}).get("name", "") == "font":
                     errors.add(SigError("obsolete-font-tag"))
                 else:
-                    errors.add(to_error(error.get("type")))
+                    errors.add(lint_to_error(error))
         else:
-            errors.add(to_error(error.get("type")))
+            errors.add(lint_to_error(error))
     return errors
 
 
@@ -392,7 +392,8 @@ def batch_check_lint(
             if indiv_lints:
                 resultdata.setdefault(auser, {})
                 cast(
-                    List[SigError], resultdata[auser].setdefault("errors", []),
+                    List[Optional[SigError]],
+                    resultdata[auser].setdefault("errors", []),
                 ).extend(list(indiv_lints))
                 resultdata[auser].setdefault("signature", asig)
                 count += 1
