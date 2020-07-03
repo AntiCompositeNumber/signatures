@@ -133,6 +133,11 @@ class SigError(Result):
         N_("wikilink-in-extlink-help"),
         Checks.LINT,
     )
+    MULTI_COLON_ESCAPE = (
+        N_("multi-colon-escape"),
+        N_("multi-colon-escape-help"),
+        Checks.LINT,
+    )
 
     # Default set errors
     INTERWIKI_USER_LINK = (

@@ -96,6 +96,10 @@ def check_sig(
     return cast(Set[SigError], errors - {None})
 
 
+def to_error(name: Optional[str]) -> Optional[SigError]:
+    return getattr(SigError, name, None)
+
+
 def get_lint_errors(sig: str, hostname: str, checks: Checks) -> Set[SigError]:
     """Use the REST API to get lint errors from the signature"""
     url = f"https://{hostname}/api/rest_v1/transform/wikitext/to/lint"
@@ -105,16 +109,14 @@ def get_lint_errors(sig: str, hostname: str, checks: Checks) -> Set[SigError]:
 
     errors = set()
     for error in res_json:
-        if (
-            error.get("type", "") == "obsolete-tag"
-        ):
+        if error.get("type", "") == "obsolete-tag":
             if checks & Checks.OBSOLETE_TAG:
                 if error.get("params", {}).get("name", "") == "font":
                     errors.add(SigError("obsolete-font-tag"))
                 else:
-                    errors.add(SigError(error.get("type")))
+                    errors.add(to_error(error.get("type")))
         else:
-            errors.add(SigError(error.get("type")))
+            errors.add(to_error(error.get("type")))
     return errors
 
 

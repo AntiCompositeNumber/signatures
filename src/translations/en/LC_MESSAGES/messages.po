@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-06-19 16:34-0400\n"
+"POT-Creation-Date: 2020-07-03 18:49-0400\n"
 "PO-Revision-Date: 2020-03-13 21:53-0400\n"
 "Last-Translator: AntiCompositeNumber\n"
 "Language: en\n"
@@ -123,172 +123,180 @@ msgstr "Wikilink in external link"
 msgid "wikilink-in-extlink-help"
 msgstr "External link labels can not contain wikilinks"
 
-#: datatypes.py:139
+#: datatypes.py:137
+msgid "multi-colon-escape"
+msgstr "Multiple colons escape wikilink"
+
+#: datatypes.py:138
+msgid "multi-colon-escape-help"
+msgstr "Wikilinks must start with no more than one colon."
+
+#: datatypes.py:144
 msgid "interwiki-user-link"
 msgstr "Interwiki user link"
 
-#: datatypes.py:140
+#: datatypes.py:145
 msgid "interwiki-user-link-help"
 msgstr ""
 "The only link in this signature appears to be an interwiki link. "
 "Signatures should contain a wikilink to the user's local user page, user "
 "talk page, or contributions. "
 
-#: datatypes.py:144
+#: datatypes.py:149
 msgid "link-username-mismatch"
 msgstr "Mismatch between link and username"
 
-#: datatypes.py:145
+#: datatypes.py:150
 msgid "link-username-mismatch-help"
 msgstr ""
 "The signature contains at least one link to a user page, talk page, or "
 "contributions, but they don't match the username"
 
-#: datatypes.py:148
+#: datatypes.py:153
 msgid "nested-subst"
 msgstr "Nested substitution"
 
-#: datatypes.py:148
+#: datatypes.py:153
 msgid "nested-subst-help"
 msgstr ""
 "Signatures should not contain markup that could transform into someone "
 "else's signature."
 
-#: datatypes.py:150
+#: datatypes.py:155
 msgid "complex-template"
 msgstr "Complex template markup"
 
-#: datatypes.py:151
+#: datatypes.py:156
 msgid "complex-template-help"
 msgstr ""
 "This signature contains complex markup that caused it to change for each "
 "of five substitutions."
 
-#: datatypes.py:154
+#: datatypes.py:159
 msgid "no-user-links"
 msgstr "No user links"
 
-#: datatypes.py:154
+#: datatypes.py:159
 msgid "no-user-links-help"
 msgstr ""
 "Signatures should contain a wikilink to the user's local user page, user "
 "talk page, or contributions."
 
-#: datatypes.py:155
+#: datatypes.py:160
 msgid "plain-fancy-sig"
 msgstr "Plain fancy signature"
 
-#: datatypes.py:155
+#: datatypes.py:160
 msgid "plain-fancy-sig-help"
 msgstr ""
 "The \"Treat the above as wiki markup\" box was ticked, but this signature"
 " doesn't contain any markup."
 
-#: datatypes.py:156
+#: datatypes.py:161
 msgid "sig-too-long"
 msgstr "Signature too long"
 
-#: datatypes.py:156
+#: datatypes.py:161
 msgid "sig-too-long-help"
 msgstr "Signatures must contain less than 255 bytes of wikitext."
 
-#: datatypes.py:159
+#: datatypes.py:164
 msgid "images-in-sig"
 msgstr ""
 
-#: datatypes.py:159
+#: datatypes.py:164
 msgid "images-in-sig-help"
 msgstr ""
 
-#: datatypes.py:161
+#: datatypes.py:166
 msgid "transcluded-templates"
 msgstr ""
 
-#: datatypes.py:162
+#: datatypes.py:167
 msgid "transcluded-templates-help"
 msgstr ""
 
-#: datatypes.py:166
+#: datatypes.py:171
 msgid "sig-too-long-post-subst"
 msgstr ""
 
-#: datatypes.py:167
+#: datatypes.py:172
 msgid "sig-too-long-post-subst-help"
 msgstr ""
 
-#: datatypes.py:171
+#: datatypes.py:176
 msgid "link-name-impersonation"
 msgstr ""
 
-#: datatypes.py:172
+#: datatypes.py:177
 msgid "link-name-impersonation-help"
 msgstr ""
 
-#: datatypes.py:175
+#: datatypes.py:180
 msgid "unescaped-pipes"
 msgstr ""
 
-#: datatypes.py:175
+#: datatypes.py:180
 msgid "unescaped-pipes-help"
 msgstr ""
 
-#: datatypes.py:176
+#: datatypes.py:181
 msgid "external-links"
 msgstr ""
 
-#: datatypes.py:176
+#: datatypes.py:181
 msgid "external-links-help"
 msgstr ""
 
-#: datatypes.py:177
+#: datatypes.py:182
 msgid "line-breaks"
 msgstr ""
 
-#: datatypes.py:177
+#: datatypes.py:182
 msgid "line-breaks-help"
 msgstr ""
 
-#: datatypes.py:178
+#: datatypes.py:183
 msgid "horizontal-rule"
 msgstr ""
 
-#: datatypes.py:178
+#: datatypes.py:183
 msgid "horizontal-rule-help"
 msgstr ""
 
-#: datatypes.py:182
+#: datatypes.py:187
 msgid "default-sig"
 msgstr "Default signature"
 
-#: datatypes.py:182
+#: datatypes.py:187
 msgid "default-sig-help"
 msgstr "No custom signature has been set for this user."
 
-#: datatypes.py:183
+#: datatypes.py:188
 msgid "no-errors"
 msgstr "No errors"
 
-#: datatypes.py:183
+#: datatypes.py:188
 msgid "no-errors-help"
 msgstr "No problems were detected with this signature."
 
-#: datatypes.py:184
+#: datatypes.py:189
 msgid "sig-not-fancy"
 msgstr "Non-fancy signature"
 
-#: datatypes.py:184
+#: datatypes.py:189
 msgid "sig-not-fancy-help"
 msgstr "This signature is only a nickname, and is not interpreted as wikitext."
 
-#: datatypes.py:185
+#: datatypes.py:190
 msgid "user-does-not-exist"
 msgstr "User does not exist"
 
-#: datatypes.py:185
+#: datatypes.py:190
 msgid "user-does-not-exist-help"
 msgstr "The provided username does not exist on this wiki."
 
-#: templates/about.html:4 templates/layout.html:33
+#: templates/about.html:4 templates/layout.html:34
 msgid "About"
 msgstr "About"
 
@@ -465,7 +473,7 @@ msgstr ""
 "should not be considered especially stable."
 
 #: templates/check_form.html:10 templates/index.html:29
-#: templates/layout.html:31
+#: templates/layout.html:32
 msgid "Check a signature"
 msgstr "Check a signature"
 
@@ -529,7 +537,7 @@ msgstr "Go"
 msgid "Would your signature meet the new requirements?"
 msgstr "Would your signature meet the new requirements?"
 
-#: templates/index.html:30 templates/layout.html:32
+#: templates/index.html:30 templates/layout.html:33
 msgid "Site-level data"
 msgstr "Site-level data"
 
@@ -537,15 +545,15 @@ msgstr "Site-level data"
 msgid "How many users on your wiki would be impacted?"
 msgstr "How many users on your wiki would be impacted?"
 
-#: templates/layout.html:30
+#: templates/layout.html:31
 msgid "Home"
 msgstr "Home"
 
-#: templates/layout.html:34
+#: templates/layout.html:35
 msgid "API"
 msgstr "API"
 
-#: templates/layout.html:72
+#: templates/layout.html:73
 #, python-format
 msgid ""
 "This project is licensed under the %(open_link)sApache License, version "
@@ -554,15 +562,15 @@ msgstr ""
 "This project is licensed under the %(open_link)sApache License, version "
 "2.0%(close)s."
 
-#: templates/layout.html:80
+#: templates/layout.html:81
 msgid "Repository version"
 msgstr "Repository version"
 
-#: templates/layout.html:85
+#: templates/layout.html:86
 msgid "Talk page"
 msgstr "Talk page"
 
-#: templates/layout.html:89
+#: templates/layout.html:90
 msgid "GitHub"
 msgstr "GitHub"
 
