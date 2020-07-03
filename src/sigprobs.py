@@ -591,7 +591,7 @@ def output_file(output: Optional[str], hostname: str, overwrite: bool) -> TextIO
 if __name__ == "__main__":
     logging.basicConfig(
         format="%(asctime)s %(levelname)s:%(name)s:%(message)s",
-        level=getattr(logging, os.environ.get("LOGLEVEL", "INFO").upper()),
+        level=getattr(logging, os.environ.get("LOGLEVEL", "DEBUG").upper()),
     )
     mail = logging.handlers.SMTPHandler(
         "mail.tools.wmflabs.org",
