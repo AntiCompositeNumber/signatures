@@ -121,7 +121,7 @@ def get_lint_errors(sig: str, hostname: str, checks: Checks) -> Set[SigError]:
                     errors.add(lint_to_error(error))
         else:
             errors.add(lint_to_error(error))
-    return errors - {None}
+    return cast(Set[SigError], errors - {None})
 
 
 def check_links(user: str, sig: str, sitedata: SiteData) -> Optional[SigError]:
