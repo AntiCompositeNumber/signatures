@@ -103,7 +103,7 @@ def lint_to_error(error: Dict[str, str]) -> Optional[SigError]:
         return None
 
 
-def get_lint_errors(sig: str, hostname: str, checks: Checks) -> Set[Optional[SigError]]:
+def get_lint_errors(sig: str, hostname: str, checks: Checks) -> Set[SigError]:
     """Use the REST API to get lint errors from the signature"""
     url = f"https://{hostname}/api/rest_v1/transform/wikitext/to/lint"
     data = {"wikitext": sig}
@@ -120,7 +120,7 @@ def get_lint_errors(sig: str, hostname: str, checks: Checks) -> Set[Optional[Sig
                     errors.add(lint_to_error(error))
         else:
             errors.add(lint_to_error(error))
-    return errors
+    return errors - {None}
 
 
 def check_links(user: str, sig: str, sitedata: SiteData) -> Optional[SigError]:
