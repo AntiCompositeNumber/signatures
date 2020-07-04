@@ -134,8 +134,8 @@ class SigError(Result):
         Checks.LINT,
     )
     MULTI_COLON_ESCAPE = (
-        N_("multi-colon-escape"),
-        N_("multi-colon-escape-help"),
+        N_("lint/multi-colon-escape"),
+        N_("lint/multi-colon-escape-help"),
         Checks.LINT,
     )
 

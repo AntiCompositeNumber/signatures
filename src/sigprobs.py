@@ -100,6 +100,7 @@ def lint_to_error(error: Dict[str, str]) -> Optional[SigError]:
     try:
         return SigError(error.get("type", ""))
     except ValueError:
+        logging.error(f"Lint error '{error['type']}' not found")
         return None
 
 
