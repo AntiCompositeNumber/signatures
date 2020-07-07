@@ -186,7 +186,7 @@ def test_check_user_exists(userid, expected, site, sitedata):
     "sig,failure", [("[[User:Example]]", False), ("[[User:Example2]]", None)]
 )
 def test_check_user_passed(sig, failure, site, sitedata):
-    data = resources.check_user("en.wikipedia.org", "Example", sig)
+    data = resources.check_user("en.wikipedia.org", "example", sig)
     assert data.signature == sig
     assert data.failure is failure
     assert data.username == "Example"

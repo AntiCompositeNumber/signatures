@@ -52,6 +52,7 @@ def check_user(site: str, user: str, sig: str = "") -> UserCheck:
     html_sig = ""
     sitedata = datasources.get_site_data(site)
     dbname = sitedata.dbname
+    user = user[0].upper() + user[1:]
 
     if not sig:
         # signature not supplied, get data from database
