@@ -59,6 +59,9 @@ def check_user(site: str, user: str, sig: str = "") -> UserCheck:
     errors: Set[Result] = set()
     failure = None
     html_sig = ""
+    if site not in datasources.get_sitematrix():
+        flask.abort(404)
+
     sitedata = datasources.get_site_data(site)
     dbname = sitedata.dbname
     user = user[0].upper() + user[1:]
