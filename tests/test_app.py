@@ -156,21 +156,20 @@ def test_validate_username_pass():
     resources.validate_username("foo@bar.com")  # Grandfathered usernames have @
 
 
-def test_get_default_sig():
-    res = mock.Mock()
-    res.return_value = "[[User:$1|$2]] ([[User talk:$1|talk]])"
-    with mock.patch("datasources.backoff_retry", res):
-        sig = resources.get_default_sig(
-            "en.wikipedia.org", user="user", nickname="nick"
-        )
+@pytest.mark.parametrize(
+    "site,expected",
+    [
+        ("en.wikipedia.org", "[[User:user|nick]] ([[User talk:user|talk]])",),
+        (
+            "eo.wikipedia.org",
+            "[[Uzanto:user|nick]] ([[Uzanto-Diskuto:user|diskuto]])",
+        ),
+    ],
+)
+def test_get_default_sig(site, expected):
+    sig = resources.get_default_sig(site, user="user", nickname="nick")
 
-    assert sig == "[[User:user|nick]] ([[User talk:user|talk]])"
-    res.assert_called_once_with(
-        "get",
-        "https://en.wikipedia.org/w/index.php",
-        output="text",
-        params={"title": "MediaWiki:Signature", "action": "raw"},
-    )
+    assert sig == expected
 
 
 @pytest.mark.parametrize("userid,expected", [(((12345,),), True), ((), False)])

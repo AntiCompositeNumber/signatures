@@ -39,9 +39,18 @@ def validate_username(user: str) -> None:
 
 
 def get_default_sig(site: str, user: str = "$1", nickname: str = "$2") -> str:
-    url = f"https://{site}/w/index.php"
-    params = {"title": "MediaWiki:Signature", "action": "raw"}
-    text = datasources.backoff_retry("get", url, output="text", params=params)
+    url = f"https://{site}/w/api.php"
+    params = {
+        "action": "query",
+        "format": "json",
+        "meta": "allmessages",
+        "formatversion": "2",
+        "ammessages": "signature",
+        "amprop": "",
+        "amenableparser": 1,
+    }
+    res = datasources.backoff_retry("get", url, output="json", params=params)
+    text = res["query"]["allmessages"][0]["content"]
     return text.replace("$1", user).replace("$2", nickname)
 
 
