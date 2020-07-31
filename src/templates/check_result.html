@@ -8,6 +8,13 @@
 {% endblock %}
 {% block content %}
   <h1>{% trans %}Results{% endtrans%}</h1>
+  {% if replag %}
+  <div class="alert alert-warning" role="alert">
+      {% trans lagtime=replag %}
+      Warning: Replication lag is high. Changes made within the last {{lagtime}} may not be reflected.
+      {% endtrans %}
+  </div>
+  {% endif %}
   <h3>{% trans %}{{username}} at {{site}}{% endtrans %}</h3>
   {% if signature %}
   <div class="container my-3 pl-4">

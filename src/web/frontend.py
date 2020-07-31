@@ -91,10 +91,15 @@ def check():
 def check_result(site, username):
     signature = flask.request.args.get("signature", "")
     data = resources.check_user(site, username, signature)
+    replag = datasources.get_site_replag(site)
+    if replag > datetime.timedelta(minutes=2):
+        replag = str(replag)
+    else:
+        replag = ""
 
     logger.debug(data)
 
-    return flask.render_template("check_result.html", **data._asdict())
+    return flask.render_template("check_result.html", replag=replag, **data._asdict())
 
 
 @bp.route("/reports")

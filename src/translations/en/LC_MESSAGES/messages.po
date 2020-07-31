@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-07-03 18:49-0400\n"
+"POT-Creation-Date: 2020-07-30 22:01-0400\n"
 "PO-Revision-Date: 2020-03-13 21:53-0400\n"
 "Last-Translator: AntiCompositeNumber\n"
 "Language: en\n"
@@ -124,12 +124,12 @@ msgid "wikilink-in-extlink-help"
 msgstr "External link labels can not contain wikilinks"
 
 #: datatypes.py:137
-msgid "multi-colon-escape"
-msgstr "Multiple colons escape wikilink"
+msgid "lint/multi-colon-escape"
+msgstr ""
 
 #: datatypes.py:138
-msgid "multi-colon-escape-help"
-msgstr "Wikilinks must start with no more than one colon."
+msgid "lint/multi-colon-escape-help"
+msgstr ""
 
 #: datatypes.py:144
 msgid "interwiki-user-link"
@@ -509,19 +509,28 @@ msgstr "Replacement signature"
 msgid "Results"
 msgstr "Results"
 
-#: templates/check_result.html:11
+#: templates/check_result.html:13
+#, python-format
+msgid ""
+"\n"
+"      Warning: Replication lag is high. Changes made within the last "
+"%(lagtime)s may not be reflected.\n"
+"      "
+msgstr ""
+
+#: templates/check_result.html:18
 #, python-format
 msgid "%(username)s at %(site)s"
 msgstr "%(username)s at %(site)s"
 
-#: templates/check_result.html:26
+#: templates/check_result.html:33
 #, python-format
 msgid "%(count)s error found"
 msgid_plural "%(count)s errors found"
 msgstr[0] "%(count)s error found"
 msgstr[1] "%(count)s errors found"
 
-#: templates/check_result.html:40
+#: templates/check_result.html:47
 msgid "All clear!"
 msgstr "All clear!"
 
@@ -621,4 +630,10 @@ msgstr "Errors"
 #: templates/report_site.html:37
 msgid "Signature"
 msgstr "Signature"
+
+#~ msgid "multi-colon-escape"
+#~ msgstr "Multiple colons escape wikilink"
+
+#~ msgid "multi-colon-escape-help"
+#~ msgstr "Wikilinks must start with no more than one colon."
 

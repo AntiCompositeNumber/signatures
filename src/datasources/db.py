@@ -139,3 +139,20 @@ def _check_user_exists(user: str, dbname: str) -> bool:
     query = "SELECT user_id FROM `user` WHERE user_name = %(user)s"
     res = do_db_query(dbname, query, user=user)
     return bool(res)
+
+
+def _get_shard_from_site(site: str):
+    if "//" not in site:
+        site = "https://" + site
+    query = "SELECT slice FROM meta_p.wiki WHERE url = %(site)s"
+    res = do_db_query("meta", query, site=site)
+    return res[0][0].partition(".")[0]
+
+
+def get_site_replag(site: str) -> datetime.timedelta:
+    query = "SELECT lag FROM heartbeat_p.heartbeat where shard = %(shard)s"
+    res = do_db_query("meta", query, shard=_get_shard_from_site(site))
+    if res:
+        return datetime.timedelta(seconds=float(res[0][0]))
+    else:
+        raise ValueError

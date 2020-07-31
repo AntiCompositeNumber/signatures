@@ -20,6 +20,8 @@
 import pytest  # type: ignore
 import unittest.mock as mock
 import sys
+import datetime
+from decimal import Decimal
 import os
 
 # import urllib.parse
@@ -29,6 +31,7 @@ sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/../src"))
 # import app  # noqa: E402
 # import sigprobs  # noqa: E402
 import datasources  # noqa: E402
+import datasources.db  # noqa: E402
 
 
 @pytest.fixture(
@@ -128,3 +131,30 @@ def test_db_check_user_exists(user, expected, sitedata):
     ):
         result = datasources.check_user_exists(user, sitedata)
     assert result is expected
+
+
+@pytest.mark.parametrize(
+    "site,url,raw_slice,expected",
+    [
+        ("en.wikipedia.org", "https://en.wikipedia.org", "s1.labsdb", "s1"),
+        ("commons.wikimedia.org", "https://commons.wikimedia.org", "s4.labsdb", "s4"),
+    ],
+)
+def test_get_shard_from_site(site, url, raw_slice, expected):
+    with mock.patch(
+        "datasources.db.do_db_query", return_value=((raw_slice,),)
+    ) as mock_query:
+        assert datasources.db._get_shard_from_site(site) == expected
+        mock_query.assert_called_once_with("meta", mock.ANY, site=url)
+
+
+@pytest.mark.parametrize("sec", [274226.9988, 0.0])
+def test_get_site_replag(sec):
+    with mock.patch("datasources.db.do_db_query", return_value=((Decimal(sec),),)):
+        with mock.patch(
+            "datasources.db._get_shard_from_site", return_value="s1"
+        ) as mock_get_shard:
+            assert datasources.get_site_replag(
+                "en.wikipedia.org"
+            ) == datetime.timedelta(seconds=sec)
+            mock_get_shard.assert_called_once_with("en.wikipedia.org")
