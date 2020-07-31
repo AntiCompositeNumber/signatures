@@ -10,9 +10,10 @@
   <h1>{% trans %}Results{% endtrans%}</h1>
   {% if replag %}
   <div class="alert alert-warning" role="alert">
-    <p class="font-weight-normal">
+    <h4 class="alert-heading">{% trans %}Warning{% endtrans %}</h4>
+    <p class="font-weight-normal h6">
     {% trans lagtime=replag %}
-    Warning: Replication lag is high. Changes made within the last {{lagtime}} may not be reflected.
+    Replication lag is high. Changes made within the last {{lagtime}} may not be reflected.
     {% endtrans %}
     </p>
   </div>
