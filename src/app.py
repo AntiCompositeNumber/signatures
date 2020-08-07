@@ -93,7 +93,7 @@ def create_app():
         )
 
     from web import frontend, api
-    from src import deploy
+    import deploy
 
     app.register_blueprint(frontend.bp)
     app.register_blueprint(api.bp)
