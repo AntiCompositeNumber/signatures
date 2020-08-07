@@ -160,10 +160,7 @@ def test_validate_username_pass():
     "site,expected",
     [
         ("en.wikipedia.org", "[[User:user|nick]] ([[User talk:user|talk]])",),
-        (
-            "eo.wikipedia.org",
-            "[[Uzanto:user|nick]] ([[Uzanto-Diskuto:user|diskuto]])",
-        ),
+        ("eo.wikipedia.org", "[[Uzanto:user|nick]] ([[Uzanto-Diskuto:user|diskuto]])",),
     ],
 )
 def test_get_default_sig(site, expected):
@@ -190,6 +187,15 @@ def test_check_user_passed(sig, failure, site, sitedata):
     assert data.failure is failure
     assert data.username == "Example"
     assert data.site == "en.wikipedia.org"
+
+
+@pytest.mark.parametrize(
+    "name,expected",
+    [("Example", "Example"), ("example", "Example"), ("example_user", "Example user")],
+)
+def test_check_user_username(name, expected):
+    data = resources.check_user("en.wikipedia.org", name, "[[User:Example]]")
+    assert data.username == expected
 
 
 @pytest.mark.parametrize(
