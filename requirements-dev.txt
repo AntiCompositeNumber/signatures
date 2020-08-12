@@ -1,15 +1,4 @@
-################################################################################
-# This requirements file has been automatically generated from `Pipfile` with
-# `pipenv-to-requirements`
-#
-#
-# This has been done to maintain backward compatibility with tools and services
-# that do not support `Pipfile` yet.
-#
-# Do NOT edit it directly, use `pipenv install [-d]` to modify `Pipfile` and
-# `Pipfile.lock` and then regenerate `requirements*.txt`.
-################################################################################
-
+-i https://pypi.org/simple/
 appdirs==1.4.4
 attrs==19.3.0
 beautifulsoup4==4.9.1
@@ -19,7 +8,7 @@ certifi==2020.6.20
 chardet==3.0.4
 click==7.1.2
 coverage==5.2.1
-coveralls==2.1.1
+coveralls==2.1.2
 distlib==0.3.1
 docopt==0.6.2
 filelock==3.0.12
