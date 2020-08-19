@@ -91,11 +91,15 @@ def check():
 def check_result(site, username):
     signature = flask.request.args.get("signature", "")
     data = resources.check_user(site, username, signature)
-    replag = datasources.get_site_replag(site)
-    if replag > datetime.timedelta(minutes=2):
-        replag = str(replag)
-    else:
+    try:
+        replag = datasources.get_site_replag(site)
+    except ConnectionError:
         replag = ""
+    else:
+        if replag > datetime.timedelta(minutes=2):
+            replag = str(replag)
+        else:
+            replag = ""
 
     logger.debug(data)
 
