@@ -80,9 +80,9 @@ def sitedata(site):
         ("[[{user}:Example|Example]] ([[{talk}:Example|talk]])", set()),
     ],
 )
-def test_get_lint_errors(sig, expected, site):
+def test_get_lint_errors(sig, expected, site, sitedata):
     errors = sigprobs.get_lint_errors(
-        sig.format(**site), site["domain"], Checks.DEFAULT | Checks.OBSOLETE_TAG
+        sig.format(**site), sitedata, Checks.DEFAULT | Checks.OBSOLETE_TAG
     )
     assert errors == expected
 
