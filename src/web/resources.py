@@ -94,7 +94,7 @@ def check_user(site: str, user: str, sig: str = "") -> UserCheck:
     if failure is None:
         # OK so far, actually check the signature
         errors = cast(Set[Result], sigprobs.check_sig(user, sig, sitedata, site))
-        html_sig = get_rendered_sig(site, sig)
+        html_sig = get_rendered_sig(site, sigprobs.evaluate_subst(sig, sitedata))
         logger.debug(errors)
 
     if not errors:

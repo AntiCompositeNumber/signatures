@@ -79,7 +79,7 @@ def check_sig(
             errors.add(fanciness)
             return cast(Set[SigError], errors - {None, SigError.NO_USER_LINKS})
     if checks & Checks.LINT:
-        errors.update(get_lint_errors(sig, hostname, checks))
+        errors.update(get_lint_errors(sig, sitedata, checks))
     if checks & Checks.NESTED_SUBST:
         errors.add(check_tildes(sig, sitedata))
     if checks & Checks.IMAGES:
@@ -104,10 +104,10 @@ def lint_to_error(error: Dict[str, str]) -> Optional[SigError]:
         return None
 
 
-def get_lint_errors(sig: str, hostname: str, checks: Checks) -> Set[SigError]:
+def get_lint_errors(sig: str, sitedata: SiteData, checks: Checks) -> Set[SigError]:
     """Use the REST API to get lint errors from the signature"""
-    url = f"https://{hostname}/api/rest_v1/transform/wikitext/to/lint"
-    data = {"wikitext": sig}
+    url = f"https://{sitedata.hostname}/api/rest_v1/transform/wikitext/to/lint"
+    data = {"wikitext": evaluate_subst(sig, sitedata)}
 
     res_json = datasources.backoff_retry("post", url, json=data, output="json")
 
@@ -380,19 +380,19 @@ def check_hrule(sig: str) -> Optional[SigError]:
 def batch_check_lint(
     accumulate: Dict[str, str],
     resultdata: Dict[str, Dict[str, Union[str, List[SigError]]]],
-    hostname: str,
+    sitedata: SiteData,
     checks: Checks,
 ) -> Tuple[Dict[str, str], Dict[str, Dict[str, Union[str, List[SigError]]]]]:
     logger.debug("Contstructing batched request to linter")
     batch = "\n\n".join(accumulate.values())
-    lint_errors = get_lint_errors(batch, hostname, checks)
+    lint_errors = get_lint_errors(batch, sitedata, checks)
     if lint_errors:
         # At least one signature has errors. Check them all individually
         userlist = list(accumulate.keys())
         count = 0
         for auser in userlist:
             asig = accumulate.pop(auser)
-            indiv_lints = get_lint_errors(asig, hostname, checks)
+            indiv_lints = get_lint_errors(asig, sitedata, checks)
             if indiv_lints:
                 resultdata.setdefault(auser, {})
                 cast(
@@ -445,7 +445,7 @@ def main(
                 user, sig, sitedata, hostname, checks=checks ^ Checks.LINT
             )
             if SigError.PLAIN_FANCY_SIG not in errors:
-                accumulate[user] = sig
+                accumulate[user] = evaluate_subst(sig, sitedata)
         except Exception:
             logger.error(f"Processing User:{user}: {sig}")
             raise
@@ -456,13 +456,13 @@ def main(
         # that's more work.
         if len(accumulate) >= 5:
             accumulate, resultdata = batch_check_lint(
-                accumulate, resultdata, hostname, checks
+                accumulate, resultdata, sitedata, checks
             )
 
     # Catch any sigs that didn't get linted
     if accumulate:
         accumulate, resultdata = batch_check_lint(
-            accumulate, resultdata, hostname, checks
+            accumulate, resultdata, sitedata, checks
         )
 
     # Collect stats, and generate json file
