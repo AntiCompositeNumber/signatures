@@ -22,6 +22,7 @@ import logging
 import datetime
 import os
 import datasources
+import re
 import json
 import flask
 from datatypes import WebAppMessage, UserCheck, Result
@@ -153,3 +154,20 @@ def purge_site(site: str) -> bool:
     with sigprobs.output_file("", site, True) as f:
         json.dump(result, f)
     return True
+
+
+def filter_page(url: str) -> Set[str]:
+    if not url:
+        return set()
+    if "?" in url:
+        url += "&action=raw"
+    else:
+        url += "?action=raw"
+
+    res = datasources.backoff_retry("get", url, output="text")
+    users = set()
+    for line in res:
+        match = re.search(r"(?<=User[_ ]talk:)[\w _]*(?=[\}@\]])", url)
+        if match:
+            users.add(match.group(0))
+    return users

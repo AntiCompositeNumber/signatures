@@ -126,6 +126,7 @@ class ReportsSiteErrors(Resource):
     "Output format; may be 'json' (default), 'plain', 'massmessage', or 'target'",
 )
 @api.param("purge", "Force generation of a new report", type=bool)
+@api.param("filter_page", "Do not include usernames that are linked at this URL.")
 @api.produces(["application/json", "text/plain"])
 @api.route("/reports/<string:site>/error/<string:error>")
 class ReportsSiteSingleError(Resource):
@@ -150,8 +151,16 @@ class ReportsSiteSingleError(Resource):
         if error not in errors:
             flask.abort(400)
 
+        filter_users = set()
+        if flask.request.values.get("filter_page"):
+            filter_users.update(
+                resources.filter_page(flask.request.values.get("filter_page", ""))
+            )
+
         data = [
-            user for user, info in raw_data["sigs"].items() if error in info["errors"]
+            user
+            for user, info in raw_data["sigs"].items()
+            if (error in info["errors"]) and user not in filter_users
         ]
 
         out_format = flask.request.values.get("format", "json")
