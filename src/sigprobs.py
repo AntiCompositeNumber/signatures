@@ -206,6 +206,8 @@ def compare_links(user: str, sitedata: SiteData, sig: str) -> Union[bool, Set[st
 
 def evaluate_subst(text: str, sitedata: SiteData) -> str:
     """Perform substitution by removing "subst:" and expanding the wikitext"""
+    if not text:
+        return ""
     for subst in sitedata.subst:
         text = text.replace(subst, "")
     data = {
