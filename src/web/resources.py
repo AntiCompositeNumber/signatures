@@ -166,8 +166,10 @@ def filter_page(url: str) -> Set[str]:
 
     res = datasources.backoff_retry("get", url, output="text")
     users = set()
-    for line in res:
-        match = re.search(r"(?<=User[_ ]talk:)[\w _]*(?=[\}@\]])", url)
+    for line in res.split("\n"):
+        match = re.search(
+            r"(?<=User[_ ]talk:)[^\#\<\>\[\]\|\{\}\/:\n]*(?=[\}@\]])", line
+        )
         if match:
             users.add(match.group(0))
     return users
