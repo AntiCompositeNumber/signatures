@@ -126,7 +126,7 @@ class ReportsSiteErrors(Resource):
     "Output format; may be 'json' (default), 'plain', 'massmessage', or 'target'",
 )
 @api.param("purge", "Force generation of a new report", type=bool)
-@api.produces("application/json,text/plain")
+@api.produces(["application/json", "text/plain"])
 @api.route("/reports/<string:site>/error/<string:error>")
 class ReportsSiteSingleError(Resource):
     @api.response(200, "Success")
