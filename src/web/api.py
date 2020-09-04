@@ -168,3 +168,11 @@ class ReportsSiteSingleError(Resource):
                 status=200,
                 mimetype="text/plain",
             )
+        elif out_format == "target":
+            return flask.Response(
+                response="\n".join(
+                    f"# {{{{#target:User talk:{user}}}}}" for user in data
+                ),
+                status=200,
+                mimetype="text/plain",
+            )
