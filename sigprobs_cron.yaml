@@ -30,6 +30,8 @@ spec:
               "es.wikipedia.org", 
               "fr.wikipedia.org",
               "www.wikidata.org",
+              "--days",
+              "90"
             ]
             workingDir: /data/project/signatures
             env: 
