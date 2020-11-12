@@ -102,6 +102,10 @@ def test_get_lint_errors(sig, expected, site, sitedata):
     ],
 )
 def test_check_tildes(sig, expected, sitedata, site):
+    if "1x" in sig and site["domain"] == "de.wikipedia.org":
+        # Dewiki moved {{1x}} and deleted the redirect, and this is
+        # easier than convincing them otherwise.
+        pytest.skip("Dewiki is missing {{1x}}")
     errors = sigprobs.check_tildes(sig % site, sitedata)
     assert errors == expected
 
