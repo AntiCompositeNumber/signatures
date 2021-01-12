@@ -1,15 +1,4 @@
-################################################################################
-# This requirements file has been automatically generated from `Pipfile` with
-# `pipenv-to-requirements`
-#
-#
-# This has been done to maintain backward compatibility with tools and services
-# that do not support `Pipfile` yet.
-#
-# Do NOT edit it directly, use `pipenv install [-d]` to modify `Pipfile` and
-# `Pipfile.lock` and then regenerate `requirements*.txt`.
-################################################################################
-
+-i https://pypi.org/simple/
 appdirs==1.4.4
 attrs==20.3.0
 beautifulsoup4==4.9.3
@@ -25,7 +14,7 @@ docopt==0.6.2
 filelock==3.0.12
 flake8==3.8.4
 idna==2.10
-importlib-metadata==3.3.0 ; python_version < '3.8'
+importlib-metadata==3.4.0 ; python_version < '3.8'
 iniconfig==1.1.1
 mccabe==0.6.1
 mypy-extensions==0.4.3
@@ -39,16 +28,16 @@ pluggy==1.0.0.dev0
 py==1.10.0
 pycodestyle==2.6.0
 pyflakes==2.2.0
-pyparsing==3.0.0b1
+pyparsing==3.0.0b2
 pytest==6.2.1
 regex==2020.11.13
 requests==2.25.1
 six==1.15.0
 soupsieve==2.1 ; python_version >= '3.0'
 toml==0.10.2
-typed-ast==1.4.1
+typed-ast==1.4.2
 typing-extensions==3.7.4.3 ; python_version < '3.8'
 urllib3==1.26.2
 virtualenv-clone==0.5.4
-virtualenv==20.2.2
+virtualenv==20.3.0
 zipp==3.4.0
