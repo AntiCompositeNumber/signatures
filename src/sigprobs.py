@@ -25,6 +25,7 @@ import sys
 import logging
 import logging.handlers
 import os
+import html
 import itertools
 import functools
 import operator
@@ -66,6 +67,7 @@ def check_sig(
 ) -> Set[SigError]:
     """Run a signature through the test suite and return any errors"""
     errors = set()
+    sig = html.unescape(sig)
 
     if checks & Checks.LINKS:
         errors.add(check_links(user, sig, sitedata))
