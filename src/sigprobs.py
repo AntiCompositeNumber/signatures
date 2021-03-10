@@ -94,6 +94,8 @@ def check_sig(
         errors.add(check_impersonation(sig, user, sitedata))
     if checks & Checks.FREE_PIPES:
         errors.add(check_pipes(sig))
+    if checks & Checks.BREAKS:
+        errors.add(check_line_breaks(sig))
 
     return cast(Set[SigError], errors - {None})
 

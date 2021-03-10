@@ -250,11 +250,11 @@ msgstr ""
 
 #: datatypes.py:182
 msgid "line-breaks"
-msgstr ""
+msgstr "Line breaks"
 
 #: datatypes.py:182
 msgid "line-breaks-help"
-msgstr ""
+msgstr "Signatures should not contain any line breaks."
 
 #: datatypes.py:183
 msgid "horizontal-rule"
