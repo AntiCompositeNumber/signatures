@@ -20,6 +20,7 @@ toolforge = "*"
 flask = "*"
 flask-babel = "*"
 flask-restx = "*"
+wheel = "*"
 
 [requires]
 python_version = "3.7"
