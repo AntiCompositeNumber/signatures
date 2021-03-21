@@ -475,7 +475,7 @@ def main(
     stats = {}
     stats["total"] = len(resultdata)
     for user, line in resultdata.items():
-        line["errors"] = [error.value for error in cast(List[SigError], line["errors"])]
+        line["errors"] = [error.value for error in cast(List[SigError], line["errors"])]  # type: ignore
         for error in line.get("errors", []):
             stats[error] = stats.setdefault(error, 0) + 1
 
