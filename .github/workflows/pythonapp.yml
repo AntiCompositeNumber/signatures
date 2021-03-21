@@ -48,6 +48,9 @@ jobs:
     needs: build 
     if: contains(github.ref, 'master')
     steps:
+    - name: check for dependency changes
+      run: |
+        ! git diff-tree --no-commit-id --name-only -r master | grep -P "(?:Pipfile.lock|requirements(-dev)?.txt)"
     - name: create deployment
       uses: NiklasMerz/github-deployment-action@v1.0.0
       env:
