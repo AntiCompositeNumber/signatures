@@ -152,6 +152,7 @@ def compare_links(user: str, sitedata: SiteData, sig: str) -> Union[bool, Set[st
     user = datasources.normal_name(user)
     errors = set()
     for link in wikitext.ifilter_wikilinks():
+        breakpoint()
         title = str(link.title).partition("#")[0]
         # Extract namespace and page.
         # Interwiki prefixes are left in the namespace
