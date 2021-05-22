@@ -51,7 +51,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: check for dependency changes
       run: |
-        ! git diff-tree --no-commit-id --name-only -r master | grep -P "(?:Pipfile.lock|requirements(-dev)?.txt)"
+        ! git diff-tree --no-commit-id --name-only -r $GITHUB_REF | grep -P "(?:Pipfile.lock|requirements(-dev)?.txt)"
     - name: create deployment
       uses: NiklasMerz/github-deployment-action@v1.0.0
       env:
