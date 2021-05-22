@@ -17,9 +17,9 @@ mwparserfromhell = "*"
 requests = "*"
 requests-oauthlib = "*"
 toolforge = "*"
-flask = "*"
+flask = "<2.0.0"
 flask-babel = "*"
-flask-restx = "*"
+flask-restx = "==0.4.0"
 wheel = "*"
 
 [requires]
