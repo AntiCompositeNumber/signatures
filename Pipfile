@@ -20,9 +20,9 @@ mwparserfromhell = "*"
 requests = "*"
 requests-oauthlib = "*"
 toolforge = "*"
-flask = "<2.0.0"  # Due to flask-restx 0.4.0 hard dep
+flask = "*"  # Due to flask-restx 0.4.0 hard dep
 flask-babel = "*"
-flask-restx = "==0.4.0"
+flask-restx = "*"
 wheel = "*"
 
 [requires]
