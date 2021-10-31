@@ -60,13 +60,13 @@ jobs:
       run: |
         ! git diff-tree --no-commit-id --name-only -r $GITHUB_REF | grep -P "(?:Pipfile.lock|requirements(-dev)?.txt)"
     - name: create deployment
-      uses: NiklasMerz/github-deployment-action@v1.0.0
+      uses: NiklasMerz/github-deployment-action@v1.1.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         args: -o AntiCompositeNumber -r signatures -c master -e production
     - name: set deployment status
-      uses: NiklasMerz/github-deployment-action@v1.0.0
+      uses: NiklasMerz/github-deployment-action@v1.1.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
