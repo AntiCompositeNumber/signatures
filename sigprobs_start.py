@@ -42,7 +42,7 @@ config = {
                         "name": "sigprobs",
                         "image": (
                             "docker-registry.tools.wmflabs.org/"
-                            "toolforge-python37-sssd-base:latest"
+                            "toolforge-python39-sssd-base:latest"
                         ),
                         "command": [
                             "/data/project/signatures/signatures/venv/bin/python3",
@@ -56,7 +56,7 @@ config = {
                 ],
                 "restartPolicy": "Never",
             },
-        }
+        },
     },
 }
 p = subprocess.run(

@@ -18,24 +18,24 @@ spec:
         spec:
           containers:
           - name: sigprobs-cron
-            image: docker-registry.tools.wmflabs.org/toolforge-python37-sssd-base:latest
+            image: docker-registry.tools.wmflabs.org/toolforge-python39-sssd-base:latest
             command: ["/data/project/signatures/signatures/venv/bin/python3",
                       "/data/project/signatures/signatures/src/sigprobs.py"]
             args: [
-              "en.wikipedia.org", 
-              "de.wikipedia.org", 
-              "meta.wikimedia.org", 
-              "commons.wikimedia.org", 
-              "www.mediawiki.org", 
-              "es.wikipedia.org", 
+              "en.wikipedia.org",
+              "de.wikipedia.org",
+              "meta.wikimedia.org",
+              "commons.wikimedia.org",
+              "www.mediawiki.org",
+              "es.wikipedia.org",
               "fr.wikipedia.org",
               "www.wikidata.org",
               "--days",
               "90"
             ]
             workingDir: /data/project/signatures
-            env: 
-            - name: HOME 
+            env:
+            - name: HOME
               value: /data/project/signatures
             imagePullPolicy: Always
           restartPolicy: OnFailure

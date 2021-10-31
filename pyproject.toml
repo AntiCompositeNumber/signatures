@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "signatures"
+version = "0"
+description = ""
+authors = ["AntiCompositeNumber"]
+license = "Apache-2.0"
+
+[tool.poetry.dependencies]
+python = "~3.9"
+mwparserfromhell = "*"
+requests = "*"
+toolforge = "*"
+Flask = "*"
+Flask-Babel = "*"
+flask-restx = "*"
+
+[tool.poetry.dev-dependencies]
+flake8 = "*"
+pytest = "*"
+coveralls = "*"
+black = "*"
+mypy = "*"
+bs4 = "*"
+types-requests = "*"
+types-PyMySQL = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+log_level = "info"
+addopts = "-v"
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+omit= ["src/i18n.py"]
+
+
