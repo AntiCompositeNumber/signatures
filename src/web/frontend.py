@@ -20,6 +20,7 @@
 
 import flask
 from werkzeug.datastructures import MultiDict
+import werkzeug.utils
 from flask_babel import gettext, ngettext, format_datetime  # type: ignore  # noqa: F401
 import os
 import datetime
@@ -120,11 +121,15 @@ def report():
 def report_site(site):
     try:
         with open(
-            os.path.join(flask.current_app.config["data_dir"], site + ".json")
+            os.path.join(
+                flask.current_app.config["data_dir"],
+                werkzeug.utils.secure_filename(site + ".json"),
+            )
         ) as f:
             data = json.load(f)
     except FileNotFoundError:
         flask.abort(404)
+
     data["meta"]["last_update"] = format_datetime(
         datetime.datetime.fromisoformat(data["meta"]["last_update"])
     )
