@@ -133,7 +133,7 @@ def test_check_tildes_fallthrough():
         ("[[:{user}:Example]]", None),
         ("[[Special:Log/Example]]", SigError.NO_USER_LINKS),
         ("[[{contribs}/Example2]]", SigError.LINK_USER_MISMATCH),
-        ("[[{user}:Example#section|Example]]", None)
+        ("[[{user}:Example#section|Example]]", None),
     ],
 )
 def test_check_links(sig, expected, sitedata, site):
@@ -166,12 +166,28 @@ def test_check_links_expansion(sig, expected, sitedata, site):
     mock_subst.return_value = sig.format(**site)
     with mock.patch("sigprobs.evaluate_subst", mock_subst):
         error = sigprobs.check_links(
-            "Example", "{{%(subst)s:%(user)s:Example/sig}}" % site, sitedata,
+            "Example",
+            "{{%(subst)s:%(user)s:Example/sig}}" % site,
+            sitedata,
         )
     assert error == expected
     mock_subst.assert_called_once_with(
         "{{%(subst)s:%(user)s:Example/sig}}" % site, sitedata
     )
+
+
+@pytest.mark.parametrize(
+    "sig,expected",
+    [
+        ("[[{user}:Example]]", None),
+        ("[[{talk}:Example]]", None),
+    ],
+)
+def test_check_links_caps(sig, expected, sitedata, site):
+    site["user"] = site["user"].upper()
+    site["talk"] = site["talk"].upper()
+    error = sigprobs.check_links("Example", sig.format(**site), sitedata)
+    assert error == expected
 
 
 @pytest.mark.parametrize(

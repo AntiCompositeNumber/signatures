@@ -79,14 +79,14 @@ def get_site_data(hostname: str) -> SiteData:
     for namespace, nsdata in all_namespaces.items():
         namespaces.setdefault(namespace, set()).update(
             [
-                datasources.normal_name(nsdata.get("canonical", "")),
-                datasources.normal_name(nsdata.get("name", "")),
+                datasources.normal_name(nsdata.get("canonical", "").lower()),
+                datasources.normal_name(nsdata.get("name", "").lower()),
             ]
         )
 
     for nsdata in namespace_aliases:
         namespaces.setdefault(str(nsdata["id"]), set()).add(
-            datasources.normal_name(nsdata.get("alias", ""))
+            datasources.normal_name(nsdata.get("alias", "").lower())
         )
 
     specialpages = {

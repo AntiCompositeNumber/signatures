@@ -169,12 +169,15 @@ def compare_links(user: str, sitedata: SiteData, sig: str) -> Union[bool, Set[st
                 continue  # pragma: no cover
         else:
             ns, sep, page = title.rpartition(":")
-        # normalize namespace and strip whitespace from both
-        ns, page = datasources.normal_name(ns.strip()), page.strip()
+
+        # strip whitespace from ns, page
+        ns, page = ns.strip(), page.strip()
 
         # remove leading colon from namespace
         if ns.startswith(":"):
             ns = ns[1:]
+
+        ns = datasources.normal_name(ns.lower())
 
         # Check if linking to user or user talk
         if not sep:
