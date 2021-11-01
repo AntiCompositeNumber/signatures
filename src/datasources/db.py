@@ -65,7 +65,7 @@ def iter_active_user_sigs(
                             rev_timestamp > %s
                             AND (
                                 page_namespace = 4
-                                OR (page_namespace % 2) = 1
+                                OR (page_namespace %% 2) = 1
                             )
                     ) AND
                     up_user IN (
