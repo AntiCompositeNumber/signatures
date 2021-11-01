@@ -46,7 +46,6 @@ def iter_active_user_sigs(
         ).strftime("%Y%m%d%H%M%S")
     conn = toolforge.connect(f"{dbname}_p", cluster="analytics")
     with conn.cursor() as cur:
-
         # Break query into 100 queries paginated by last digits of user id
         for i in range(0, 100):
             cur.execute(
@@ -58,13 +57,22 @@ def iter_active_user_sigs(
                 WHERE
                     RIGHT(up_user, 2) = %s AND
                     up_property = "nickname" AND
-                    user_name IN (SELECT actor_name
-                                  FROM revision_userindex
-                                  JOIN actor_revision ON rev_actor = actor_id
-                                  WHERE rev_timestamp > %s) AND
-                    up_user IN (SELECT up_user
-                                FROM user_properties
-                                WHERE up_property = "fancysig" AND up_value = 1) AND
+                    user_name IN (
+                        SELECT actor_name
+                        FROM revision_userindex
+                        JOIN actor_revision ON rev_actor = actor_id
+                        WHERE
+                            rev_timestamp > %s
+                            AND (
+                                page_namespace = 4
+                                OR (page_namespace % 2) = 1
+                            )
+                    ) AND
+                    up_user IN (
+                        SELECT up_user
+                        FROM user_properties
+                        WHERE up_property = "fancysig" AND up_value = 1
+                    ) AND
                     up_value != user_name
                 ORDER BY up_user ASC""",
                 args=(str(i), lastedit),
