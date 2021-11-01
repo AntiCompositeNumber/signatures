@@ -61,6 +61,7 @@ def iter_active_user_sigs(
                         SELECT actor_name
                         FROM revision_userindex
                         JOIN actor_revision ON rev_actor = actor_id
+                        JOIN page ON rev_page = page_id
                         WHERE
                             rev_timestamp > %s
                             AND (
