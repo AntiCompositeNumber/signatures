@@ -524,7 +524,7 @@ requests = "*"
 
 [[package]]
 name = "types-pymysql"
-version = "1.0.6"
+version = "1.0.8"
 description = "Typing stubs for PyMySQL"
 category = "dev"
 optional = false
@@ -932,8 +932,8 @@ toolforge = [
     {file = "toolforge-5.0.0.tar.gz", hash = "sha256:c8fbd199437faf7db6597c8cb1072de97f01fed706cd83740edf7a9ac9831065"},
 ]
 types-pymysql = [
-    {file = "types-PyMySQL-1.0.6.tar.gz", hash = "sha256:2f43b8ba9357c0b158cba26b58b36951754db45b8c8e7d301d0208de598cb7d6"},
-    {file = "types_PyMySQL-1.0.6-py3-none-any.whl", hash = "sha256:0589f4076bb37dbc3c95de14aa4b66c919b220cb3437ef7775c184ac7b27807b"},
+    {file = "types-PyMySQL-1.0.8.tar.gz", hash = "sha256:9edf59b23f4e3201a28274f86bb6e3588e1777d56617a07da4196df2d2dd2162"},
+    {file = "types_PyMySQL-1.0.8-py3-none-any.whl", hash = "sha256:d26748b5a71ddd5576d2cdab4eac069614b9211f63b74c488ad7b0a7f936e737"},
 ]
 types-requests = [
     {file = "types-requests-2.26.3.tar.gz", hash = "sha256:d63fa617846dcefff5aa2d59e47ab4ffd806e4bb0567115f7adbb5e438302fe4"},
