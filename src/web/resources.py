@@ -25,10 +25,25 @@ import datasources
 import re
 import json
 import flask
+import urllib.parse
 from datatypes import WebAppMessage, UserCheck, Result
 from typing import Any, cast, Dict, List, Set
 
 logger = logging.getLogger(__name__)
+
+SAFE_DOMAINS = {
+    "wikipedia.org",
+    "wiktionary.org",
+    "wikibooks.org",
+    "wikinews.org",
+    "wikiquote.org",
+    "wikisource.org",
+    "wikiversity.org",
+    "wikivoyage.org",
+    "wikimedia.org",
+    "wikidata.org",
+    "mediawiki.org",
+}
 
 
 def validate_username(user: str) -> None:
@@ -159,12 +174,19 @@ def purge_site(site: str) -> bool:
 def filter_page(url: str) -> Set[str]:
     if not url:
         return set()
-    if "?" in url:
-        url += "&action=raw"
-    else:
-        url += "?action=raw"
-
-    res = datasources.backoff_retry("get", url, output="text")
+    parse = urllib.parse.urlparse(url)
+    if (
+        not any(parse.netloc.endswith(domain) for domain in SAFE_DOMAINS)
+        or parse.scheme != "https"
+    ):
+        logger.warn(f"Rejecting unsafe URL {url}")
+        return set()
+    qs = urllib.parse.parse_qs(parse.query)
+    qs["action"] = ["raw"]
+    new_url = urllib.parse.urlunparse(
+        parse._replace(query=urllib.parse.urlencode(qs, doseq=True))
+    )
+    res = datasources.backoff_retry("get", new_url, output="text")
     users = set()
     for line in res.split("\n"):
         match = re.search(
