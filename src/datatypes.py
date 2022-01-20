@@ -76,13 +76,7 @@ class Checks(enum.Flag):
     EXTLINKS = enum.auto()
     HRULE = enum.auto()
     EXTENDED = (
-        IMAGES
-        | TRANSCLUSION
-        | SUBST_LENGTH
-        | LINK_NAME
-        | FREE_PIPES
-        | EXTLINKS
-        | HRULE
+        IMAGES | TRANSCLUSION | SUBST_LENGTH | LINK_NAME | FREE_PIPES | EXTLINKS | HRULE
     )
 
 
@@ -135,6 +129,11 @@ class SigError(Result):
     MULTI_COLON_ESCAPE = (
         N_("lint/multi-colon-escape"),
         N_("lint/multi-colon-escape-help"),
+        Checks.LINT,
+    )
+    INLINE_MEDIA_CAPTION = (
+        N_("inline-media-caption"),
+        N_("inline-media-caption-help"),
         Checks.LINT,
     )
 
