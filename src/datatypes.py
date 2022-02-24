@@ -136,6 +136,11 @@ class SigError(Result):
         N_("inline-media-caption-help"),
         Checks.LINT,
     )
+    BOGUS_IMAGE_OPTIONS = (
+        N_("bogus-image-options"),
+        N_("bogus-image-options-help"),
+        Checks.LINT,
+    )
 
     # Default set errors
     INTERWIKI_USER_LINK = (
