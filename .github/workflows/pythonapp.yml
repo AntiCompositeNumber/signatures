@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - name: Set up Python 3.9
       uses: actions/setup-python@v3.0.0
       with:
@@ -55,7 +55,7 @@ jobs:
     needs: build
     if: contains(github.ref, 'master')
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - name: check for dependency changes
       run: |
         ! git diff-tree --no-commit-id --name-only -r $GITHUB_REF | grep -P "(?:Pipfile.lock|requirements(-dev)?.txt)"
