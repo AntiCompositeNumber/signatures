@@ -20,7 +20,7 @@
 
 import flask
 from flask_babel import gettext, ngettext, format_datetime  # type: ignore  # noqa: F401
-import flask_babel
+import flask_babel  # type: ignore
 import os
 import subprocess
 import logging
