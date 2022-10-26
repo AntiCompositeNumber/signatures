@@ -52,6 +52,7 @@ UserCheck = NamedTuple(
         ("signature", str),
         ("failure", Optional[bool]),
         ("html_sig", str),
+        ("replag", str),
     ],
 )
 
