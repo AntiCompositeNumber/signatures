@@ -108,7 +108,7 @@ def check_user(site: str, user: str, sig: str = "") -> UserCheck:
             sig = user_props.nickname
 
     try:
-        _replag = datasources.get_site_replag(site)
+        _replag = datasources.get_site_replag(dbname)
     except (ConnectionError, ValueError):
         replag = ""
     else:
