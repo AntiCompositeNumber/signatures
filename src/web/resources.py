@@ -107,6 +107,16 @@ def check_user(site: str, user: str, sig: str = "") -> UserCheck:
             # user exists and has custom fancy sig, check it
             sig = user_props.nickname
 
+    try:
+        _replag = datasources.get_site_replag(site)
+    except (ConnectionError, ValueError):
+        replag = ""
+    else:
+        if _replag > datetime.timedelta(minutes=2):
+            replag = str(_replag)
+        else:
+            replag = ""
+
     if failure is None:
         # OK so far, actually check the signature
         errors = cast(Set[Result], sigprobs.check_sig(user, sig, sitedata, site))
@@ -125,6 +135,7 @@ def check_user(site: str, user: str, sig: str = "") -> UserCheck:
         signature=sig,
         failure=failure,
         html_sig=html_sig,
+        replag=replag,
     )
     return data
 

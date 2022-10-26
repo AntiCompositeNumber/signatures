@@ -158,9 +158,9 @@ def _get_shard_from_site(site: str):
     return res[0][0].partition(".")[0]
 
 
-def get_site_replag(site: str) -> datetime.timedelta:
-    query = "SELECT lag FROM heartbeat_p.heartbeat where shard = %(shard)s"
-    res = do_db_query("meta", query, shard=_get_shard_from_site(site))
+def get_site_replag(dbname: str) -> datetime.timedelta:
+    query = "SELECT lag FROM heartbeat_p.heartbeat"
+    res = do_db_query(dbname, query)
     if res:
         return datetime.timedelta(seconds=float(res[0][0]))
     else:

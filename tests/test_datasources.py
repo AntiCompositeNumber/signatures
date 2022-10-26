@@ -35,7 +35,8 @@ import datasources.db  # noqa: E402
 
 
 @pytest.fixture(
-    scope="module", params=[dict(domain="en.wikipedia.org", dbname="enwiki")],
+    scope="module",
+    params=[dict(domain="en.wikipedia.org", dbname="enwiki")],
 )
 def site(request):
     return request.param
@@ -151,10 +152,6 @@ def test_get_shard_from_site(site, url, raw_slice, expected):
 @pytest.mark.parametrize("sec", [274226.9988, 0.0])
 def test_get_site_replag(sec):
     with mock.patch("datasources.db.do_db_query", return_value=((Decimal(sec),),)):
-        with mock.patch(
-            "datasources.db._get_shard_from_site", return_value="s1"
-        ) as mock_get_shard:
-            assert datasources.get_site_replag(
-                "en.wikipedia.org"
-            ) == datetime.timedelta(seconds=sec)
-            mock_get_shard.assert_called_once_with("en.wikipedia.org")
+        assert datasources.get_site_replag("enwiki_p") == datetime.timedelta(
+            seconds=sec
+        )
