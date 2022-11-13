@@ -13,7 +13,7 @@ toolforge = "*"
 Flask = "*"
 Flask-Babel = "*"
 flask-restx = "*"
-Werkzeug = "==2.1.2"
+Werkzeug = "*"
 
 [tool.poetry.dev-dependencies]
 flake8 = "*"
