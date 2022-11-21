@@ -420,7 +420,7 @@ def batch_check_lint(
 
 def main(
     hostname: str,
-    lastedit: Optional[str] = None,
+    lastedit: str = "",
     days: int = 30,
     checks: datatypes.Checks = datatypes.Checks.DEFAULT,
     data: Optional[Union[Dict[str, str], List[str]]] = None,

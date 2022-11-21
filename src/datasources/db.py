@@ -37,10 +37,10 @@ def wmcs() -> bool:
 
 
 def iter_active_user_sigs(
-    dbname: str, lastedit: str = None, days: int = 365
+    dbname: str, lastedit: str = "", days: int = 365
 ) -> Iterator[Tuple[str, str]]:
     """Get usernames and signatures from the replica database"""
-    if lastedit is None:
+    if not lastedit:
         lastedit = (
             datetime.datetime.utcnow() - datetime.timedelta(days=days)
         ).strftime("%Y%m%d%H%M%S")
