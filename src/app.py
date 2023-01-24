@@ -60,12 +60,10 @@ def create_app():
     app.config["version"] = rev.stdout
     app.config["SWAGGER_UI_DOC_EXPANSION"] = "list"
     # Setup i18n extensions
-    babel = flask_babel.Babel(app)
     app.jinja_env.add_extension("jinja2.ext.i18n")
 
-    @babel.localeselector
     def get_locale():
-        translations = [locale.language for locale in babel.list_translations()]
+        translations = {locale.language for locale in babel.list_translations()}
         use_lang = flask.request.args.get("uselang")
         if use_lang in translations:
             return use_lang
@@ -73,6 +71,8 @@ def create_app():
             return flask.request.cookies["lang"]
         else:
             return flask.request.accept_languages.best_match(translations)
+
+    babel = flask_babel.Babel(app, locale_selector=get_locale)
 
     @app.context_processor
     def locale_data():
@@ -88,7 +88,7 @@ def create_app():
 
         return dict(
             current_locale=flask_babel.get_locale(),
-            available_locales=babel.list_translations(),
+            available_locales=set(babel.list_translations()),
             setlang_url=setlang_url,
         )
 
