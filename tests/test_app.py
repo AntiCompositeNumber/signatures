@@ -30,10 +30,11 @@ from web import resources  # noqa: E402
 import datatypes  # noqa: E402
 import datasources  # noqa: E402
 
-translated = pytest.mark.skipif(
-    len(app.babel.list_translations()) < 2,
-    reason="No non-English translations to test with",
-)
+with app.app.app_context():
+    translated = pytest.mark.skipif(
+        len(app.babel.list_translations()) < 3,
+        reason="No non-English translations to test with",
+    )
 
 
 @pytest.fixture(scope="module")
@@ -159,8 +160,14 @@ def test_validate_username_pass():
 @pytest.mark.parametrize(
     "site,expected",
     [
-        ("en.wikipedia.org", "[[User:user|nick]] ([[User talk:user|talk]])",),
-        ("eo.wikipedia.org", "[[Uzanto:user|nick]] ([[Uzanto-Diskuto:user|diskuto]])",),
+        (
+            "en.wikipedia.org",
+            "[[User:user|nick]] ([[User talk:user|talk]])",
+        ),
+        (
+            "eo.wikipedia.org",
+            "[[Uzanto:user|nick]] ([[Uzanto-Diskuto:user|diskuto]])",
+        ),
     ],
 )
 def test_get_default_sig(site, expected):

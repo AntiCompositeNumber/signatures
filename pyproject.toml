@@ -11,7 +11,7 @@ mwparserfromhell = "*"
 requests = "*"
 toolforge = "*"
 Flask = "*"
-Flask-Babel = "^3.0.1"  # https://github.com/python-babel/flask-babel/issues/213
+Flask-Babel = "^3.0.1"
 flask-restx = "*"
 Werkzeug = "*"
 
