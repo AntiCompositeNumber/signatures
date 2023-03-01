@@ -67,7 +67,6 @@ class Checks(enum.Flag):
     LENGTH = enum.auto()
     FANCY = enum.auto()
     BREAKS = enum.auto()
-    DEFAULT = LINT | NESTED_SUBST | LINKS | LENGTH | FANCY | BREAKS
 
     IMAGES = enum.auto()
     TRANSCLUSION = enum.auto()
@@ -76,6 +75,9 @@ class Checks(enum.Flag):
     FREE_PIPES = enum.auto()
     EXTLINKS = enum.auto()
     HRULE = enum.auto()
+
+    DEFAULT = LINT | NESTED_SUBST | LINKS | LENGTH | FANCY | BREAKS | SUBST_LENGTH
+
     EXTENDED = (
         IMAGES | TRANSCLUSION | SUBST_LENGTH | LINK_NAME | FREE_PIPES | EXTLINKS | HRULE
     )
