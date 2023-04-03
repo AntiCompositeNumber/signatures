@@ -805,14 +805,14 @@ files = [
 
 [[package]]
 name = "pymysql"
-version = "1.0.2"
+version = "1.0.3"
 description = "Pure Python MySQL Driver"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "PyMySQL-1.0.2-py3-none-any.whl", hash = "sha256:41fc3a0c5013d5f039639442321185532e3e2c8924687abe6537de157d403641"},
-    {file = "PyMySQL-1.0.2.tar.gz", hash = "sha256:816927a350f38d56072aeca5dfb10221fe1dc653745853d30a216637f5d7ad36"},
+    {file = "PyMySQL-1.0.3-py3-none-any.whl", hash = "sha256:89fc6ae41c0aeb6e1f7710cdd623702ea2c54d040565767a78b00a5ebb12f4e5"},
+    {file = "PyMySQL-1.0.3.tar.gz", hash = "sha256:3dda943ef3694068a75d69d071755dbecacee1adf9a1fc5b206830d2b67d25e8"},
 ]
 
 [package.extras]
@@ -940,19 +940,19 @@ files = [
 
 [[package]]
 name = "toolforge"
-version = "5.0.0"
+version = "6.0.0"
 description = "Small library for common tasks on Wikimedia Toolforge"
 category = "main"
 optional = false
-python-versions = ">=3.4"
+python-versions = ">=3.7"
 files = [
-    {file = "toolforge-5.0.0-py3-none-any.whl", hash = "sha256:280793ebef3e06b2ee76969a1edaf3ab11be169ed5a9b8ed315c207aa85986e6"},
-    {file = "toolforge-5.0.0.tar.gz", hash = "sha256:c8fbd199437faf7db6597c8cb1072de97f01fed706cd83740edf7a9ac9831065"},
+    {file = "toolforge-6.0.0-py3-none-any.whl", hash = "sha256:47eb9be9c57b9d2b0598db1f65956dc6e6ab3499959fe8a21946a881ed032793"},
+    {file = "toolforge-6.0.0.tar.gz", hash = "sha256:457a684c9ec4f3eaadf7ea1c593cdcbe7e179240e056c57a1764fcd9621ea2b0"},
 ]
 
 [package.dependencies]
-pymysql = {version = "*", markers = "python_version >= \"3.6\""}
-requests = "*"
+pymysql = ">=1.0.3"
+requests = ">=2.28.2"
 
 [[package]]
 name = "types-pymysql"
