@@ -36,18 +36,15 @@ tests-no-zope = ["cloudpickle", "cloudpickle", "hypothesis", "hypothesis", "mypy
 
 [[package]]
 name = "babel"
-version = "2.11.0"
+version = "2.12.1"
 description = "Internationalization utilities"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "Babel-2.11.0-py3-none-any.whl", hash = "sha256:1ad3eca1c885218f6dce2ab67291178944f810a10a9b5f3cb8382a5a232b64fe"},
-    {file = "Babel-2.11.0.tar.gz", hash = "sha256:5ef4b3226b0180dedded4229651c8b0e1a3a6a2837d45a073272f313e4cf97f6"},
+    {file = "Babel-2.12.1-py3-none-any.whl", hash = "sha256:b4246fb7677d3b98f501a39d43396d3cafdc8eadb045f4a31be01863f655c610"},
+    {file = "Babel-2.12.1.tar.gz", hash = "sha256:cc2d99999cd01d44420ae725a21c9e3711b3aadc7976d6147f622d8581963455"},
 ]
-
-[package.dependencies]
-pytz = ">=2015.7"
 
 [[package]]
 name = "beautifulsoup4"
@@ -420,21 +417,21 @@ dotenv = ["python-dotenv"]
 
 [[package]]
 name = "flask-babel"
-version = "3.0.1"
-description = "Adds i18n/l10n support fo Flask applications."
+version = "3.1.0"
+description = "Adds i18n/l10n support for Flask applications."
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "flask_babel-3.0.1-py3-none-any.whl", hash = "sha256:ceb8c82039954a6b29da33ec5deb84878b78069d1ea628b21cac3f8233e9189c"},
-    {file = "flask_babel-3.0.1.tar.gz", hash = "sha256:d408cace25514bea8b92e898fd7e55877fbac79b71bc230e266ff515408eba38"},
+    {file = "flask_babel-3.1.0-py3-none-any.whl", hash = "sha256:deb3ee272d5adf97f5974ed09ab501243d63e7fb4a047501a00de4bd4aca4830"},
+    {file = "flask_babel-3.1.0.tar.gz", hash = "sha256:be015772c5d7f046f3b99c508dcf618636eb93d21b713b356db79f3e79f69f39"},
 ]
 
 [package.dependencies]
-Babel = ">=2.11.0,<3.0.0"
-Flask = ">=2.0.0,<3.0.0"
-Jinja2 = ">=3.1.2,<4.0.0"
-pytz = ">=2022.7,<2023.0"
+Babel = ">=2.12"
+Flask = ">=2.0"
+Jinja2 = ">=3.1"
+pytz = ">=2022.7"
 
 [[package]]
 name = "flask-restx"
@@ -1059,4 +1056,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.9"
-content-hash = "77247047a0e4b2093469011b60a1a5b41403cea400c9eecebe409480bd9452a6"
+content-hash = "6c962e77cb7656159f983ceb1ebe64fe2b551418c4aecc380328abfb24357a38"
