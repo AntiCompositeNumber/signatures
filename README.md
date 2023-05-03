@@ -1,5 +1,5 @@
 # signatures
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/AntiCompositeNumber/signatures/Python%20application)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/AntiCompositeNumber/signatures/pythonapp.yml?branch=master)
 ![Uptime Robot status](https://img.shields.io/uptimerobot/status/m784569439-67298a1a3ff3bf5812aba175?label=website%20status)
 [![Coverage Status](https://coveralls.io/repos/github/AntiCompositeNumber/signatures/badge.svg?branch=master)](https://coveralls.io/github/AntiCompositeNumber/signatures?branch=master)
 ![Python version 3.9](https://img.shields.io/badge/python-v3.9-blue)
