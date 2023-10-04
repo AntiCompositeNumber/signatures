@@ -17,7 +17,7 @@ Werkzeug = "*"
 
 [tool.poetry.dev-dependencies]
 flake8 = "*"
-pytest = "*"
+pytest = "==7.4.0"
 coveralls = "*"
 black = "*"
 mypy = "*"
