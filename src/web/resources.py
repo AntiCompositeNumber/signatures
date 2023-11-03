@@ -43,6 +43,7 @@ SAFE_DOMAINS = {
     "wikimedia.org",
     "wikidata.org",
     "mediawiki.org",
+    "wikifunctions.org",
 }
 
 
