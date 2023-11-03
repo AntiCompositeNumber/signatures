@@ -87,7 +87,6 @@ def test_about(client):
 
 @translated
 def test_uselang(client):
-
     en = client.get("/")
     en_soup = BeautifulSoup(en.data, "html.parser")
     en_lang = en_soup.find(id="currentLang").contents[0]
@@ -262,7 +261,7 @@ def test_check_user_db_nosig(exists, failure, errors):
             "[[User:Example]]",
             '<a rel="mw:WikiLink" '
             'href="https://en.wikipedia.org/wiki/User:Example" '
-            'title="User:Example" id="mwAg">User:Example</a>',
+            'title="User:Example" id="mwAw">User:Example</a>',
         )
     ],
 )
