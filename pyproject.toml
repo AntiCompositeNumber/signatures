@@ -11,7 +11,7 @@ mwparserfromhell = "*"
 requests = "*"
 toolforge = "*"
 Flask = "^2.3.2"
-Flask-Babel = "^3.1.0"
+Flask-Babel = "^4.0.0"
 flask-restx = "*"
 Werkzeug = "*"
 
