@@ -71,11 +71,11 @@
           <div class="col-sm mb-3 mb-md-0">
             <div class="text-muted">
               {% trans trimmed
-                open_link='<a class="text-reset" style="white-space: nowrap" href="https://www.apache.org/licenses/LICENSE-2.0">'|safe,
+                open_link='<a class="text-reset" style="white-space: nowrap" href="https://spdx.org/licenses/AGPL-3.0-or-later.html">'|safe,
                 close="</a>"|safe
               %}
               This project is licensed under the
-              {{ open_link }}Apache License, version 2.0{{close}}.
+              {{ open_link }}AGPL v3.0 or any later version{{close}}.
               {% endtrans %}
             </div>
             <div class="text-muted">{% trans %}Repository version{% endtrans %} <code class="text-reset">{{ config['version'] }}</code></div>
