@@ -1,15 +1,16 @@
-# English translations for PROJECT.
-# Copyright (C) 2024 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# coding: utf-8
+# English translations for signatures.
+# Copyright (C) 2020 AntiCompositeNumber
+# This file is distributed under the AGPL v3.0 or any later version.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-03-25 16:48-0400\n"
-"PO-Revision-Date: 2024-03-25 16:49-0400\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2024-07-05 11:17-0400\n"
+"PO-Revision-Date: 2020-03-13 21:53-0400\n"
+"Last-Translator: AntiCompositeNumber\n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -20,179 +21,205 @@ msgstr ""
 
 #: datatypes.py:86
 msgid "html5-misnesting"
-msgstr ""
+msgstr "Misnested tag with different rendering in HTML5 and HTML4"
 
 #: datatypes.py:86
 msgid "html5-misnesting-help"
 msgstr ""
+"Tags should be closed in the reverse order they were opened "
+"(&ltb&gt&lti&gtFoo&lt/i&gt&lt/b&gt not "
+"&ltb&gt&lti&gtFoo&lt/b&gt&lt/i&gt)."
 
 #: datatypes.py:88
 msgid "misc-tidy-replacement-issues"
-msgstr ""
+msgstr "Miscellaneous issues"
 
 #: datatypes.py:89
 msgid "misc-tidy-replacement-issues-help"
-msgstr ""
+msgstr "Check the Linter documentation for advice"
 
 #: datatypes.py:92
 msgid "misnested-tag"
-msgstr ""
+msgstr "Misnested tag"
 
 #: datatypes.py:92
 msgid "misnested-tag-help"
 msgstr ""
+"Tags should be closed in the reverse order they were opened "
+"(&ltb&gt&lti&gtFoo&lt/i&gt&lt/b&gt not "
+"&ltb&gt&lti&gtFoo&lt/b&gt&lt/i&gt)."
 
 #: datatypes.py:93
 msgid "missing-end-tag"
-msgstr ""
+msgstr "Missing end tag"
 
 #: datatypes.py:93
 msgid "missing-end-tag-help"
 msgstr ""
+"Make sure that all tags that are opened are closed in the same way "
+"('''Foo''' not &lti&gtFoo''' or &lti&gtFoo)"
 
 #: datatypes.py:95
 msgid "multiple-unclosed-formatting-tags"
-msgstr ""
+msgstr "Multiple unclosed formatting tags"
 
 #: datatypes.py:96
 msgid "multiple-unclosed-formatting-tags-help"
 msgstr ""
+"Make sure that all tags that are opened are closed in the same way "
+"('''Foo''' not &lti&gtFoo''' or &lti&gtFoo)"
 
 #: datatypes.py:99
 msgid "obsolete-tag"
-msgstr ""
+msgstr "Obsolete HTML tags"
 
 #: datatypes.py:99
 msgid "obsolete-tag-help"
-msgstr ""
+msgstr "See the Linter documentation for more information."
 
 #: datatypes.py:101
 msgid "obsolete-font-tag"
-msgstr ""
+msgstr "Obsolete font tag"
 
 #: datatypes.py:102
 msgid "obsolete-font-tag-help"
-msgstr ""
+msgstr "The &ltfont&gt tag has been deprecated in HTML5 and should be replaced"
 
 #: datatypes.py:105
 msgid "self-closed-tag"
-msgstr ""
+msgstr "Self-closed tag"
 
 #: datatypes.py:105
 msgid "self-closed-tag-help"
-msgstr ""
+msgstr "See the Linter documentation for more information"
 
 #: datatypes.py:106
 msgid "stripped-tag"
-msgstr ""
+msgstr "Stripped tag"
 
 #: datatypes.py:106
 msgid "stripped-tag-help"
-msgstr ""
+msgstr "See the Linter documentation for more information"
 
 #: datatypes.py:107
 msgid "tidy-font-bug"
-msgstr ""
+msgstr "Tidy font bug"
 
 #: datatypes.py:107
 msgid "tidy-font-bug-help"
-msgstr ""
+msgstr "See the Linter documentation for more information"
 
 #: datatypes.py:109
 msgid "tidy-whitespace-bug"
-msgstr ""
+msgstr "Whitespace parsing bug"
 
 #: datatypes.py:110
 msgid "tidy-whitespace-bug-help"
-msgstr ""
+msgstr "See the Linter documentation for more information"
 
 #: datatypes.py:114
 msgid "wikilink-in-extlink"
-msgstr ""
+msgstr "Wikilink in external link"
 
 #: datatypes.py:115
 msgid "wikilink-in-extlink-help"
-msgstr ""
+msgstr "External link labels can not contain wikilinks"
 
 #: datatypes.py:119
 msgid "lint/multi-colon-escape"
-msgstr ""
+msgstr "Multiple colons escape wikilink"
 
 #: datatypes.py:120
 msgid "lint/multi-colon-escape-help"
-msgstr ""
+msgstr "Wikilinks must start with no more than one colon."
 
 #: datatypes.py:124
 msgid "inline-media-caption"
-msgstr ""
+msgstr "Caption in inline media"
 
 #: datatypes.py:125
 msgid "inline-media-caption-help"
 msgstr ""
+"Captions are not supported in inline media (like "
+"[[File:Foo.jpg|Caption]]). Use [[File:Foo.jpg|alt=Caption]] instead, or "
+"remove media from your signature."
 
 #: datatypes.py:129
 msgid "bogus-image-options"
-msgstr ""
+msgstr "Embedded image contains invalid options"
 
 #: datatypes.py:130
 msgid "bogus-image-options-help"
-msgstr ""
+msgstr "Check the syntax of any images in your signature or remove them."
 
 #: datatypes.py:136
 msgid "interwiki-user-link"
-msgstr ""
+msgstr "Interwiki user link"
 
 #: datatypes.py:137
 msgid "interwiki-user-link-help"
 msgstr ""
+"The only link in this signature appears to be an interwiki link. "
+"Signatures should contain a wikilink to the user's local user page, user "
+"talk page, or contributions. "
 
 #: datatypes.py:141
 msgid "link-username-mismatch"
-msgstr ""
+msgstr "Mismatch between link and username"
 
 #: datatypes.py:142
 msgid "link-username-mismatch-help"
 msgstr ""
+"The signature contains at least one link to a user page, talk page, or "
+"contributions, but they don't match the username"
 
 #: datatypes.py:145
 msgid "nested-subst"
-msgstr ""
+msgstr "Nested substitution"
 
 #: datatypes.py:145
 msgid "nested-subst-help"
 msgstr ""
+"Signatures should not contain markup that could transform into someone "
+"else's signature."
 
 #: datatypes.py:147
 msgid "complex-template"
-msgstr ""
+msgstr "Complex template markup"
 
 #: datatypes.py:148
 msgid "complex-template-help"
 msgstr ""
+"This signature contains complex markup that caused it to change for each "
+"of five substitutions."
 
 #: datatypes.py:151
 msgid "no-user-links"
-msgstr ""
+msgstr "No user links"
 
 #: datatypes.py:151
 msgid "no-user-links-help"
 msgstr ""
+"Signatures should contain a wikilink to the user's local user page, user "
+"talk page, or contributions."
 
 #: datatypes.py:152
 msgid "plain-fancy-sig"
-msgstr ""
+msgstr "Plain fancy signature"
 
 #: datatypes.py:152
 msgid "plain-fancy-sig-help"
 msgstr ""
+"The \"Treat the above as wiki markup\" box was ticked, but this signature"
+" doesn't contain any markup."
 
 #: datatypes.py:153
 msgid "sig-too-long"
-msgstr ""
+msgstr "Signature too long"
 
 #: datatypes.py:153
 msgid "sig-too-long-help"
-msgstr ""
+msgstr "Signatures must contain less than 255 bytes of wikitext."
 
 #: datatypes.py:156
 msgid "images-in-sig"
@@ -244,11 +271,11 @@ msgstr ""
 
 #: datatypes.py:174
 msgid "line-breaks"
-msgstr ""
+msgstr "Line breaks"
 
 #: datatypes.py:174
 msgid "line-breaks-help"
-msgstr ""
+msgstr "Signatures should not contain any line breaks."
 
 #: datatypes.py:175
 msgid "horizontal-rule"
@@ -260,43 +287,43 @@ msgstr ""
 
 #: datatypes.py:179
 msgid "default-sig"
-msgstr ""
+msgstr "Default signature"
 
 #: datatypes.py:179
 msgid "default-sig-help"
-msgstr ""
+msgstr "No custom signature has been set for this user."
 
 #: datatypes.py:180
 msgid "no-errors"
-msgstr ""
+msgstr "No errors"
 
 #: datatypes.py:180
 msgid "no-errors-help"
-msgstr ""
+msgstr "No problems were detected with this signature."
 
 #: datatypes.py:181
 msgid "sig-not-fancy"
-msgstr ""
+msgstr "Non-fancy signature"
 
 #: datatypes.py:181
 msgid "sig-not-fancy-help"
-msgstr ""
+msgstr "This signature is only a nickname, and is not interpreted as wikitext."
 
 #: datatypes.py:182
 msgid "user-does-not-exist"
-msgstr ""
+msgstr "User does not exist"
 
 #: datatypes.py:182
 msgid "user-does-not-exist-help"
-msgstr ""
+msgstr "The provided username does not exist on this wiki."
 
 #: templates/about.html:4 templates/layout.html:34
 msgid "About"
-msgstr ""
+msgstr "About"
 
 #: templates/about.html:5
 msgid "What is this?"
-msgstr ""
+msgstr "What is this?"
 
 #: templates/about.html:7
 msgid ""
@@ -304,10 +331,13 @@ msgid ""
 "custom user signatures. It was written in Python by "
 "User:AntiCompositeNumber."
 msgstr ""
+"This tool, called Signatures, is designed to find technical issues in "
+"custom user signatures. It was written in Python by "
+"User:AntiCompositeNumber."
 
 #: templates/about.html:12
 msgid "Why does this exist?"
-msgstr ""
+msgstr "Why does this exist?"
 
 #: templates/about.html:14
 #, python-format
@@ -319,6 +349,12 @@ msgid ""
 "%(proposal)sproposal%(close)s was created for technical requirements that"
 " would fix these issues."
 msgstr ""
+"MediaWiki has never imposed technical restrictions on fancy signatures "
+"other than maximum length. This allowed editors to create complex "
+"signatures that are hard for machines to parse. Complex signatures "
+"sometimes contained mistakes that would affect other text. A "
+"%(proposal)sproposal%(close)s was created for technical requirements that"
+" would fix these issues."
 
 #: templates/about.html:27
 msgid ""
@@ -326,10 +362,13 @@ msgid ""
 "discussing the proposal could make informed comments. It may also be "
 "useful in notifying users about their problematic signatures."
 msgstr ""
+"This tool was created as a result of that proposal so that editors "
+"discussing the proposal could make informed comments. It may also be "
+"useful in notifying users about their problematic signatures."
 
 #: templates/about.html:33
 msgid "What problems are detected?"
-msgstr ""
+msgstr "What problems are detected?"
 
 #: templates/about.html:35
 msgid ""
@@ -337,49 +376,54 @@ msgid ""
 "requirements, it checks for signatures that would violate those "
 "requirements."
 msgstr ""
+"As this tool was built to collect data about the proposed new "
+"requirements, it checks for signatures that would violate those "
+"requirements."
 
 #: templates/about.html:40
 msgid "The following problems are detected:"
-msgstr ""
+msgstr "The following problems are detected:"
 
 #: templates/about.html:43
 #, python-format
 msgid "Any %(lintopen)sLint errors%(close)s"
-msgstr ""
+msgstr "Any %(lintopen)sLint errors%(close)s"
 
 #: templates/about.html:51
 msgid ""
 "Missing or invalid links to user, user talk, and contributions pages, "
 "including signatures with"
 msgstr ""
+"Missing or invalid links to user, user talk, and contributions pages, "
+"including signatures with"
 
 #: templates/about.html:56
 msgid "No user links at all"
-msgstr ""
+msgstr "No user links at all"
 
 #: templates/about.html:58
 msgid "Only links to the user, user talk, or contributions page of someone else"
-msgstr ""
+msgstr "Only links to the user, user talk, or contributions page of someone else"
 
 #: templates/about.html:63
 msgid "Only links to a user page on another wiki"
-msgstr ""
+msgstr "Only links to a user page on another wiki"
 
 #: templates/about.html:66
 msgid "Fancy signatures without any formatting"
-msgstr ""
+msgstr "Fancy signatures without any formatting"
 
 #: templates/about.html:68
 msgid "Signatures longer than 255 characters (before substitution)"
-msgstr ""
+msgstr "Signatures longer than 255 characters (before substitution)"
 
 #: templates/about.html:72
 msgid "Signatures that change when the page is saved again"
-msgstr ""
+msgstr "Signatures that change when the page is saved again"
 
 #: templates/about.html:75
 msgid "My signature works fine, why did the tool find problems?"
-msgstr ""
+msgstr "My signature works fine, why did the tool find problems?"
 
 #: templates/about.html:78
 msgid ""
@@ -389,6 +433,11 @@ msgid ""
 "the wikitext rendering system. There is no way to guarentee that these "
 "lint errors will continue to work over time."
 msgstr ""
+"Some lint errors reported by the tool may not currently affect the "
+"rendered output of the page. Some are deprecated tags that may not be "
+"supported by browsers in the future, while others are silently fixed by "
+"the wikitext rendering system. There is no way to guarentee that these "
+"lint errors will continue to work over time."
 
 #: templates/about.html:87
 msgid ""
@@ -398,6 +447,11 @@ msgid ""
 "not fixed, tools, scripts, and bots may not work correctly with your "
 "signature."
 msgstr ""
+"Other reported errors are a result of requirements that don't target the "
+"rendered version of a page. These requirements are designed to make it "
+"easier for machines to find and parse signatures. If these problems are "
+"not fixed, tools, scripts, and bots may not work correctly with your "
+"signature."
 
 #: templates/about.html:95
 #, python-format
@@ -406,10 +460,13 @@ msgid ""
 "code. You should report these bugs to AntiCompositeNumber on "
 "%(talkopen)stheir talk page%(close)s or on %(ghopen)sGitHub%(close)s."
 msgstr ""
+"Some reported issues are false positives caused by bugs in the detection "
+"code. You should report these bugs to AntiCompositeNumber on "
+"%(talkopen)stheir talk page%(close)s or on %(ghopen)sGitHub%(close)s."
 
 #: templates/about.html:105
 msgid "Where's the data for my home wiki?"
-msgstr ""
+msgstr "Where's the data for my home wiki?"
 
 #: templates/about.html:107
 msgid ""
@@ -418,10 +475,14 @@ msgid ""
 "wikis though. If you would like the report for a wiki to be created, "
 "please contact AntiCompositeNumber."
 msgstr ""
+"Unfortunately, site-level reports usually take too long to be able to "
+"generate them on the fly. The single user tool works for all Wikimedia "
+"wikis though. If you would like the report for a wiki to be created, "
+"please contact AntiCompositeNumber."
 
 #: templates/about.html:113
 msgid "I'd like to do something more with the data"
-msgstr ""
+msgstr "I'd like to do something more with the data"
 
 #: templates/about.html:116
 #, python-format
@@ -429,43 +490,45 @@ msgid ""
 "The tool has a basic REST API, documented %(apiopen)shere%(close)s. It "
 "should not be considered especially stable."
 msgstr ""
+"The tool has a basic REST API, documented %(apiopen)shere%(close)s. It "
+"should not be considered especially stable."
 
 #: templates/check_form.html:10 templates/index.html:29
 #: templates/layout.html:32
 msgid "Check a signature"
-msgstr ""
+msgstr "Check a signature"
 
 #: templates/check_form.html:14
 msgid "Wiki"
-msgstr ""
+msgstr "Wiki"
 
 #: templates/check_form.html:22 templates/report_site.html:35
 msgid "Username"
-msgstr ""
+msgstr "Username"
 
 #: templates/check_form.html:23
 msgid "Example"
-msgstr ""
+msgstr "Example"
 
 #: templates/check_form.html:31
 msgid "Get signature from database"
-msgstr ""
+msgstr "Get signature from database"
 
 #: templates/check_form.html:40
 msgid "Use this wikitext:"
-msgstr ""
+msgstr "Use this wikitext:"
 
 #: templates/check_form.html:44
 msgid "[[User:Example|Example]] ([[User talk:Example|talk]])"
-msgstr ""
+msgstr "[[User:Example|Example]] ([[User talk:Example|talk]])"
 
 #: templates/check_form.html:44
 msgid "Replacement signature"
-msgstr ""
+msgstr "Replacement signature"
 
 #: templates/check_result.html:13
 msgid "Results"
-msgstr ""
+msgstr "Results"
 
 #: templates/check_result.html:16
 msgid "Warning"
@@ -483,46 +546,46 @@ msgstr ""
 #: templates/check_result.html:24
 #, python-format
 msgid "%(username)s at %(site)s"
-msgstr ""
+msgstr "%(username)s at %(site)s"
 
 #: templates/check_result.html:39
 #, python-format
 msgid "%(count)s error found"
 msgid_plural "%(count)s errors found"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(count)s error found"
+msgstr[1] "%(count)s errors found"
 
 #: templates/check_result.html:53
 msgid "All clear!"
-msgstr ""
+msgstr "All clear!"
 
 #: templates/index.html:13
 msgid "Validates signatures against the proposed new requirements"
-msgstr ""
+msgstr "Validates signatures against the proposed new requirements"
 
 #: templates/index.html:25
 msgid "Go"
-msgstr ""
+msgstr "Go"
 
 #: templates/index.html:29
 msgid "Would your signature meet the new requirements?"
-msgstr ""
+msgstr "Would your signature meet the new requirements?"
 
 #: templates/index.html:30 templates/layout.html:33
 msgid "Site-level data"
-msgstr ""
+msgstr "Site-level data"
 
 #: templates/index.html:30
 msgid "How many users on your wiki would be impacted?"
-msgstr ""
+msgstr "How many users on your wiki would be impacted?"
 
 #: templates/layout.html:31
 msgid "Home"
-msgstr ""
+msgstr "Home"
 
 #: templates/layout.html:35
 msgid "API"
-msgstr ""
+msgstr "API"
 
 #: templates/layout.html:73
 #, python-format
@@ -530,62 +593,80 @@ msgid ""
 "This project is licensed under the %(open_link)sAGPL v3.0 or any later "
 "version%(close)s."
 msgstr ""
+"This project is licensed under the %(open_link)sAGPL v3.0 or any later "
+"version%(close)s."
 
 #: templates/layout.html:81
 msgid "Repository version"
-msgstr ""
+msgstr "Repository version"
 
 #: templates/layout.html:86
 msgid "Talk page"
-msgstr ""
+msgstr "Talk page"
 
 #: templates/layout.html:90
 msgid "GitHub"
-msgstr ""
+msgstr "GitHub"
 
 #: templates/report.html:2 templates/report.html:10
 msgid "Site reports"
-msgstr ""
+msgstr "Site reports"
 
 #: templates/report.html:16
 msgid ""
 "Report missing or out of date? Contact AntiCompositeNumber to run a new "
 "report."
 msgstr ""
+"Report missing or out of date? Contact AntiCompositeNumber to run a new "
+"report."
 
 #: templates/report_site.html:2 templates/report_site.html:10
 msgid "Site report"
-msgstr ""
+msgstr "Site report"
 
 #: templates/report_site.html:11
 msgid "Last updated"
-msgstr ""
+msgstr "Last updated"
 
 #: templates/report_site.html:12
 msgid "Users with edits to discussion pages since"
-msgstr ""
+msgstr "Users with edits to discussion pages since"
 
 #: templates/report_site.html:13
 msgid "Summary"
-msgstr ""
+msgstr "Summary"
 
 #: templates/report_site.html:17
 msgid "Error"
-msgstr ""
+msgstr "Error"
 
 #: templates/report_site.html:18
 msgid "Count"
-msgstr ""
+msgstr "Count"
 
 #: templates/report_site.html:31
 msgid "Users"
-msgstr ""
+msgstr "Users"
 
 #: templates/report_site.html:36
 msgid "Errors"
-msgstr ""
+msgstr "Errors"
 
 #: templates/report_site.html:37
 msgid "Signature"
-msgstr ""
+msgstr "Signature"
+
+#~ msgid "multi-colon-escape"
+#~ msgstr "Multiple colons escape wikilink"
+
+#~ msgid "multi-colon-escape-help"
+#~ msgstr "Wikilinks must start with no more than one colon."
+
+#~ msgid ""
+#~ "\n"
+#~ "      Warning: Replication lag is high."
+#~ " Changes made within the last "
+#~ "%(lagtime)s may not be reflected.\n"
+#~ "      "
+#~ msgstr ""
 
