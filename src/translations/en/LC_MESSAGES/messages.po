@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-07-05 11:17-0400\n"
+"POT-Creation-Date: 2024-07-05 15:15-0400\n"
 "PO-Revision-Date: 2020-03-13 21:53-0400\n"
 "Last-Translator: AntiCompositeNumber\n"
 "Language: en\n"
@@ -152,168 +152,176 @@ msgstr "Embedded image contains invalid options"
 msgid "bogus-image-options-help"
 msgstr "Check the syntax of any images in your signature or remove them."
 
-#: datatypes.py:136
+#: datatypes.py:134
+msgid "night-mode-unaware-background-color"
+msgstr "Background color inline style rule exists without a corresponding text color"
+
+#: datatypes.py:135
+msgid "night-mode-unaware-background-color-help"
+msgstr "Add a color: rule to parts of your signature with a background color."
+
+#: datatypes.py:141
 msgid "interwiki-user-link"
 msgstr "Interwiki user link"
 
-#: datatypes.py:137
+#: datatypes.py:142
 msgid "interwiki-user-link-help"
 msgstr ""
 "The only link in this signature appears to be an interwiki link. "
 "Signatures should contain a wikilink to the user's local user page, user "
 "talk page, or contributions. "
 
-#: datatypes.py:141
+#: datatypes.py:146
 msgid "link-username-mismatch"
 msgstr "Mismatch between link and username"
 
-#: datatypes.py:142
+#: datatypes.py:147
 msgid "link-username-mismatch-help"
 msgstr ""
 "The signature contains at least one link to a user page, talk page, or "
 "contributions, but they don't match the username"
 
-#: datatypes.py:145
+#: datatypes.py:150
 msgid "nested-subst"
 msgstr "Nested substitution"
 
-#: datatypes.py:145
+#: datatypes.py:150
 msgid "nested-subst-help"
 msgstr ""
 "Signatures should not contain markup that could transform into someone "
 "else's signature."
 
-#: datatypes.py:147
+#: datatypes.py:152
 msgid "complex-template"
 msgstr "Complex template markup"
 
-#: datatypes.py:148
+#: datatypes.py:153
 msgid "complex-template-help"
 msgstr ""
 "This signature contains complex markup that caused it to change for each "
 "of five substitutions."
 
-#: datatypes.py:151
+#: datatypes.py:156
 msgid "no-user-links"
 msgstr "No user links"
 
-#: datatypes.py:151
+#: datatypes.py:156
 msgid "no-user-links-help"
 msgstr ""
 "Signatures should contain a wikilink to the user's local user page, user "
 "talk page, or contributions."
 
-#: datatypes.py:152
+#: datatypes.py:157
 msgid "plain-fancy-sig"
 msgstr "Plain fancy signature"
 
-#: datatypes.py:152
+#: datatypes.py:157
 msgid "plain-fancy-sig-help"
 msgstr ""
 "The \"Treat the above as wiki markup\" box was ticked, but this signature"
 " doesn't contain any markup."
 
-#: datatypes.py:153
+#: datatypes.py:158
 msgid "sig-too-long"
 msgstr "Signature too long"
 
-#: datatypes.py:153
+#: datatypes.py:158
 msgid "sig-too-long-help"
 msgstr "Signatures must contain less than 255 bytes of wikitext."
 
-#: datatypes.py:156
+#: datatypes.py:161
 msgid "images-in-sig"
 msgstr ""
 
-#: datatypes.py:156
+#: datatypes.py:161
 msgid "images-in-sig-help"
 msgstr ""
 
-#: datatypes.py:158
+#: datatypes.py:163
 msgid "transcluded-templates"
 msgstr ""
 
-#: datatypes.py:159
+#: datatypes.py:164
 msgid "transcluded-templates-help"
 msgstr ""
 
-#: datatypes.py:163
+#: datatypes.py:168
 msgid "sig-too-long-post-subst"
 msgstr ""
 
-#: datatypes.py:164
+#: datatypes.py:169
 msgid "sig-too-long-post-subst-help"
 msgstr ""
 
-#: datatypes.py:168
+#: datatypes.py:173
 msgid "link-name-impersonation"
 msgstr ""
 
-#: datatypes.py:169
+#: datatypes.py:174
 msgid "link-name-impersonation-help"
 msgstr ""
 
-#: datatypes.py:172
+#: datatypes.py:177
 msgid "unescaped-pipes"
 msgstr ""
 
-#: datatypes.py:172
+#: datatypes.py:177
 msgid "unescaped-pipes-help"
 msgstr ""
 
-#: datatypes.py:173
+#: datatypes.py:178
 msgid "external-links"
 msgstr ""
 
-#: datatypes.py:173
+#: datatypes.py:178
 msgid "external-links-help"
 msgstr ""
 
-#: datatypes.py:174
+#: datatypes.py:179
 msgid "line-breaks"
 msgstr "Line breaks"
 
-#: datatypes.py:174
+#: datatypes.py:179
 msgid "line-breaks-help"
 msgstr "Signatures should not contain any line breaks."
 
-#: datatypes.py:175
+#: datatypes.py:180
 msgid "horizontal-rule"
 msgstr ""
 
-#: datatypes.py:175
+#: datatypes.py:180
 msgid "horizontal-rule-help"
 msgstr ""
 
-#: datatypes.py:179
+#: datatypes.py:184
 msgid "default-sig"
 msgstr "Default signature"
 
-#: datatypes.py:179
+#: datatypes.py:184
 msgid "default-sig-help"
 msgstr "No custom signature has been set for this user."
 
-#: datatypes.py:180
+#: datatypes.py:185
 msgid "no-errors"
 msgstr "No errors"
 
-#: datatypes.py:180
+#: datatypes.py:185
 msgid "no-errors-help"
 msgstr "No problems were detected with this signature."
 
-#: datatypes.py:181
+#: datatypes.py:186
 msgid "sig-not-fancy"
 msgstr "Non-fancy signature"
 
-#: datatypes.py:181
+#: datatypes.py:186
 msgid "sig-not-fancy-help"
 msgstr "This signature is only a nickname, and is not interpreted as wikitext."
 
-#: datatypes.py:182
+#: datatypes.py:187
 msgid "user-does-not-exist"
 msgstr "User does not exist"
 
-#: datatypes.py:182
+#: datatypes.py:187
 msgid "user-does-not-exist-help"
 msgstr "The provided username does not exist on this wiki."
 
