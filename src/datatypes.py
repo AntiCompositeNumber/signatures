@@ -130,6 +130,11 @@ class SigError(Result):
         N_("bogus-image-options-help"),
         Checks.LINT,
     )
+    NIGHT_MODE_UNAWARE_BACKGROUND_COLOR = (
+        N_("night-mode-unaware-background-color"),
+        N_("night-mode-unaware-background-color-help"),
+        Checks.LINT,
+    )
 
     # Default set errors
     INTERWIKI_USER_LINK = (
