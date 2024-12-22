@@ -13,7 +13,7 @@ This tool consists of two parts: a webservice and a backend batch report runner.
 ### Webservice
 On Toolforge, the repo is symlinked to ~/www/python/
 
-To start the webservice, run `webservice --backend=kubernetes python3.9 start`
+To start the webservice, run `webservice start`
 
 To stop the webservice, run `webservice stop`
 
