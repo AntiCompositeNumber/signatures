@@ -15,7 +15,7 @@ Flask-Babel = "^4.0.0"
 flask-restx = "*"
 Werkzeug = "*"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 flake8 = "*"
 pytest = "*"
 coveralls = "*"
