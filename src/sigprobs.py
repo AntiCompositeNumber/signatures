@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright 2020 AntiCompositeNumber
 
-import mwparserfromhell as mwph  # type: ignore
+import mwparserfromhell as mwph
 import json
 import datetime
 import sys
@@ -131,7 +131,9 @@ def check_links(user: str, sig: str, sitedata: SiteData) -> Optional[SigError]:
                 return SigError.NO_USER_LINKS
 
 
-def compare_links(user: str, sitedata: SiteData, sig: str) -> Union[bool, Set[str]]:
+def compare_links(
+    user: str, sitedata: SiteData, sig: Union[str, mwph.string_mixin.StringMixIn]
+) -> Union[bool, Set[str]]:
     """Compare links in a sig to data in sitedata"""
     wikitext = mwph.parse(sig)
     user = datasources.normal_name(user)

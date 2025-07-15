@@ -7,10 +7,12 @@ from datatypes import SiteData
 from . import api, db
 from .api import *  # noqa: F403, F401
 from .db import *  # noqa: F403, F401
+from typing import Union
+from mwparserfromhell.string_mixin import StringMixIn
 import pymysql
 
 
-def normal_name(name: str) -> str:
+def normal_name(name: Union[str, StringMixIn]) -> str:
     """Make first letter uppercase and replace spaces with underscores"""
     if name == "":
         return ""
