@@ -28,7 +28,7 @@ config = {
                         "name": "sigprobs",
                         "image": (
                             "docker-registry.tools.wmflabs.org/"
-                            "toolforge-python39-sssd-base:latest"
+                            "toolforge-python313-sssd-base:latest"
                         ),
                         "command": [
                             "/data/project/signatures/signatures/venv/bin/python3",
